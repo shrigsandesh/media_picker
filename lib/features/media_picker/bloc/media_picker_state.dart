@@ -1,8 +1,13 @@
-part of 'media_picker_bloc.dart';
+part of 'media_picker_cubit.dart';
 
 @freezed
 class MediaPickerState with _$MediaPickerState {
-  const factory MediaPickerState.loading() = _Loading;
-  const factory MediaPickerState.loaded(List<MediaAlbum> albums) = _Loaded;
-  const factory MediaPickerState.failure(String message) = _Failure;
+  const factory MediaPickerState({
+    @Default(false) bool isLoading,
+    @Default([]) List<MediaAlbum> albums,
+    @Default(MediaContent.initial) MediaContent media,
+    @Default([]) List<AssetEntity> pickedFiles,
+  }) = _MediaPickerState;
 }
+
+enum MediaType { media, video, photo }

@@ -5,9 +5,11 @@ import 'package:media_picker/features/media_picker/widgets/animated_expaned_icon
 import 'package:media_picker/features/media_picker/widgets/asset_thumbnail.dart';
 
 class MediaAppBar extends StatefulWidget {
-  const MediaAppBar({super.key, required this.mediaAlbum});
+  const MediaAppBar(
+      {super.key, required this.mediaAlbum, required this.onChanged});
 
   final List<MediaAlbum> mediaAlbum;
+  final Function(String) onChanged;
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
 }
@@ -25,7 +27,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
         curve: Curves.easeInOut,
         height: _isExpanded ? 810 : kToolbarHeight - 8,
         decoration: const BoxDecoration(
-          color: Color(0xFFF9F9F9),
+          color: Colors.white,
         ),
         child: Column(
           children: [
@@ -76,6 +78,8 @@ class _MediaAppBarState extends State<MediaAppBar> {
                   onTap: () {
                     setState(() {
                       _selected = widget.mediaAlbum[index].name;
+                      widget.onChanged(_selected);
+
                       _isExpanded = false;
                     });
                   },

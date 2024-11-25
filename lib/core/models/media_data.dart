@@ -19,15 +19,37 @@ class MediaData extends Equatable {
 }
 
 class MediaContent extends Equatable {
-  final List<AssetEntity> all;
+  final String name;
+  final List<AssetEntity> common;
   final List<AssetEntity> videos;
   final List<AssetEntity> photos;
 
   const MediaContent(
-      {required this.all, required this.videos, required this.photos});
+      {required this.name,
+      required this.common,
+      required this.videos,
+      required this.photos});
+
+  factory MediaContent.fromAssetEntity(List<AssetEntity> list, name) {
+    return MediaContent(
+      name: name,
+      common: list
+          .where((e) => e.type == AssetType.video || e.type == AssetType.image)
+          .toList(),
+      videos: list.where((e) => e.type == AssetType.video).toList(),
+      photos: list.where((e) => e.type == AssetType.image).toList(),
+    );
+  }
+
+  static const initial = MediaContent(
+    name: "All",
+    common: [],
+    videos: [],
+    photos: [],
+  );
 
   @override
-  List<Object> get props => [all, videos, photos];
+  List<Object> get props => [common, videos, photos];
 
   @override
   bool get stringify => true;

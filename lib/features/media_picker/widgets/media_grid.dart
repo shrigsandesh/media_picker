@@ -1,37 +1,104 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_picker/features/media_picker/bloc/media_picker_cubit.dart';
+import 'package:media_picker/features/media_picker/widgets/asset_thumbnail.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class MediaGrid extends StatelessWidget {
-  const MediaGrid(
-      {super.key, required this.pagingController, required this.medias});
-
-  final PagingController<int, String> pagingController;
+class MediaGrid extends StatefulWidget {
+  const MediaGrid({
+    super.key,
+    required this.medias,
+    required this.name,
+  });
   final List<AssetEntity> medias;
+  final String name;
 
   @override
+  State<MediaGrid> createState() => _MediaGridState();
+}
+
+class _MediaGridState extends State<MediaGrid> {
+  @override
   Widget build(BuildContext context) {
-    return PagedGridView<int, String>(
-      pagingController: pagingController,
+    if (widget.medias.isEmpty) {
+      return Center(
+        child: Text("No ${widget.name} found for this album."),
+      );
+    }
+    return GridView.builder(
+      padding: const EdgeInsets.only(top: 4),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // Number of items per row
         childAspectRatio: 1.0,
       ),
-      builderDelegate: PagedChildBuilderDelegate<String>(
-        noMoreItemsIndicatorBuilder: (context) => const SizedBox.shrink(),
-        itemBuilder: (context, item, index) => Card(
-          margin: const EdgeInsets.all(8.0),
-          child: Center(
-            child: Text(item),
-          ),
-        ),
-        firstPageErrorIndicatorBuilder: (context) => const Center(
-          child: Text('Error loading items'),
-        ),
-        noItemsFoundIndicatorBuilder: (context) => const Center(
-          child: Text('No items found'),
-        ),
-      ),
+      itemCount: widget.medias.length,
+      itemBuilder: (context, index) {
+        final video = widget.medias[index];
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            AssetThumbnail(
+              asset: widget.medias[index],
+            ),
+            BlocBuilder<MediaPickerCubit, MediaPickerState>(
+              builder: (context, state) {
+                final isSelected = state.pickedFiles
+                    .contains(video); // Check if video is selected
+                final selectionIndex = state.pickedFiles.indexOf(video);
+
+                return Positioned(
+                    top: 4,
+                    right: 4,
+                    child: GestureDetector(
+                        onTap: () {
+                          if (!isSelected) {
+                            context
+                                .read<MediaPickerCubit>()
+                                .addPickedFiles(video);
+                          } else {
+                            context
+                                .read<MediaPickerCubit>()
+                                .removeSelected(video);
+                          }
+                        },
+                        child: isSelected
+                            ? CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Colors.blue,
+                                child: Text(
+                                  // Display the order number (1-based index)
+                                  (selectionIndex + 1).toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                isSelected
+                                    ? Icons.check
+                                    : Icons.circle_outlined,
+                                color: Colors.white,
+                              )));
+              },
+            ),
+            if (video.duration > 0)
+              Positioned(
+                  bottom: 2,
+                  right: 2,
+                  child: Text(
+                    formatTime(video.duration),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ))
+          ],
+        );
+      },
     );
   }
+}
+
+String formatTime(int timeInSeconds) {
+  final minutes = ((timeInSeconds % 3600) ~/ 60).toString().padLeft(2, '0');
+  final seconds = (timeInSeconds % 60).toString().padLeft(2, '0');
+  return '$minutes:$seconds';
 }
