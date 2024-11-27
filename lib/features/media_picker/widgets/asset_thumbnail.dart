@@ -36,17 +36,20 @@ class _AssetThumbnailState extends State<AssetThumbnail> {
           return ClipRRect(
             borderRadius: BorderRadius.circular(widget.borderRadius ?? 1),
             child: Image.memory(
-                filterQuality: FilterQuality.low,
-                snapshot.data!,
-                fit: BoxFit.cover),
+              filterQuality: FilterQuality.low,
+              snapshot.data!,
+              fit: BoxFit.cover,
+              height: widget.thumbnailSize?.height.toDouble() ?? 80,
+              width: widget.thumbnailSize?.width.toDouble() ?? 60,
+            ),
           );
         } else {
           return Container(
             decoration: BoxDecoration(
-                color: Colors.grey,
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(widget.borderRadius ?? 1)),
-            height: 200,
-            width: 200,
+            height: 80,
+            width: 60,
           );
         }
       },

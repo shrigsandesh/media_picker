@@ -83,14 +83,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               Positioned(
                 bottom: 0,
                 child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
-                  builder: (context, state) {
-                    return Container(
-                      color: Colors.white,
-                      height: 100,
-                      width: MediaQuery.of(context).size.width,
-                      child: SelectedMedias(pickedVideos: state.pickedFiles),
-                    );
-                  },
+                  builder: (context, state) =>
+                      SelectedMedias(pickedVideos: state.pickedFiles),
                 ),
               ),
               BlocBuilder<MediaPickerCubit, MediaPickerState>(

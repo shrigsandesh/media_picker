@@ -11,25 +11,88 @@ class SelectedMedias extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: pickedVideos.length,
-        itemBuilder: (context, index) {
-          final video = pickedVideos[index];
+    return Container(
+      color: Colors.black,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (pickedVideos.isNotEmpty)
+            SizedBox(
+              height: 100,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                scrollDirection: Axis.horizontal,
+                itemCount: pickedVideos.length,
+                itemBuilder: (context, index) {
+                  final video = pickedVideos[index];
 
-          return GestureDetector(
-            onTap: () {
-              context.read<MediaPickerCubit>().removeSelected(video);
-            },
-            child: AssetThumbnail(
-              key: ValueKey(video.id),
-              asset: video,
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Stack(
+                      children: [
+                        AssetThumbnail(
+                          key: ValueKey(video.id),
+                          asset: video,
+                          thumbnailSize: const ThumbnailSize(60, 80),
+                          borderRadius: 10,
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: ColoredBox(
+                            color: Colors.grey,
+                            child: InkWell(
+                                onTap: () {
+                                  context
+                                      .read<MediaPickerCubit>()
+                                      .removeSelected(video);
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          );
-        },
+          _SelectedButton(
+              selectedCount: pickedVideos.length,
+              onPressed: () {
+                //navigate to next screen
+              }),
+        ],
       ),
     );
+  }
+}
+
+class _SelectedButton extends StatelessWidget {
+  const _SelectedButton({required this.onPressed, required this.selectedCount});
+  final VoidCallback onPressed;
+  final int selectedCount;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: onPressed,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          height: 45,
+          width: MediaQuery.of(context).size.width - 30,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12), color: Colors.blue),
+          child: Center(
+            child: Text(
+              "Selected ($selectedCount)",
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ));
   }
 }

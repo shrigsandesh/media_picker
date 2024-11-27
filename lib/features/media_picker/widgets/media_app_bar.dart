@@ -79,7 +79,6 @@ class _MediaAppBarState extends State<MediaAppBar> {
                     setState(() {
                       _selected = widget.mediaAlbum[index].name;
                       widget.onChanged(_selected);
-
                       _isExpanded = false;
                     });
                   },
