@@ -4,6 +4,7 @@ import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/widgets/loading_grid_shimmer.dart';
 import 'package:media_picker/src/widgets/media_grid.dart';
 import 'package:media_picker/src/widgets/media_picker_app_bar.dart';
+import 'package:media_picker/src/widgets/selected_medias.dart';
 
 class AllMediaPickerPage extends StatefulWidget {
   const AllMediaPickerPage({super.key});
@@ -77,6 +78,13 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
                       ),
                     ],
                   ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
+                  builder: (context, state) =>
+                      SelectedMedias(pickedVideos: state.pickedFiles),
                 ),
               ),
               BlocBuilder<MediaPickerCubit, MediaPickerState>(
