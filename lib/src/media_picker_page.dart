@@ -28,7 +28,9 @@ class _MediaPickerPageState extends State<MediaPickerPage> {
               BlocBuilder<MediaPickerCubit, MediaPickerState>(
                 builder: (context, state) {
                   if (state.isLoading) {
-                    return const LoadingGridShimmer();
+                    return const Padding(
+                        padding: EdgeInsets.only(top: kToolbarHeight),
+                        child: LoadingGridShimmer());
                   }
                   return Padding(
                     padding: const EdgeInsets.only(top: kToolbarHeight - 8),
