@@ -5,9 +5,14 @@ import 'package:media_picker/src/widgets/asset_thumbnail.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class SelectedMedias extends StatelessWidget {
-  const SelectedMedias({super.key, required this.pickedVideos});
+  const SelectedMedias({
+    super.key,
+    required this.pickedVideos,
+    required this.onPicked,
+  });
 
   final List<AssetEntity> pickedVideos;
+  final Function(List<AssetEntity>) onPicked;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +70,8 @@ class SelectedMedias extends StatelessWidget {
           _SelectedButton(
               selectedCount: pickedVideos.length,
               onPressed: () {
-                //navigate to next screen
+                onPicked(pickedVideos);
+                Navigator.of(context).pop();
               }),
         ],
       ),

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:example/next_page.dart';
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
 
@@ -61,7 +64,21 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                showMediaPicker(context: context, mediaType: MediaType.image);
+                showMediaPicker(
+                  context: context,
+                  mediaType: MediaType.image,
+                  transitionBuilder: slideTransitionBuilder,
+                  allowMultiple: true,
+                  pickedMedias: (assetEntity) async {
+                    final file = await assetEntity.first.file;
+                    if (mounted) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => NextPage(file: file!),
+                      ));
+                    }
+                  },
+                );
               },
               child: const Text("Pick Photos"),
             ),
@@ -70,6 +87,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 showMediaPicker(
                   context: context,
                   mediaType: MediaType.video,
+                  pickedMedias: (assetEntity) {
+                    log(assetEntity.toString());
+                  },
                 );
               },
               child: const Text("Pick videos"),
@@ -78,9 +98,14 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 showMediaPicker(
                   context: context,
+                  tabBarDecoration: const TabBarDecoration(
+                    backgroundColor: Colors.red,
+                    unselectedLabelStyle: TextStyle(color: Colors.red),
+                  ),
+                  pickedMedias: (assetEntity) {},
                 );
               },
-              child: const Text("Pick photos & medias"),
+              child: const Text("Pick photos & videos"),
             ),
           ],
         ),

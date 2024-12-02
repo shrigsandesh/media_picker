@@ -5,10 +5,15 @@ import 'package:media_picker/src/widgets/asset_thumbnail.dart';
 
 class MediaAppBar extends StatefulWidget {
   const MediaAppBar(
-      {super.key, required this.mediaAlbum, required this.onChanged});
+      {super.key,
+      required this.mediaAlbum,
+      required this.onChanged,
+      this.albumDropdownColor});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(String) onChanged;
+  final Color? albumDropdownColor;
+
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
 }
@@ -27,9 +32,8 @@ class _MediaAppBarState extends State<MediaAppBar> {
         height: _isExpanded
             ? MediaQuery.of(context).size.height
             : kToolbarHeight - 8,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
+        decoration:
+            BoxDecoration(color: widget.albumDropdownColor ?? Colors.white),
         child: Column(
           children: [
             Padding(
@@ -45,6 +49,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      if (widget.mediaAlbum.isEmpty) return;
                       setState(() {
                         _isExpanded = !_isExpanded;
                       });

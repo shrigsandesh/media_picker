@@ -9,9 +9,13 @@ class MediaGrid extends StatefulWidget {
     super.key,
     required this.medias,
     required this.name,
+    required this.allowMultiple,
+    this.onSingleFileSelection,
   });
   final List<AssetEntity> medias;
   final String name;
+  final bool allowMultiple;
+  final Function(AssetEntity)? onSingleFileSelection;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -41,6 +45,12 @@ class _MediaGridState extends State<MediaGrid> {
             final selectionIndex = state.pickedFiles.indexOf(video);
             return GestureDetector(
               onTap: () {
+                if (!widget.allowMultiple) {
+                  if (widget.onSingleFileSelection != null) {
+                    widget.onSingleFileSelection!(video);
+                  }
+                  return;
+                }
                 if (!isSelected) {
                   context.read<MediaPickerCubit>().addPickedFiles(video);
                 } else {
@@ -53,26 +63,29 @@ class _MediaGridState extends State<MediaGrid> {
                   AssetThumbnail(
                     asset: widget.medias[index],
                   ),
-                  Positioned(
-                      top: 4,
-                      right: 4,
-                      child: isSelected
-                          ? CircleAvatar(
-                              radius: 12,
-                              backgroundColor: Colors.blue,
-                              child: Text(
-                                // Display the order number (1-based index)
-                                (selectionIndex + 1).toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
+                  if (widget.allowMultiple)
+                    Positioned(
+                        top: 4,
+                        right: 4,
+                        child: isSelected
+                            ? CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Colors.blue,
+                                child: Text(
+                                  // Display the order number (1-based index)
+                                  (selectionIndex + 1).toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : Icon(
-                              isSelected ? Icons.check : Icons.circle_outlined,
-                              color: Colors.white,
-                            )),
+                              )
+                            : Icon(
+                                isSelected
+                                    ? Icons.check
+                                    : Icons.circle_outlined,
+                                color: Colors.white,
+                              )),
                   if (video.duration > 0)
                     Positioned(
                         bottom: 2,

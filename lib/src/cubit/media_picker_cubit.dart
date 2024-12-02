@@ -20,6 +20,10 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
     final mergedAlbums = await filterAlbum(albums);
 
+    if (albums.isEmpty) {
+      emit(state.copyWith(isLoading: false));
+      return;
+    }
     int end = await albums[0].assetCountAsync;
     var allMedia = await albums[0].getAssetListRange(start: 0, end: end);
     var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
