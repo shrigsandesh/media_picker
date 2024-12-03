@@ -1,19 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/model/media_model.dart';
+import 'package:media_picker/src/widgets/media_grid.dart';
 import 'package:photo_manager/photo_manager.dart';
-
-RequestType getRequestType(MediaType mediaType) {
-  switch (mediaType) {
-    case MediaType.common:
-      return RequestType.common;
-    case MediaType.video:
-      return RequestType.video;
-    case MediaType.image:
-      return RequestType.image;
-    default:
-      throw ArgumentError('Unsupported MediaType: $mediaType');
-  }
-}
 
 Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums) async {
   // Fetch album details (names, sizes, thumbnails)
@@ -50,4 +39,79 @@ Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums) async {
   List<MediaAlbum> mergedAlbums = mergedAlbumsMap.values.toList();
 
   return mergedAlbums;
+}
+
+RequestType determineMediaType(List<MediaType> mediaTypes) {
+  if (mediaTypes.isEmpty) return RequestType.common;
+
+  final isOnlyImages =
+      mediaTypes.every((mediaType) => mediaType == MediaType.image);
+  final isOnlyVideos =
+      mediaTypes.every((mediaType) => mediaType == MediaType.video);
+
+  if (isOnlyImages) {
+    return RequestType.image;
+  } else if (isOnlyVideos) {
+    return RequestType.video;
+  } else {
+    return RequestType.common;
+  }
+}
+
+String getTabTitle(MediaType mediaType, TabLabels? tablable) {
+  switch (mediaType) {
+    case MediaType.common:
+      return tablable?.all ?? 'All';
+    case MediaType.image:
+      return tablable?.image ?? "Photo";
+    case MediaType.video:
+      return tablable?.video ?? 'Video';
+  }
+}
+
+Widget getTabContent({
+  required MediaType mediaType,
+  required MediaContent content,
+  required bool allowMultiple,
+  double? thumbnailBorderRadius,
+  EdgeInsetsGeometry? mediaGridMargin,
+  void Function(AssetEntity)? onSingleFileSelection,
+  Widget? thumbnailShimmer,
+  Color? checkedIconColor,
+}) {
+  switch (mediaType) {
+    case MediaType.common:
+      return MediaGrid(
+        medias: content.common,
+        name: "media",
+        allowMultiple: allowMultiple,
+        thumbnailBorderRadius: thumbnailBorderRadius,
+        mediaGridMargin: mediaGridMargin,
+        onSingleFileSelection: onSingleFileSelection,
+        thumbnailShimmer: thumbnailShimmer,
+        checkedIconColor: checkedIconColor,
+      );
+    case MediaType.image:
+      return MediaGrid(
+        medias: content.photos,
+        name: "photos",
+        allowMultiple: allowMultiple,
+        thumbnailBorderRadius: thumbnailBorderRadius,
+        mediaGridMargin: mediaGridMargin,
+        onSingleFileSelection: onSingleFileSelection,
+        thumbnailShimmer: thumbnailShimmer,
+        checkedIconColor: checkedIconColor,
+      );
+    case MediaType.video:
+      return MediaGrid(
+        medias: content.videos,
+        name: "video",
+        allowMultiple: allowMultiple,
+        thumbnailBorderRadius: thumbnailBorderRadius,
+        mediaGridMargin: mediaGridMargin,
+        onSingleFileSelection: onSingleFileSelection,
+        thumbnailShimmer: thumbnailShimmer,
+        checkedIconColor: checkedIconColor,
+      );
+  }
 }

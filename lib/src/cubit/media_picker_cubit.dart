@@ -11,11 +11,11 @@ part 'media_picker_state.dart';
 class MediaPickerCubit extends Cubit<MediaPickerState> {
   MediaPickerCubit() : super(const MediaPickerState());
 
-  void loadMedia([MediaType mediaType = MediaType.common]) async {
+  void loadMedia([List<MediaType> mediaType = const []]) async {
     emit(state.copyWith(isLoading: true));
 
-    List<AssetPathEntity> albums =
-        await PhotoManager.getAssetPathList(type: getRequestType(mediaType));
+    List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
+        type: determineMediaType(mediaType));
     albums.toSet().toList();
 
     final mergedAlbums = await filterAlbum(albums);

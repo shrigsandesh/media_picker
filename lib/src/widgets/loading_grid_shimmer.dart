@@ -3,7 +3,9 @@ import 'package:media_picker/src/widgets/thumbnail_skeleton.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class LoadingGridShimmer extends StatelessWidget {
-  const LoadingGridShimmer({super.key});
+  const LoadingGridShimmer({super.key, this.borderRadius});
+
+  final double? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class LoadingGridShimmer extends StatelessWidget {
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemCount: 20,
         itemBuilder: (context, index) {
-          return const ThumbnailSkeleton(borderRadius: 10);
+          return ThumbnailSkeleton(borderRadius: borderRadius ?? 10.0);
         },
       ),
     );

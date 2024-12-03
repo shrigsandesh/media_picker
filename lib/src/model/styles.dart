@@ -10,6 +10,7 @@ class TabBarDecoration {
   final TextStyle? unselectedLabelStyle;
   final EdgeInsetsGeometry? labelPadding;
   final Color? indicatorColor;
+  final TabLabels? tabLabels;
 
   const TabBarDecoration({
     this.backgroundColor,
@@ -21,5 +22,18 @@ class TabBarDecoration {
     this.unselectedLabelStyle,
     this.labelPadding,
     this.indicatorColor,
+    this.tabLabels,
+  });
+}
+
+class TabLabels {
+  final String? all;
+  final String? image;
+  final String? video;
+
+  const TabLabels({
+    required this.all,
+    required this.image,
+    required this.video,
   });
 }

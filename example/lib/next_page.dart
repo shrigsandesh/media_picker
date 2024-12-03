@@ -10,8 +10,11 @@ class NextPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: const Text("image file"),
+        ),
         body: Center(
-      child: Image.file(file),
-    ));
+          child: Image.file(file),
+        ));
   }
 }

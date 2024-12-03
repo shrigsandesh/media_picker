@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:media_picker/src/all_media_picker_page.dart';
-import 'package:media_picker/src/media_picker_page.dart';
+import 'package:media_picker/src/model/media_model.dart';
+import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
-import 'package:media_picker/src/utils/tab_bar_decoration.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 enum MediaType { common, image, video }
@@ -12,43 +12,48 @@ typedef PickedMediaCallback = void Function(List<AssetEntity> assetEntity);
 Future<void> showMediaPicker({
   required BuildContext context,
   required PickedMediaCallback pickedMedias,
-  MediaType? mediaType = MediaType.common,
   bool allowMultiple = false,
   Color? albumDropdownColor,
   TabBarDecoration? tabBarDecoration,
-  Widget Function(PickedMediaCallback pickedMedias)? pickedMediaWidget,
+  Set<MediaType>? mediaTypes,
+  Color? scaffoldBackgroundColor,
+  Color? checkedIconColor,
+  double? thumbnailBorderRadius,
+  EdgeInsetsGeometry? mediaGridMargin,
+  Widget? loading,
+  Widget? thumbnailShimmer,
+  Widget Function(BuildContext context, List<AssetEntity> albums)?
+      pickedMediaBottomSheet,
+  Widget Function(BuildContext context, MediaAlbum album)? albumTile,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
 }) async {
+  if (mediaTypes != null) {
+    assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
+  }
   await Permission.requestPermission().then((granted) {
     if (granted.isAuth) {
       if (!context.mounted) return;
-      switch (mediaType) {
-        case MediaType.common:
-          Navigator.of(context).push(
-            createRoute(
-              transitionBuilder,
-              AllMediaPickerPage(
-                allowMultiple: true,
-                tabBarDecoration: tabBarDecoration,
-              ),
-            ),
-          );
-          break;
-        default:
-          Navigator.of(context).push(
-            createRoute(
-              transitionBuilder,
-              MediaPickerPage(
-                mediaType: mediaType!,
-                pickedMedias: pickedMedias,
-                pickedMediaWidget: pickedMediaWidget,
-                allowMultiple: allowMultiple,
-                albumDropdownColor: albumDropdownColor,
-              ),
-            ),
-          );
-      }
+      Navigator.of(context).push(
+        createRoute(
+          transitionBuilder,
+          AllMediaPickerPage(
+            allowMultiple: allowMultiple,
+            tabBarDecoration: tabBarDecoration,
+            scaffoldBackgroundColor: scaffoldBackgroundColor,
+            mediaTypes: mediaTypes?.toList() ?? [],
+            dropdownColor: albumDropdownColor,
+            pickedMediaBottomSheet: pickedMediaBottomSheet,
+            albumTile: albumTile,
+            pickedMedias: pickedMedias,
+            thumbnailBorderRadius: thumbnailBorderRadius,
+            mediaGridMargin: mediaGridMargin,
+            loading: loading,
+            thumbnailShimmer: thumbnailShimmer,
+            checkedIconColor: checkedIconColor,
+          ),
+        ),
+      );
     }
   });
 }

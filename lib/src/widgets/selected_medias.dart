@@ -39,15 +39,19 @@ class SelectedMedias extends StatelessWidget {
                         AssetThumbnail(
                           key: ValueKey(video.id),
                           asset: video,
-                          thumbnailSize: const ThumbnailSize.square(80),
+                          thumbnailSize: const ThumbnailSize(60, 80),
                           borderRadius: 10,
                           showSkeleton: false,
                         ),
                         Positioned(
                           right: 0,
                           top: 0,
-                          child: ColoredBox(
-                            color: Colors.grey,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(.5),
+                                borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    bottomLeft: Radius.circular(10.0))),
                             child: InkWell(
                                 onTap: () {
                                   context
@@ -56,7 +60,7 @@ class SelectedMedias extends StatelessWidget {
                                 },
                                 child: const Icon(
                                   Icons.close,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   size: 18,
                                 )),
                           ),

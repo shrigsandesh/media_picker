@@ -8,11 +8,13 @@ class MediaAppBar extends StatefulWidget {
       {super.key,
       required this.mediaAlbum,
       required this.onChanged,
-      this.albumDropdownColor});
+      this.albumDropdownColor,
+      this.albumTile});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(String) onChanged;
   final Color? albumDropdownColor;
+  final Widget Function(BuildContext context, MediaAlbum alubms)? albumTile;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -90,38 +92,45 @@ class _MediaAppBarState extends State<MediaAppBar> {
                       _isExpanded = false;
                     });
                   },
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: SizedBox(
-                          height: 80,
-                          width: 80,
-                          child: AssetThumbnail(
-                              asset: widget.mediaAlbum[index].thumbnail),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.mediaAlbum[index].name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
+                  child: widget.albumTile != null
+                      ? Builder(
+                          builder: (context) {
+                            return widget.albumTile!(
+                                context, widget.mediaAlbum[index]);
+                          },
+                        )
+                      : Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(4),
+                              child: SizedBox(
+                                height: 80,
+                                width: 80,
+                                child: AssetThumbnail(
+                                    asset: widget.mediaAlbum[index].thumbnail),
+                              ),
                             ),
-                          ),
-                          Text(
-                            widget.mediaAlbum[index].size.toString(),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                            const SizedBox(width: 12),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.mediaAlbum[index].name,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  widget.mediaAlbum[index].size.toString(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                 ),
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 10,

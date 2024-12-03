@@ -8,12 +8,14 @@ class AssetThumbnail extends StatefulWidget {
       this.asset,
       this.thumbnailSize,
       this.borderRadius,
-      this.showSkeleton = true});
+      this.showSkeleton = true,
+      this.thumbnailShimmer});
 
   final AssetEntity? asset;
   final ThumbnailSize? thumbnailSize;
   final double? borderRadius;
   final bool? showSkeleton;
+  final Widget? thumbnailShimmer;
 
   @override
   State<AssetThumbnail> createState() => _AssetThumbnailState();
@@ -78,10 +80,11 @@ class _AssetThumbnailState extends State<AssetThumbnail>
               ),
             )
           : widget.showSkeleton == true
-              ? ThumbnailSkeleton(
-                  borderRadius: widget.borderRadius ?? 1,
-                  size: widget.thumbnailSize?.height.toDouble(),
-                )
+              ? widget.thumbnailShimmer ??
+                  ThumbnailSkeleton(
+                    borderRadius: widget.borderRadius ?? 1,
+                    size: widget.thumbnailSize?.height.toDouble(),
+                  )
               : const SizedBox.shrink(),
     );
   }

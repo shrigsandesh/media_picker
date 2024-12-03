@@ -11,11 +11,19 @@ class MediaGrid extends StatefulWidget {
     required this.name,
     required this.allowMultiple,
     this.onSingleFileSelection,
+    this.thumbnailBorderRadius,
+    this.mediaGridMargin,
+    this.thumbnailShimmer,
+    this.checkedIconColor,
   });
   final List<AssetEntity> medias;
   final String name;
   final bool allowMultiple;
   final Function(AssetEntity)? onSingleFileSelection;
+  final double? thumbnailBorderRadius;
+  final EdgeInsetsGeometry? mediaGridMargin;
+  final Widget? thumbnailShimmer;
+  final Color? checkedIconColor;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -57,45 +65,50 @@ class _MediaGridState extends State<MediaGrid> {
                   context.read<MediaPickerCubit>().removeSelected(video);
                 }
               },
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  AssetThumbnail(
-                    asset: widget.medias[index],
-                  ),
-                  if (widget.allowMultiple)
-                    Positioned(
-                        top: 4,
-                        right: 4,
-                        child: isSelected
-                            ? CircleAvatar(
-                                radius: 12,
-                                backgroundColor: Colors.blue,
-                                child: Text(
-                                  // Display the order number (1-based index)
-                                  (selectionIndex + 1).toString(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
+              child: Padding(
+                padding: widget.mediaGridMargin ?? EdgeInsets.zero,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    AssetThumbnail(
+                      borderRadius: widget.thumbnailBorderRadius,
+                      asset: widget.medias[index],
+                    ),
+                    if (widget.allowMultiple)
+                      Positioned(
+                          top: 4,
+                          right: 4,
+                          child: isSelected
+                              ? CircleAvatar(
+                                  radius: 12,
+                                  backgroundColor:
+                                      widget.checkedIconColor ?? Colors.blue,
+                                  child: Text(
+                                    // Display the order number (1-based index)
+                                    (selectionIndex + 1).toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                ),
-                              )
-                            : Icon(
-                                isSelected
-                                    ? Icons.check
-                                    : Icons.circle_outlined,
-                                color: Colors.white,
-                              )),
-                  if (video.duration > 0)
-                    Positioned(
-                        bottom: 2,
-                        right: 2,
-                        child: Text(
-                          formatTime(video.duration),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 14),
-                        ))
-                ],
+                                )
+                              : Icon(
+                                  isSelected
+                                      ? Icons.check
+                                      : Icons.circle_outlined,
+                                  color: Colors.white,
+                                )),
+                    if (video.duration > 0)
+                      Positioned(
+                          bottom: 2,
+                          right: 2,
+                          child: Text(
+                            formatTime(video.duration),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 14),
+                          ))
+                  ],
+                ),
               ),
             );
           },

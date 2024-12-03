@@ -66,9 +66,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 showMediaPicker(
                   context: context,
-                  mediaType: MediaType.image,
-                  transitionBuilder: slideTransitionBuilder,
                   allowMultiple: true,
+                  transitionBuilder: slideTransitionBuilder,
                   pickedMedias: (assetEntity) async {
                     final file = await assetEntity.first.file;
                     if (mounted) {
@@ -78,6 +77,12 @@ class _MyHomePageState extends State<MyHomePage> {
                       ));
                     }
                   },
+                  albumTile: (context, alubms) {
+                    return Container(
+                      color: Colors.green,
+                      child: Text("data: ${alubms.name}"),
+                    );
+                  },
                 );
               },
               child: const Text("Pick Photos"),
@@ -86,9 +91,29 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 showMediaPicker(
                   context: context,
-                  mediaType: MediaType.video,
+                  allowMultiple: true,
+                  checkedIconColor: Colors.green,
+                  mediaTypes: {
+                    MediaType.video,
+                  },
                   pickedMedias: (assetEntity) {
                     log(assetEntity.toString());
+                  },
+                  pickedMediaBottomSheet: (context, albums) {
+                    log(albums.length.toString());
+                    if (albums.isNotEmpty) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.black,
+                        height: 50,
+                        child: Text(
+                          "data ${albums.first.id}",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
                   },
                 );
               },
@@ -98,10 +123,15 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 showMediaPicker(
                   context: context,
-                  tabBarDecoration: const TabBarDecoration(
-                    backgroundColor: Colors.red,
-                    unselectedLabelStyle: TextStyle(color: Colors.red),
-                  ),
+                  tabBarDecoration:
+                      const TabBarDecoration(backgroundColor: Colors.red),
+                  scaffoldBackgroundColor: Colors.red,
+                  albumDropdownColor: Colors.red,
+                  mediaTypes: {
+                    MediaType.common,
+                    MediaType.video,
+                    MediaType.image
+                  },
                   pickedMedias: (assetEntity) {},
                 );
               },
