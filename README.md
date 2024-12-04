@@ -17,35 +17,6 @@ know whether this package might be useful for them.
 ## Features
 
 TODO: List what your package can do. Maybe include images, gifs, or videos.
-# Documentation: `showMediaPicker`
-
-The `showMediaPicker` method is a customizable media picker for Flutter applications. It provides options to pick single or multiple media files, supports different media types, and allows extensive UI customization.
-
----
-
-## **Method Signature**
-
-```dart
-Future<void> showMediaPicker({
-  required BuildContext context,
-  required PickedMediaCallback pickedMedias,
-  bool allowMultiple = false,
-  Color? albumDropdownColor,
-  TabBarDecoration? tabBarDecoration,
-  Set<MediaType>? mediaTypes,
-  Color? scaffoldBackgroundColor,
-  Color? checkedIconColor,
-  double? thumbnailBorderRadius,
-  EdgeInsetsGeometry? mediaGridMargin,
-  Widget? loading,
-  Widget? thumbnailShimmer,
-  Widget Function(BuildContext context, List<AssetEntity> albums)? pickedMediaBottomSheet,
-  Widget Function(BuildContext context, MediaAlbum album)? albumTile,
-  Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)? transitionBuilder,
-}) async
-
-[Documentation for showMediaPicker](docs/methods.md)
-
 
 ## Getting started
 
@@ -60,6 +31,9 @@ to `/example` folder.
 ```dart
 const like = 'sample';
 ```
+
+## Parameters
+(docs/methods.md)
 
 ## Additional information
 
