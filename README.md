@@ -32,8 +32,9 @@ to `/example` folder.
 const like = 'sample';
 ```
 
-## Parameters
-(docs/methods.md)
+## Documentation
+
+- [showMediaPicker Method](docs/methods.md)
 
 ## Additional information
 
