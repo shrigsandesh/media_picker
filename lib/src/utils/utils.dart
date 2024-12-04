@@ -9,6 +9,13 @@ enum MediaType { common, image, video }
 
 typedef PickedMediaCallback = void Function(List<AssetEntity> assetEntity);
 
+/// shows media picker page
+///
+/// By default, tabbar is not shown,to show tabbar provide [mediaTypes]
+/// To allow multiple media to be selected set [allowMultiple] flag to true, by default it is set to false
+///
+/// Note: [pickedMedias] callback returns an empty list if no medias were selected.
+
 Future<void> showMediaPicker({
   required BuildContext context,
   required PickedMediaCallback pickedMedias,

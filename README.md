@@ -11,30 +11,93 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/to/develop-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Customizable flutter package to load media(image and video).
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the following to your `pubspec.yaml` file:
+
+```yaml
+media_picker:
+  git: https://github.com/shrigsandesh/media_picker.git 
+      
+
+```
+
+## Adding Permissions
+
+To use this package, you need to add the appropriate permissions for accessing media and storage.
+
+### Android
+
+Add the following permissions to your `AndroidManifest.xml` file:
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.app">
+    
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    
+    <!-- Required for devices running Android 13 (API level 33) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+</manifest>
+```
+
+### iOS
+Update the Info.plist with:
+```
+<key>NSPhotoLibraryUsageDescription</key>
+<string>We need access to your photo library to select media.</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>We need access to your photo library to selec photos or videos.</string>
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
 ```dart
-const like = 'sample';
+ showMediaPicker(
+    context: context,
+    mediaTypes: {
+        MediaType.common,
+        MediaType.video,
+        MediaType.image
+    },
+    pickedMedias: (assetEntity) {
+         // returns list of picked media, if non selected returns empty list
+    },
+);
 ```
+for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/example)
 
 ## Documentation
 
-- [showMediaPicker Method](docs/methods.md)
+| **Name**                 | **Type**                                                                                       | **Description**                                                                                                                                 |
+|--------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| `context`                | `BuildContext`                                                                                | The build context required for navigation.                                                                                                    |
+| `pickedMedias`           | `PickedMediaCallback`                                                                         | Callback to return the selected media files.                                                                                                 |
+| `allowMultiple`          | `bool` (default: `false`)                                                                     | Whether multiple media files can be selected.                                                                                                |
+| `albumDropdownColor`     | `Color?`                                                                                      | Background color for the album dropdown menu.                                                                                                |
+| `tabBarDecoration`       | `TabBarDecoration?`                                                                           | Custom decoration for the tab bar.                                                                                                           |
+| `mediaTypes`             | `Set<MediaType>?`                                                                             | Specifies the types of media (e.g., images, videos) allowed for selection. Must not be empty if provided.                                    |
+| `scaffoldBackgroundColor`| `Color?`                                                                                      | Background color of the picker scaffold.                                                                                                     |
+| `checkedIconColor`       | `Color?`                                                                                      | Color of the checked icon for selected items.                                                                                                |
+| `thumbnailBorderRadius`  | `double?`                                                                                     | Border radius for the media thumbnails.                                                                                                      |
+| `mediaGridMargin`        | `EdgeInsetsGeometry?`                                                                         | Margin for the media grid layout.                                                                                                            |
+| `loading`                | `Widget?`                                                                                     | Widget displayed during loading states.                                                                                                     |
+| `thumbnailShimmer`       | `Widget?`                                                                                     | Widget displayed as a shimmer effect while loading thumbnails.                                                                              |
+| `pickedMediaBottomSheet` | `Widget Function(BuildContext context, List<AssetEntity> albums)?`                            | Custom widget for displaying picked media in a bottom sheet.                                                                                |
+| `albumTile`              | `Widget Function(BuildContext context, MediaAlbum album)?`                                    | Custom widget for displaying an album tile.                                                                                                 |
+| `transitionBuilder`      | `Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?`               | Custom transition builder for the navigation.                                                                                               |
+
+
+## Dependencies
+
+- **[photo_manager](https://pub.dev/packages/photo_manager)**
+- **[flutter_bloc](https://pub.dev/packages/flutter_bloc)**
+- **[equatable](https://pub.dev/packages/equatable)**
+- **[skeletonizer](https://pub.dev/packages/skeletonizer)**
+
 
 ## Additional information
 
