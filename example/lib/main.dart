@@ -123,6 +123,10 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 showMediaPicker(
                   context: context,
+                  tabBarDecoration:
+                      const TabBarDecoration(backgroundColor: Colors.red),
+                  scaffoldBackgroundColor: Colors.red,
+                  albumDropdownColor: Colors.red,
                   mediaTypes: {
                     MediaType.common,
                     MediaType.video,
