@@ -20,12 +20,13 @@ class AllMediaPickerPage extends StatefulWidget {
     this.dropdownColor,
     this.pickedMediaBottomSheet,
     this.albumTile,
-    required this.pickedMedias,
+    required this.onMediaPicked,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
     this.loading,
     this.thumbnailShimmer,
     this.checkedIconColor,
+    required this.popWhenSingleMediaSelected,
   });
 
   final bool allowMultiple;
@@ -33,12 +34,13 @@ class AllMediaPickerPage extends StatefulWidget {
   final List<MediaType> mediaTypes;
   final Color? scaffoldBackgroundColor;
   final Color? dropdownColor;
-  final PickedMediaCallback pickedMedias;
+  final PickedMediaCallback onMediaPicked;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
   final Widget? loading;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
+  final bool popWhenSingleMediaSelected;
 
   final Widget Function(BuildContext context, List<AssetEntity> alubms)?
       pickedMediaBottomSheet;
@@ -76,8 +78,10 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
                   thumbnailBorderRadius: widget.thumbnailBorderRadius,
                   mediaGridMargin: widget.mediaGridMargin,
                   onSingleFileSelection: (media) {
-                    widget.pickedMedias([media]);
-                    Navigator.of(context).pop();
+                    widget.onMediaPicked([media]);
+                    if (widget.popWhenSingleMediaSelected) {
+                      Navigator.of(context).pop();
+                    }
                   },
                   loading: widget.loading,
                   thumbnailShimmer: widget.thumbnailShimmer,
@@ -86,7 +90,7 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
                 bottom: 0,
                 child: SelectedMediasBottomSheet(
                   pickedMediaBottomSheet: widget.pickedMediaBottomSheet,
-                  pickedMediaCallback: widget.pickedMedias,
+                  pickedMediaCallback: widget.onMediaPicked,
                 ),
               ),
               MediaPickerAppBarSection(

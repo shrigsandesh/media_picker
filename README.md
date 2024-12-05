@@ -75,7 +75,7 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | **Name**                 | **Type**                                                                                       | **Description**                                                                                                                                 |
 |--------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
 | `context`                | `BuildContext`                                                                                | The build context required for navigation.                                                                                                    |
-| `pickedMedias`           | `PickedMediaCallback`                                                                         | Callback to return the selected media files.                                                                                                 |
+| `onMediaPicked`           | `PickedMediaCallback`                                                                         | Callback to return the selected media files.                                                                                                 |
 | `allowMultiple`          | `bool` (default: `false`)                                                                     | Whether multiple media files can be selected.                                                                                                |
 | `albumDropdownColor`     | `Color?`                                                                                      | Background color for the album dropdown menu.                                                                                                |
 | `tabBarDecoration`       | `TabBarDecoration?`                                                                           | Custom decoration for the tab bar.                                                                                                           |
@@ -89,6 +89,7 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `pickedMediaBottomSheet` | `Widget Function(BuildContext context, List<AssetEntity> albums)?`                            | Custom widget for displaying picked media in a bottom sheet.                                                                                |
 | `albumTile`              | `Widget Function(BuildContext context, MediaAlbum album)?`                                    | Custom widget for displaying an album tile.                                                                                                 |
 | `transitionBuilder`      | `Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?`               | Custom transition builder for the navigation.                                                                                               |
+| `popWhenSingleMediaSelected`              | `bool` (default: `true`) |                                   Whether to pop media picker page after single media file is picked   |
 
 
 ## Dependencies
@@ -101,6 +102,4 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Available on only **ANRROID** & **iOS** only. 

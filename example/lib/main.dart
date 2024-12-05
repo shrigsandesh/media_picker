@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:example/next_page.dart';
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
@@ -14,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -68,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context: context,
                   allowMultiple: true,
                   transitionBuilder: slideTransitionBuilder,
-                  pickedMedias: (assetEntity) async {
+                  onMediaPicked: (assetEntity) async {
                     final file = await assetEntity.first.file;
                     if (mounted) {
                       // ignore: use_build_context_synchronously
@@ -96,11 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   mediaTypes: {
                     MediaType.video,
                   },
-                  pickedMedias: (assetEntity) {
-                    log(assetEntity.toString());
-                  },
+                  onMediaPicked: (assetEntity) {},
                   pickedMediaBottomSheet: (context, albums) {
-                    log(albums.length.toString());
                     if (albums.isNotEmpty) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
@@ -123,17 +119,13 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 showMediaPicker(
                   context: context,
-                  tabBarDecoration:
-                      const TabBarDecoration(backgroundColor: Colors.red),
-                  scaffoldBackgroundColor: Colors.red,
-                  albumDropdownColor: Colors.red,
+                  allowMultiple: true,
                   mediaTypes: {
                     MediaType.common,
                     MediaType.video,
                     MediaType.image
                   },
-                  // list of picked media, if non selected returns empty list
-                  pickedMedias: (assetEntity) {},
+                  onMediaPicked: (assetEntity) {},
                 );
               },
               child: const Text("Pick photos & videos"),

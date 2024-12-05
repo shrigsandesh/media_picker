@@ -38,7 +38,7 @@ class _MediaGridState extends State<MediaGrid> {
       );
     }
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(0, 4, 0, 100),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // Number of items per row
         childAspectRatio: 1.0,
