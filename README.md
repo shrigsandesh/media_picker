@@ -77,8 +77,8 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `mediaGridMargin`        | `EdgeInsetsGeometry?`                                                                         | Margin in between the media grid layout.                                                                                                            |
 | `loading`                | `Widget?`                                                                                     | Widget displayed during loading states.                                                                                                     |
 | `thumbnailShimmer`       | `Widget?`                                                                                     | Widget displayed as a shimmer effect while loading thumbnails.                                                                              |
-| `pickedMediaBottomSheet` | `Widget Function(BuildContext context, List<AssetEntity> albums)?`                            | Custom widget for displaying picked media in a bottom sheet.                                                                                |
-| `albumTile`              | `Widget Function(BuildContext context, MediaAlbum album)?`                                    | Custom widget for displaying an album tile.                                                                                                 |
+| `pickedMediaBottomSheetbuilder` | `Widget Function(BuildContext context, List<AssetEntity> albums)?`                            | Custom widget for displaying picked media in a bottom sheet.                                                                                |
+| `albumTileBuilder`              | `Widget Function(BuildContext context, MediaAlbum album)?`                                    | Custom widget for displaying an album tile.                                                                                                 |
 | `transitionBuilder`      | `Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?`               | Custom transition builder for the navigation.                                                                                               |
 | `popWhenSingleMediaSelected`              | `bool` (default: `true`) |                                   Whether to pop media picker page after single media file is picked   |
 | `contentPadding`              | `EdgeInsetsGeometry?` | Padding around the media grid  |
@@ -94,4 +94,4 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 
 ## Additional information
 
-Available on only **ANDROID** & **iOS** only. 
+Available on **ANDROID** & **iOS** only. 
