@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     MediaType.video,
                   },
                   onMediaPicked: (assetEntity) {},
-                  pickedMediaBottomSheetbuilder: (context, albums) {
+                  pickedMediaBottomSheetBuilder: (context, albums) {
                     if (albums.isNotEmpty) {
                       return Container(
                         width: MediaQuery.of(context).size.width,

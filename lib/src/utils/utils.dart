@@ -8,6 +8,20 @@ import 'package:photo_manager/photo_manager.dart';
 enum MediaType { common, image, video }
 
 typedef PickedMediaCallback = void Function(List<AssetEntity> assetEntity);
+typedef AlbumDropdownButtonBuilder = Widget Function(
+  String selectedAlbumName,
+  bool isDropdownShown,
+);
+
+typedef PickedMediaBottomSheetBuilder = Widget Function(
+  BuildContext context,
+  List<AssetEntity> albums,
+);
+
+typedef AlbumTileBuilder = Widget Function(
+  BuildContext context,
+  MediaAlbum album,
+);
 
 Future<void> showMediaPicker({
   required BuildContext context,
@@ -24,9 +38,9 @@ Future<void> showMediaPicker({
   Widget? loading,
   Widget? thumbnailLoader,
   bool popWhenSingleMediaSelected = true,
-  Widget Function(BuildContext context, List<AssetEntity> albums)?
-      pickedMediaBottomSheetbuilder,
-  Widget Function(BuildContext context, MediaAlbum album)? albumTileBuilder,
+  PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
+  AlbumTileBuilder? albumTileBuilder,
+  AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
 }) async {
@@ -45,8 +59,8 @@ Future<void> showMediaPicker({
             scaffoldBackgroundColor: scaffoldBackgroundColor,
             mediaTypes: mediaTypes?.toList() ?? [],
             dropdownColor: albumDropdownColor,
-            pickedMediaBottomSheet: pickedMediaBottomSheetbuilder,
-            albumTile: albumTileBuilder,
+            pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
+            albumTileBuilder: albumTileBuilder,
             onMediaPicked: onMediaPicked,
             thumbnailBorderRadius: thumbnailBorderRadius,
             mediaGridMargin: mediaGridMargin,
@@ -55,6 +69,7 @@ Future<void> showMediaPicker({
             checkedIconColor: checkedIconColor,
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
             contentPadding: contentPadding,
+            albumDropdownButtonBuilder: albumDropdownButtonBuilder,
           ),
         ),
       );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_picker/src/model/media_model.dart';
+import 'package:media_picker/src/utils/utils.dart';
 import 'package:media_picker/src/widgets/animated_expand_icon.dart';
 import 'package:media_picker/src/widgets/asset_thumbnail.dart';
 
@@ -9,12 +10,14 @@ class MediaAppBar extends StatefulWidget {
       required this.mediaAlbum,
       required this.onChanged,
       this.albumDropdownColor,
-      this.albumTile});
+      this.albumTile,
+      this.albumButtonBuilder});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(String) onChanged;
   final Color? albumDropdownColor;
-  final Widget Function(BuildContext context, MediaAlbum alubms)? albumTile;
+  final AlbumTileBuilder? albumTile;
+  final AlbumDropdownButtonBuilder? albumButtonBuilder;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -56,25 +59,27 @@ class _MediaAppBarState extends State<MediaAppBar> {
                         _isExpanded = !_isExpanded;
                       });
                     },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                          color: const Color(0xFFD3D3D3),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Row(
-                        children: [
-                          Text(
-                            _selected,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
+                    child: widget.albumButtonBuilder != null
+                        ? widget.albumButtonBuilder!(_selected, _isExpanded)
+                        : Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                                color: const Color(0xFFD3D3D3),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Row(
+                              children: [
+                                Text(
+                                  _selected,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                AnimatedExpansionIcon(isExpanded: _isExpanded),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 5),
-                          AnimatedExpansionIcon(isExpanded: _isExpanded),
-                        ],
-                      ),
-                    ),
                   ),
                   const SizedBox.shrink(),
                 ],

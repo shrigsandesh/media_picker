@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/helpers.dart';
 
 import 'package:photo_manager/photo_manager.dart';
@@ -17,7 +16,7 @@ class AllMediaPickerPage extends StatefulWidget {
     this.scaffoldBackgroundColor,
     this.dropdownColor,
     this.pickedMediaBottomSheet,
-    this.albumTile,
+    this.albumTileBuilder,
     required this.onMediaPicked,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
@@ -26,6 +25,7 @@ class AllMediaPickerPage extends StatefulWidget {
     this.checkedIconColor,
     required this.popWhenSingleMediaSelected,
     this.contentPadding,
+    this.albumDropdownButtonBuilder,
   });
 
   final bool allowMultiple;
@@ -43,9 +43,9 @@ class AllMediaPickerPage extends StatefulWidget {
   final Color? checkedIconColor;
   final bool popWhenSingleMediaSelected;
 
-  final Widget Function(BuildContext context, List<AssetEntity> alubms)?
-      pickedMediaBottomSheet;
-  final Widget Function(BuildContext context, MediaAlbum alubms)? albumTile;
+  final PickedMediaBottomSheetBuilder? pickedMediaBottomSheet;
+  final AlbumTileBuilder? albumTileBuilder;
+  final AlbumDropdownButtonBuilder? albumDropdownButtonBuilder;
 
   @override
   State<AllMediaPickerPage> createState() => _AllMediaPickerPageState();
@@ -92,13 +92,14 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
               Positioned(
                 bottom: 0,
                 child: SelectedMediasBottomSheet(
-                  pickedMediaBottomSheet: widget.pickedMediaBottomSheet,
+                  bottomSheet: widget.pickedMediaBottomSheet,
                   pickedMediaCallback: widget.onMediaPicked,
                 ),
               ),
               MediaPickerAppBarSection(
                 albumDropdownColor: widget.dropdownColor,
-                albumTile: widget.albumTile,
+                albumTile: widget.albumTileBuilder,
+                albumButtonBuilder: widget.albumDropdownButtonBuilder,
               ),
             ],
           ),
@@ -285,21 +286,20 @@ class MediaTabContent extends StatelessWidget {
 class SelectedMediasBottomSheet extends StatelessWidget {
   const SelectedMediasBottomSheet({
     super.key,
-    this.pickedMediaBottomSheet,
+    this.bottomSheet,
     required this.pickedMediaCallback,
   });
 
   final Widget Function(BuildContext context, List<AssetEntity> alubms)?
-      pickedMediaBottomSheet;
+      bottomSheet;
   final PickedMediaCallback pickedMediaCallback;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
       builder: (context, state) {
-        if (pickedMediaBottomSheet != null) {
-          return Container(
-              child: pickedMediaBottomSheet!(context, state.pickedFiles));
+        if (bottomSheet != null) {
+          return Container(child: bottomSheet!(context, state.pickedFiles));
         }
         if (state.pickedFiles.isEmpty) {
           return const SizedBox.shrink();
@@ -320,10 +320,12 @@ class MediaPickerAppBarSection extends StatelessWidget {
     super.key,
     this.albumDropdownColor,
     this.albumTile,
+    this.albumButtonBuilder,
   });
 
   final Color? albumDropdownColor;
-  final Widget Function(BuildContext context, MediaAlbum alubm)? albumTile;
+  final AlbumTileBuilder? albumTile;
+  final AlbumDropdownButtonBuilder? albumButtonBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -335,6 +337,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
           mediaAlbum: state.albums,
           albumDropdownColor: albumDropdownColor,
           albumTile: albumTile,
+          albumButtonBuilder: albumButtonBuilder,
         );
       },
     );
