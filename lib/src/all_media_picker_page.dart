@@ -4,11 +4,9 @@ import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/helpers.dart';
-import 'package:media_picker/src/widgets/loading_grid_shimmer.dart';
-import 'package:media_picker/src/widgets/media_grid.dart';
-import 'package:media_picker/src/widgets/media_picker_app_bar.dart';
-import 'package:media_picker/src/widgets/selected_medias.dart';
+
 import 'package:photo_manager/photo_manager.dart';
+import 'package:media_picker/src/widgets/widgets_.dart';
 
 class AllMediaPickerPage extends StatefulWidget {
   const AllMediaPickerPage({
