@@ -1,16 +1,3 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
-
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
 Customizable flutter package to load media(image and video).
 
 ![Sample image](https://github.com/shrigsandesh/media_picker/blob/main/assets/sample.jpg)
@@ -51,10 +38,10 @@ Add the following permissions to your `AndroidManifest.xml` file:
 Update the Info.plist with:
 
 ```swift
- <key>NSPhotoLibraryUsageDescription</key>
- <string>We need access to your photo library to select media.</string>
- <key>NSPhotoLibraryAddUsageDescription</key>
- <string>We need access to your photo library to selec photos or videos.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>We need access to your photo library to select media.</string>
+<key>NSPhotoLibraryAddUsageDescription</key>
+<string>We need access to your photo library to selec photos or videos.</string>
 ```
 
 ## Usage
@@ -74,7 +61,7 @@ Update the Info.plist with:
 ```
 for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/example)
 
-## Documentation
+## Parameters
 
 | **Name**                 | **Type**                                                                                       | **Description**                                                                                                                                 |
 |--------------------------|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
