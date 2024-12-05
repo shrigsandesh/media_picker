@@ -78,6 +78,7 @@ Widget getTabContent({
   void Function(AssetEntity)? onSingleFileSelection,
   Widget? thumbnailShimmer,
   Color? checkedIconColor,
+  final EdgeInsetsGeometry? contentPadding,
 }) {
   switch (mediaType) {
     case MediaType.common:
@@ -90,6 +91,7 @@ Widget getTabContent({
         onSingleFileSelection: onSingleFileSelection,
         thumbnailShimmer: thumbnailShimmer,
         checkedIconColor: checkedIconColor,
+        contentPadding: contentPadding,
       );
     case MediaType.image:
       return MediaGrid(
@@ -101,6 +103,7 @@ Widget getTabContent({
         onSingleFileSelection: onSingleFileSelection,
         thumbnailShimmer: thumbnailShimmer,
         checkedIconColor: checkedIconColor,
+        contentPadding: contentPadding,
       );
     case MediaType.video:
       return MediaGrid(
@@ -112,6 +115,7 @@ Widget getTabContent({
         onSingleFileSelection: onSingleFileSelection,
         thumbnailShimmer: thumbnailShimmer,
         checkedIconColor: checkedIconColor,
+        contentPadding: contentPadding,
       );
   }
 }

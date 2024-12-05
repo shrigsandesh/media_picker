@@ -15,6 +15,7 @@ class MediaGrid extends StatefulWidget {
     this.mediaGridMargin,
     this.thumbnailShimmer,
     this.checkedIconColor,
+    this.contentPadding,
   });
   final List<AssetEntity> medias;
   final String name;
@@ -22,6 +23,7 @@ class MediaGrid extends StatefulWidget {
   final Function(AssetEntity)? onSingleFileSelection;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
+  final EdgeInsetsGeometry? contentPadding;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
 
@@ -38,7 +40,7 @@ class _MediaGridState extends State<MediaGrid> {
       );
     }
     return GridView.builder(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 100),
+      padding: widget.contentPadding ?? const EdgeInsets.fromLTRB(0, 0, 0, 100),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // Number of items per row
         childAspectRatio: 1.0,

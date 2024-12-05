@@ -20,6 +20,7 @@ Future<void> showMediaPicker({
   Color? checkedIconColor,
   double? thumbnailBorderRadius,
   EdgeInsetsGeometry? mediaGridMargin,
+  EdgeInsetsGeometry? contentPadding,
   Widget? loading,
   Widget? thumbnailLoader,
   bool popWhenSingleMediaSelected = true,
@@ -53,6 +54,7 @@ Future<void> showMediaPicker({
             thumbnailShimmer: thumbnailLoader,
             checkedIconColor: checkedIconColor,
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
+            contentPadding: contentPadding,
           ),
         ),
       );

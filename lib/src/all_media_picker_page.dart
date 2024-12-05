@@ -25,6 +25,7 @@ class AllMediaPickerPage extends StatefulWidget {
     this.thumbnailShimmer,
     this.checkedIconColor,
     required this.popWhenSingleMediaSelected,
+    this.contentPadding,
   });
 
   final bool allowMultiple;
@@ -35,6 +36,8 @@ class AllMediaPickerPage extends StatefulWidget {
   final PickedMediaCallback onMediaPicked;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
+  final EdgeInsetsGeometry? contentPadding;
+
   final Widget? loading;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
@@ -69,21 +72,23 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
           child: Stack(
             children: [
               MediaContent(
-                  tabController: _tabController,
-                  mediaTypes: widget.mediaTypes,
-                  tabBarDecoration: widget.tabBarDecoration,
-                  allowMultiple: widget.allowMultiple,
-                  thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                  mediaGridMargin: widget.mediaGridMargin,
-                  onSingleFileSelection: (media) {
-                    widget.onMediaPicked([media]);
-                    if (widget.popWhenSingleMediaSelected) {
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  loading: widget.loading,
-                  thumbnailShimmer: widget.thumbnailShimmer,
-                  checkedIconColor: widget.checkedIconColor),
+                tabController: _tabController,
+                mediaTypes: widget.mediaTypes,
+                tabBarDecoration: widget.tabBarDecoration,
+                allowMultiple: widget.allowMultiple,
+                thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                mediaGridMargin: widget.mediaGridMargin,
+                onSingleFileSelection: (media) {
+                  widget.onMediaPicked([media]);
+                  if (widget.popWhenSingleMediaSelected) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                loading: widget.loading,
+                thumbnailShimmer: widget.thumbnailShimmer,
+                checkedIconColor: widget.checkedIconColor,
+                contentPadding: widget.contentPadding,
+              ),
               Positioned(
                 bottom: 0,
                 child: SelectedMediasBottomSheet(
@@ -116,6 +121,7 @@ class MediaContent extends StatelessWidget {
     this.loading,
     this.thumbnailShimmer,
     this.checkedIconColor,
+    this.contentPadding,
   });
 
   final TabController tabController;
@@ -124,6 +130,7 @@ class MediaContent extends StatelessWidget {
   final bool allowMultiple;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
+  final EdgeInsetsGeometry? contentPadding;
   final Function(AssetEntity)? onSingleFileSelection;
   final Widget? loading;
   final Widget? thumbnailShimmer;
@@ -151,6 +158,7 @@ class MediaContent extends StatelessWidget {
             loading: loading,
             thumbnailShimmer: thumbnailShimmer,
             checkedIconColor: checkedIconColor,
+            contentPadding: contentPadding,
           ),
         ],
       ),
@@ -206,6 +214,7 @@ class MediaTabContent extends StatelessWidget {
     this.loading,
     this.thumbnailShimmer,
     this.checkedIconColor,
+    this.contentPadding,
   });
 
   final TabController tabController;
@@ -213,6 +222,7 @@ class MediaTabContent extends StatelessWidget {
   final bool allowMultiple;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
+  final EdgeInsetsGeometry? contentPadding;
   final Function(AssetEntity)? onSingleFileSelection;
   final Widget? loading;
   final Widget? thumbnailShimmer;
@@ -242,6 +252,7 @@ class MediaTabContent extends StatelessWidget {
               onSingleFileSelection: onSingleFileSelection,
               thumbnailShimmer: thumbnailShimmer,
               checkedIconColor: checkedIconColor,
+              contentPadding: contentPadding,
             ),
           );
         }
@@ -260,6 +271,7 @@ class MediaTabContent extends StatelessWidget {
                     onSingleFileSelection: onSingleFileSelection,
                     thumbnailShimmer: thumbnailShimmer,
                     checkedIconColor: checkedIconColor,
+                    contentPadding: contentPadding,
                   ),
                 )
                 .toList(),
