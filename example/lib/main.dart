@@ -1,4 +1,5 @@
-import 'package:example/next_page.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
 
@@ -65,15 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 showMediaPicker(
                   context: context,
-                  allowMultiple: true,
                   transitionBuilder: slideTransitionBuilder,
                   onMediaPicked: (assetEntity) async {
-                    final file = await assetEntity.first.file;
-                    if (mounted) {
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => NextPage(file: file!),
-                      ));
+                    if (assetEntity.isNotEmpty) {
+                      final file = await assetEntity.first.file;
+                      if (mounted) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NextPage(file: file!),
+                        ));
+                      }
                     }
                   },
                   albumTileBuilder: (context, alubms) {
@@ -134,5 +136,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+}
+
+class NextPage extends StatelessWidget {
+  const NextPage({super.key, required this.file});
+
+  final File file;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("image file"),
+        ),
+        body: Center(
+          child: Image.file(file),
+        ));
   }
 }
