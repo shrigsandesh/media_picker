@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ));
                     }
                   },
-                  albumTile: (context, alubms) {
+                  albumTileBuilder: (context, alubms) {
                     return Container(
                       color: Colors.green,
                       child: Text("data: ${alubms.name}"),
@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     MediaType.video,
                   },
                   onMediaPicked: (assetEntity) {},
-                  pickedMediaBottomSheet: (context, albums) {
+                  pickedMediaBottomSheetbuilder: (context, albums) {
                     if (albums.isNotEmpty) {
                       return Container(
                         width: MediaQuery.of(context).size.width,

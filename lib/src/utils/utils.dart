@@ -25,8 +25,8 @@ Future<void> showMediaPicker({
   Widget? thumbnailLoader,
   bool popWhenSingleMediaSelected = true,
   Widget Function(BuildContext context, List<AssetEntity> albums)?
-      pickedMediaBottomSheet,
-  Widget Function(BuildContext context, MediaAlbum album)? albumTile,
+      pickedMediaBottomSheetbuilder,
+  Widget Function(BuildContext context, MediaAlbum album)? albumTileBuilder,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
 }) async {
@@ -45,8 +45,8 @@ Future<void> showMediaPicker({
             scaffoldBackgroundColor: scaffoldBackgroundColor,
             mediaTypes: mediaTypes?.toList() ?? [],
             dropdownColor: albumDropdownColor,
-            pickedMediaBottomSheet: pickedMediaBottomSheet,
-            albumTile: albumTile,
+            pickedMediaBottomSheet: pickedMediaBottomSheetbuilder,
+            albumTile: albumTileBuilder,
             onMediaPicked: onMediaPicked,
             thumbnailBorderRadius: thumbnailBorderRadius,
             mediaGridMargin: mediaGridMargin,
