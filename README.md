@@ -13,6 +13,8 @@ and the Flutter guide for
 
 Customizable flutter package to load media(image and video).
 
+![Sample image](https://github.com/shrigsandesh/media_picker/blob/main/assets/sample.jpg)
+
 ## Getting started
 
 Add the following to your `pubspec.yaml` file:
@@ -45,12 +47,14 @@ Add the following permissions to your `AndroidManifest.xml` file:
 ```
 
 ### iOS
+
 Update the Info.plist with:
-```
-<key>NSPhotoLibraryUsageDescription</key>
-<string>We need access to your photo library to select media.</string>
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>We need access to your photo library to selec photos or videos.</string>
+
+```swift
+ <key>NSPhotoLibraryUsageDescription</key>
+ <string>We need access to your photo library to select media.</string>
+ <key>NSPhotoLibraryAddUsageDescription</key>
+ <string>We need access to your photo library to selec photos or videos.</string>
 ```
 
 ## Usage
@@ -102,4 +106,4 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 
 ## Additional information
 
-Available on only **ANRROID** & **iOS** only. 
+Available on only **ANDROID** & **iOS** only. 
