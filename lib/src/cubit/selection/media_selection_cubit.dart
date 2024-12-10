@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/model/media_model.dart';
@@ -6,12 +8,16 @@ import 'package:media_picker/src/utils/utils.dart';
 
 import 'package:photo_manager/photo_manager.dart';
 
-part 'media_picker_state.dart';
+part 'media_selection_state.dart';
 
-class MediaPickerCubit extends Cubit<MediaPickerState> {
-  MediaPickerCubit() : super(const MediaPickerState());
+class MediaSelectionCubit extends Cubit<MediaSelectionState> {
+  MediaSelectionCubit() : super(const MediaSelectionState());
 
-  void loadMedia([List<MediaType> mediaType = const []]) async {
+  void loadAlbums([
+    List<MediaType> mediaType = const [],
+    bool paginating = false,
+    int paginatingSize = 100,
+  ]) async {
     emit(state.copyWith(isLoading: true));
 
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
@@ -24,12 +30,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       emit(state.copyWith(isLoading: false));
       return;
     }
-    int end = await albums[0].assetCountAsync;
-    var allMedia = await albums[0].getAssetListRange(start: 0, end: end);
-    var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
 
-    emit(state.copyWith(
-        albums: mergedAlbums, media: mediaContent, isLoading: false));
+    // int end = await albums[0].assetCountAsync;
+    // var allMedia = await albums[0].getAssetListRange(start: 0, end: end);
+
+    // var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
+    emit(state.copyWith(albums: mergedAlbums, isLoading: false));
   }
 
   void changeAlbum(String albumName) async {
@@ -42,6 +48,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     var newList = albums.where((e) {
       return e.name == albumName;
     }).toList();
+    log("=============================");
+    log(newList.length.toString());
 
     List<AssetEntity> allAsset = [];
 
@@ -85,5 +93,9 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         pickedFiles: [],
       ),
     );
+  }
+
+  void changeMediaType(MediaType mediaType) {
+    emit(state.copyWith(currentMedia: mediaType));
   }
 }

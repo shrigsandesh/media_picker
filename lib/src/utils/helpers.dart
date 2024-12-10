@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/model/media_model.dart';
-import 'package:media_picker/src/widgets/media_grid.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums) async {
@@ -69,53 +67,16 @@ String getTabTitle(MediaType mediaType, TabLabels? tablable) {
   }
 }
 
-Widget getTabContent({
+List<AssetEntity> getCurrentMedia({
   required MediaType mediaType,
   required MediaContent content,
-  required bool allowMultiple,
-  double? thumbnailBorderRadius,
-  EdgeInsetsGeometry? mediaGridMargin,
-  void Function(AssetEntity)? onSingleFileSelection,
-  Widget? thumbnailShimmer,
-  Color? checkedIconColor,
-  final EdgeInsetsGeometry? contentPadding,
 }) {
   switch (mediaType) {
     case MediaType.common:
-      return MediaGrid(
-        medias: content.common,
-        name: "media",
-        allowMultiple: allowMultiple,
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
-        contentPadding: contentPadding,
-      );
+      return content.common;
     case MediaType.image:
-      return MediaGrid(
-        medias: content.photos,
-        name: "photos",
-        allowMultiple: allowMultiple,
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
-        contentPadding: contentPadding,
-      );
+      return content.photos;
     case MediaType.video:
-      return MediaGrid(
-        medias: content.videos,
-        name: "video",
-        allowMultiple: allowMultiple,
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
-        contentPadding: contentPadding,
-      );
+      return content.videos;
   }
 }

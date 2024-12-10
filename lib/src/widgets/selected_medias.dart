@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:media_picker/src/cubit/selection/media_selection_cubit.dart';
 import 'package:media_picker/src/widgets/asset_thumbnail.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -55,7 +55,7 @@ class SelectedMedias extends StatelessWidget {
                             child: InkWell(
                                 onTap: () {
                                   context
-                                      .read<MediaPickerCubit>()
+                                      .read<MediaSelectionCubit>()
                                       .removeSelected(video);
                                 },
                                 child: const Icon(

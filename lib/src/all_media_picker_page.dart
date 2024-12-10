@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
-import 'package:media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:media_picker/src/cubit/photo_cubit.dart';
+
+import 'package:media_picker/src/cubit/selection/media_selection_cubit.dart';
+import 'package:media_picker/src/cubit/video_cubit.dart';
 import 'package:media_picker/src/utils/helpers.dart';
 
 import 'package:photo_manager/photo_manager.dart';
@@ -26,6 +29,7 @@ class AllMediaPickerPage extends StatefulWidget {
     required this.popWhenSingleMediaSelected,
     this.contentPadding,
     this.albumDropdownButtonBuilder,
+    this.paginate,
   });
 
   final bool allowMultiple;
@@ -38,6 +42,7 @@ class AllMediaPickerPage extends StatefulWidget {
   final EdgeInsetsGeometry? mediaGridMargin;
   final EdgeInsetsGeometry? contentPadding;
 
+  final bool? paginate;
   final Widget? loading;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
@@ -64,8 +69,22 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MediaPickerCubit()..loadMedia(widget.mediaTypes),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => MediaSelectionCubit()
+            ..loadAlbums(
+              widget.mediaTypes,
+              widget.paginate ?? false,
+            ),
+        ),
+        BlocProvider(
+          create: (context) => PhotoCubit(),
+        ),
+        BlocProvider(
+          create: (context) => VideoCubit(),
+        ),
+      ],
       child: Scaffold(
         backgroundColor: widget.scaffoldBackgroundColor,
         body: SafeArea(
@@ -231,7 +250,7 @@ class MediaTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
+    return BlocBuilder<MediaSelectionCubit, MediaSelectionState>(
       builder: (context, state) {
         if (state.isLoading) {
           return Expanded(
@@ -245,6 +264,7 @@ class MediaTabContent extends StatelessWidget {
         if (mediaTypes.isEmpty) {
           return Expanded(
             child: MediaGrid(
+              isLoading: state.isLoading,
               medias: state.media.common,
               name: "media",
               allowMultiple: allowMultiple,
@@ -254,6 +274,7 @@ class MediaTabContent extends StatelessWidget {
               thumbnailShimmer: thumbnailShimmer,
               checkedIconColor: checkedIconColor,
               contentPadding: contentPadding,
+              mediaType: MediaType.common,
             ),
           );
         }
@@ -263,9 +284,11 @@ class MediaTabContent extends StatelessWidget {
             controller: tabController,
             children: mediaTypes
                 .map(
-                  (mediaType) => getTabContent(
-                    mediaType: mediaType,
-                    content: state.media,
+                  (mediaType) => MediaGrid(
+                    isLoading: state.isLoading,
+                    medias: getCurrentMedia(
+                        mediaType: mediaType, content: state.media),
+                    name: mediaType.customName,
                     allowMultiple: allowMultiple,
                     thumbnailBorderRadius: thumbnailBorderRadius,
                     mediaGridMargin: mediaGridMargin,
@@ -273,6 +296,7 @@ class MediaTabContent extends StatelessWidget {
                     thumbnailShimmer: thumbnailShimmer,
                     checkedIconColor: checkedIconColor,
                     contentPadding: contentPadding,
+                    mediaType: mediaType,
                   ),
                 )
                 .toList(),
@@ -296,7 +320,7 @@ class SelectedMediasBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
+    return BlocBuilder<MediaSelectionCubit, MediaSelectionState>(
       builder: (context, state) {
         if (bottomSheet != null) {
           return Container(child: bottomSheet!(context, state.pickedFiles));
@@ -329,11 +353,11 @@ class MediaPickerAppBarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
+    return BlocBuilder<MediaSelectionCubit, MediaSelectionState>(
       builder: (context, state) {
         return MediaAppBar(
           onChanged: (albumName) =>
-              context.read<MediaPickerCubit>().changeAlbum(albumName),
+              context.read<MediaSelectionCubit>().changeAlbum(albumName),
           mediaAlbum: state.albums,
           albumDropdownColor: albumDropdownColor,
           albumTile: albumTile,

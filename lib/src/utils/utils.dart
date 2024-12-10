@@ -3,9 +3,18 @@ import 'package:media_picker/src/all_media_picker_page.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
+import 'package:media_picker/src/widgets/media_picker_page.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 enum MediaType { common, image, video }
+
+extension MediaTypeX on MediaType {
+  String get customName => switch (this) {
+        MediaType.common => 'media',
+        MediaType.image => 'photo',
+        MediaType.video => 'video',
+      };
+}
 
 typedef PickedMediaCallback = void Function(List<AssetEntity> assetEntity);
 typedef AlbumDropdownButtonBuilder = Widget Function(
@@ -38,6 +47,7 @@ Future<void> showMediaPicker({
   Widget? loading,
   Widget? thumbnailLoader,
   bool popWhenSingleMediaSelected = true,
+  bool paginate = false,
   PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
   AlbumTileBuilder? albumTileBuilder,
   AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
@@ -51,27 +61,27 @@ Future<void> showMediaPicker({
     if (granted.isAuth) {
       if (!context.mounted) return;
       Navigator.of(context).push(
-        createRoute(
-          transitionBuilder,
-          AllMediaPickerPage(
-            allowMultiple: allowMultiple,
-            tabBarDecoration: tabBarDecoration,
-            scaffoldBackgroundColor: scaffoldBackgroundColor,
-            mediaTypes: mediaTypes?.toList() ?? [],
-            dropdownColor: albumDropdownColor,
-            pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
-            albumTileBuilder: albumTileBuilder,
-            onMediaPicked: onMediaPicked,
-            thumbnailBorderRadius: thumbnailBorderRadius,
-            mediaGridMargin: mediaGridMargin,
-            loading: loading,
-            thumbnailShimmer: thumbnailLoader,
-            checkedIconColor: checkedIconColor,
-            popWhenSingleMediaSelected: popWhenSingleMediaSelected,
-            contentPadding: contentPadding,
-            albumDropdownButtonBuilder: albumDropdownButtonBuilder,
-          ),
-        ),
+        createRoute(transitionBuilder, MediaPickerPage()
+            // AllMediaPickerPage(
+            //   allowMultiple: allowMultiple,
+            //   tabBarDecoration: tabBarDecoration,
+            //   scaffoldBackgroundColor: scaffoldBackgroundColor,
+            //   mediaTypes: mediaTypes?.toList() ?? [],
+            //   dropdownColor: albumDropdownColor,
+            //   pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
+            //   albumTileBuilder: albumTileBuilder,
+            //   onMediaPicked: onMediaPicked,
+            //   thumbnailBorderRadius: thumbnailBorderRadius,
+            //   mediaGridMargin: mediaGridMargin,
+            //   loading: loading,
+            //   paginate: paginate,
+            //   thumbnailShimmer: thumbnailLoader,
+            //   checkedIconColor: checkedIconColor,
+            //   popWhenSingleMediaSelected: popWhenSingleMediaSelected,
+            //   contentPadding: contentPadding,
+            //   albumDropdownButtonBuilder: albumDropdownButtonBuilder,
+            // ),
+            ),
       );
     }
   });

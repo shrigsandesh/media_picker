@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:media_picker/src/widgets/asset_thumbnail.dart';
+import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/cubit/selection/media_selection_cubit.dart';
+import 'package:media_picker/src/widgets/widgets_.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaGrid extends StatefulWidget {
@@ -16,6 +17,8 @@ class MediaGrid extends StatefulWidget {
     this.thumbnailShimmer,
     this.checkedIconColor,
     this.contentPadding,
+    required this.mediaType,
+    required this.isLoading,
   });
   final List<AssetEntity> medias;
   final String name;
@@ -26,6 +29,8 @@ class MediaGrid extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
+  final MediaType mediaType;
+  final bool isLoading;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -34,88 +39,101 @@ class MediaGrid extends StatefulWidget {
 class _MediaGridState extends State<MediaGrid> {
   @override
   Widget build(BuildContext context) {
+    if (widget.isLoading) {
+      return const LoadingGridShimmer();
+    }
     if (widget.medias.isEmpty) {
       return Center(
         child: Text("No ${widget.name} found for this album."),
       );
     }
-    return GridView.builder(
-      padding: widget.contentPadding ?? const EdgeInsets.fromLTRB(0, 0, 0, 100),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, // Number of items per row
-        childAspectRatio: 1.0,
-      ),
-      itemCount: widget.medias.length,
-      itemBuilder: (context, index) {
-        final video = widget.medias[index];
-        return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-          builder: (context, state) {
-            final isSelected =
-                state.pickedFiles.contains(video); // Check if video is selected
-            final selectionIndex = state.pickedFiles.indexOf(video);
-            return GestureDetector(
-              onTap: () {
-                if (!widget.allowMultiple) {
-                  if (widget.onSingleFileSelection != null) {
-                    widget.onSingleFileSelection!(video);
-                  }
-                  return;
-                }
-                if (!isSelected) {
-                  context.read<MediaPickerCubit>().addPickedFiles(video);
-                } else {
-                  context.read<MediaPickerCubit>().removeSelected(video);
-                }
-              },
-              child: Padding(
-                padding: widget.mediaGridMargin ?? EdgeInsets.zero,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    AssetThumbnail(
-                      borderRadius: widget.thumbnailBorderRadius,
-                      asset: widget.medias[index],
-                    ),
-                    if (widget.allowMultiple)
-                      Positioned(
-                          top: 4,
-                          right: 4,
-                          child: isSelected
-                              ? CircleAvatar(
-                                  radius: 12,
-                                  backgroundColor:
-                                      widget.checkedIconColor ?? Colors.blue,
-                                  child: Text(
-                                    // Display the order number (1-based index)
-                                    (selectionIndex + 1).toString(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                )
-                              : Icon(
-                                  isSelected
-                                      ? Icons.check
-                                      : Icons.circle_outlined,
-                                  color: Colors.white,
-                                )),
-                    if (video.duration > 0)
-                      Positioned(
-                          bottom: 2,
-                          right: 2,
-                          child: Text(
-                            formatTime(video.duration),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ))
-                  ],
-                ),
-              ),
-            );
-          },
-        );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        // final metrics = notification.metrics;
+        // if (metrics.extentAfter <= metrics.maxScrollExtent * 0.8) {
+        //   context.read<MediaPickerCubit>().loadMedia([widget.mediaType], true);
+        // }
+        return false;
       },
+      child: GridView.builder(
+        padding:
+            widget.contentPadding ?? const EdgeInsets.fromLTRB(0, 0, 0, 100),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // Number of items per row
+          childAspectRatio: 1.0,
+        ),
+        itemCount: widget.medias.length,
+        itemBuilder: (context, index) {
+          final video = widget.medias[index];
+          return BlocBuilder<MediaSelectionCubit, MediaSelectionState>(
+            builder: (context, state) {
+              final isSelected = state.pickedFiles
+                  .contains(video); // Check if video is selected
+              final selectionIndex = state.pickedFiles.indexOf(video);
+              return GestureDetector(
+                onTap: () {
+                  if (!widget.allowMultiple) {
+                    if (widget.onSingleFileSelection != null) {
+                      widget.onSingleFileSelection!(video);
+                    }
+                    return;
+                  }
+                  if (!isSelected) {
+                    context.read<MediaSelectionCubit>().addPickedFiles(video);
+                  } else {
+                    context.read<MediaSelectionCubit>().removeSelected(video);
+                  }
+                },
+                child: Padding(
+                  padding: widget.mediaGridMargin ?? EdgeInsets.zero,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      AssetThumbnail(
+                        borderRadius: widget.thumbnailBorderRadius,
+                        asset: widget.medias[index],
+                      ),
+                      if (widget.allowMultiple)
+                        Positioned(
+                            top: 4,
+                            right: 4,
+                            child: isSelected
+                                ? CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor:
+                                        widget.checkedIconColor ?? Colors.blue,
+                                    child: Text(
+                                      // Display the order number (1-based index)
+                                      (selectionIndex + 1).toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  )
+                                : Icon(
+                                    isSelected
+                                        ? Icons.check
+                                        : Icons.circle_outlined,
+                                    color: Colors.white,
+                                  )),
+                      if (video.duration > 0)
+                        Positioned(
+                            bottom: 2,
+                            right: 2,
+                            child: Text(
+                              formatTime(video.duration),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 14),
+                            ))
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

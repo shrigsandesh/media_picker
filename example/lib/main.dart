@@ -122,6 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showMediaPicker(
                   context: context,
                   allowMultiple: true,
+                  paginate: true,
                   mediaTypes: {
                     MediaType.common,
                     MediaType.video,

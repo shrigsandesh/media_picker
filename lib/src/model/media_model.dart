@@ -48,6 +48,20 @@ class MediaContent extends Equatable {
     photos: [],
   );
 
+  MediaContent copyWith({
+    final String? name,
+    final List<AssetEntity>? common,
+    final List<AssetEntity>? videos,
+    final List<AssetEntity>? photos,
+  }) {
+    return MediaContent(
+      name: name ?? this.name,
+      common: common ?? this.common,
+      videos: videos ?? this.videos,
+      photos: photos ?? this.photos,
+    );
+  }
+
   @override
   List<Object> get props => [common, videos, photos];
 
