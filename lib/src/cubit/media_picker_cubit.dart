@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/model/media_model.dart';
@@ -30,7 +32,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
 
     emit(state.copyWith(
-        albumsPaths: albums,
         albums: mergedAlbums,
         media: mediaContent,
         hasReachedEnd: allMedia.length < pageSize,
@@ -38,15 +39,21 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         isLoading: false));
   }
 
-  void loadMoreMedia([int pageSize = 40]) async {
+  void loadMoreMedia(
+      {int pageSize = 40, MediaType type = MediaType.common}) async {
+    if (state.hasReachedEnd) return;
     emit(state.copyWith(isLoading: true, isPaginating: true));
 
-    final mergedAlbums = await filterAlbum(state.albumsPaths);
+    List<AssetPathEntity> albums =
+        await PhotoManager.getAssetPathList(type: RequestType.video);
 
-    var allMedia = await state.albumsPaths[0]
-        .getAssetListPaged(page: state.currentPage, size: pageSize);
-    var mediaContent =
-        MediaContent.fromAssetEntity(allMedia, state.albumsPaths[0].name);
+    final mergedAlbums = await filterAlbum(albums);
+
+    var allMedia = await albums[0].getAssetListPaged(
+      page: state.currentPage,
+      size: pageSize,
+    );
+    var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
 
     emit(state.copyWith(
         albums: mergedAlbums,
@@ -114,5 +121,28 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         pickedFiles: [],
       ),
     );
+  }
+
+  void changeMediaType(MediaType type) {
+    log("message");
+    emit(
+      state.copyWith(
+        currentMediaTye: type,
+        isLoading: false,
+      ),
+    );
+    switch (state.currentMediaTye) {
+      case MediaType.video:
+        if (state.media.videoSize < state.pageSize) {
+          loadMoreMedia(type: MediaType.video);
+        }
+
+      case MediaType.image:
+        if (state.media.videoSize < state.pageSize) {
+          loadMoreMedia(type: MediaType.image);
+        }
+        break;
+      default:
+    }
   }
 }

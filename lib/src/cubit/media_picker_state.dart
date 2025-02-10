@@ -8,19 +8,23 @@ class MediaPickerState extends Equatable {
   final bool isPaginating;
   final bool hasReachedEnd;
   final List<AssetEntity> paginatedMedias;
-  final List<AssetPathEntity> albumsPaths;
-  final int currentPage;
 
-  const MediaPickerState(
-      {this.isLoading = false,
-      this.albums = const [],
-      this.media = MediaContent.initial,
-      this.pickedFiles = const [],
-      this.isPaginating = false,
-      this.hasReachedEnd = false,
-      this.paginatedMedias = const [],
-      this.albumsPaths = const [],
-      this.currentPage = 0});
+  final int currentPage;
+  final MediaType currentMediaTye;
+  final int pageSize;
+
+  const MediaPickerState({
+    this.isLoading = false,
+    this.albums = const [],
+    this.media = MediaContent.initial,
+    this.pickedFiles = const [],
+    this.isPaginating = false,
+    this.hasReachedEnd = false,
+    this.paginatedMedias = const [],
+    this.currentPage = 0,
+    this.currentMediaTye = MediaType.common,
+    this.pageSize = 40,
+  });
 
   MediaPickerState copyWith({
     bool? isLoading,
@@ -32,18 +36,17 @@ class MediaPickerState extends Equatable {
     List<AssetEntity>? paginatedMedias,
     int? currentPage,
     List<AssetPathEntity>? albumsPaths,
+    MediaType? currentMediaTye,
   }) {
     return MediaPickerState(
-      isLoading: isLoading ?? this.isLoading,
-      albums: albums ?? this.albums,
-      media: media ?? this.media,
-      pickedFiles: pickedFiles ?? this.pickedFiles,
-      isPaginating: isPaginating ?? this.isPaginating,
-      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
-      paginatedMedias: paginatedMedias ?? this.paginatedMedias,
-      albumsPaths: albumsPaths ?? this.albumsPaths,
-      currentPage: currentPage ?? this.currentPage,
-    );
+        isLoading: isLoading ?? this.isLoading,
+        albums: albums ?? this.albums,
+        media: media ?? this.media,
+        pickedFiles: pickedFiles ?? this.pickedFiles,
+        isPaginating: isPaginating ?? this.isPaginating,
+        hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+        currentPage: currentPage ?? this.currentPage,
+        currentMediaTye: currentMediaTye ?? this.currentMediaTye);
   }
 
   @override
@@ -54,6 +57,7 @@ class MediaPickerState extends Equatable {
         pickedFiles,
         hasReachedEnd,
         isPaginating,
-        currentPage
+        currentPage,
+        currentMediaTye,
       ];
 }

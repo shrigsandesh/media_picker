@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/widgets/asset_thumbnail.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -17,6 +20,7 @@ class MediaGrid extends StatefulWidget {
     this.checkedIconColor,
     this.contentPadding,
     this.pageSize,
+    required this.type,
   });
   final List<AssetEntity> medias;
   final String name;
@@ -28,6 +32,7 @@ class MediaGrid extends StatefulWidget {
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
   final int? pageSize;
+  final MediaType type;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -43,16 +48,22 @@ class _MediaGridState extends State<MediaGrid> {
     }
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
+        log("message");
+
+        log((context.read<MediaPickerCubit>().state.isLoading).toString());
+        log((context.read<MediaPickerCubit>().state.hasReachedEnd).toString());
+
         // Only trigger pagination when scrolling near the bottom
         if (notification is ScrollEndNotification &&
             notification.metrics.pixels >=
                 notification.metrics.maxScrollExtent * 0.8 &&
-            widget.pageSize != null &&
             !context.read<MediaPickerCubit>().state.isLoading &&
             !context.read<MediaPickerCubit>().state.hasReachedEnd) {
           // Check if not already loading
 
-          context.read<MediaPickerCubit>().loadMoreMedia();
+          log("here");
+
+          context.read<MediaPickerCubit>().loadMoreMedia(type: widget.type);
         }
 
         return false;

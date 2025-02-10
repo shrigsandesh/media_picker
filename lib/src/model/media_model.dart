@@ -31,6 +31,10 @@ class MediaContent extends Equatable {
     required this.photos,
   });
 
+  int get commonSize => common.length;
+  int get videoSize => videos.length;
+  int get photoSize => photos.length;
+
   factory MediaContent.fromAssetEntity(List<AssetEntity> list, name) {
     return MediaContent(
       name: name,

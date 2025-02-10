@@ -48,7 +48,7 @@ class SelectedMedias extends StatelessWidget {
                           top: 0,
                           child: Container(
                             decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(.5),
+                                color: Colors.black.withValues(alpha: .5),
                                 borderRadius: const BorderRadius.only(
                                     topRight: Radius.circular(10.0),
                                     bottomLeft: Radius.circular(10.0))),

@@ -59,12 +59,30 @@ class AllMediaPickerPage extends StatefulWidget {
 class _AllMediaPickerPageState extends State<AllMediaPickerPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _tabController =
         TabController(length: widget.mediaTypes.length, vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Only set up the listener once
+    if (!_isInitialized) {
+      _tabController.addListener(() {
+        if (!_tabController.indexIsChanging) {
+          context
+              .read<MediaPickerCubit>()
+              .changeMediaType(widget.mediaTypes[_tabController.index]);
+        }
+      });
+      _isInitialized = true;
+    }
   }
 
   @override
@@ -158,7 +176,7 @@ class MediaContent extends StatelessWidget {
       padding: const EdgeInsets.only(top: kToolbarHeight - 8),
       child: Column(
         children: [
-          if (mediaTypes.length > 1 && !paginate)
+          if (mediaTypes.length > 1)
             MediaTabBar(
               tabController: tabController,
               mediaTypes: mediaTypes,
@@ -263,9 +281,10 @@ class MediaTabContent extends StatelessWidget {
           );
         }
 
-        if (mediaTypes.isEmpty || paginate) {
+        if (mediaTypes.isEmpty) {
           return Expanded(
             child: MediaGrid(
+                type: MediaType.common,
                 medias: state.media.common,
                 name: "media",
                 allowMultiple: allowMultiple,

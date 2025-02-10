@@ -92,6 +92,7 @@ Widget getTabContent({
         thumbnailShimmer: thumbnailShimmer,
         checkedIconColor: checkedIconColor,
         contentPadding: contentPadding,
+        type: mediaType,
       );
     case MediaType.image:
       return MediaGrid(
@@ -104,6 +105,7 @@ Widget getTabContent({
         thumbnailShimmer: thumbnailShimmer,
         checkedIconColor: checkedIconColor,
         contentPadding: contentPadding,
+        type: mediaType,
       );
     case MediaType.video:
       return MediaGrid(
@@ -116,6 +118,7 @@ Widget getTabContent({
         thumbnailShimmer: thumbnailShimmer,
         checkedIconColor: checkedIconColor,
         contentPadding: contentPadding,
+        type: mediaType,
       );
   }
 }
