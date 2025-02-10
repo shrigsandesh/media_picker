@@ -48,21 +48,15 @@ class _MediaGridState extends State<MediaGrid> {
     }
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        log("message");
-
-        log((context.read<MediaPickerCubit>().state.isLoading).toString());
-        log((context.read<MediaPickerCubit>().state.hasReachedEnd).toString());
-
         // Only trigger pagination when scrolling near the bottom
+
         if (notification is ScrollEndNotification &&
             notification.metrics.pixels >=
                 notification.metrics.maxScrollExtent * 0.8 &&
-            !context.read<MediaPickerCubit>().state.isLoading &&
-            !context.read<MediaPickerCubit>().state.hasReachedEnd) {
+            !context.read<MediaPickerCubit>().state.isLoading) {
           // Check if not already loading
 
-          log("here");
-
+          log("message: here");
           context.read<MediaPickerCubit>().loadMoreMedia(type: widget.type);
         }
 

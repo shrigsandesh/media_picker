@@ -6,7 +6,9 @@ class MediaPickerState extends Equatable {
   final MediaContent media;
   final List<AssetEntity> pickedFiles;
   final bool isPaginating;
-  final bool hasReachedEnd;
+  final bool hasReachedEndPhotos;
+  final bool hasReachedEndVideos;
+
   final List<AssetEntity> paginatedMedias;
 
   final int currentPage;
@@ -19,7 +21,8 @@ class MediaPickerState extends Equatable {
     this.media = MediaContent.initial,
     this.pickedFiles = const [],
     this.isPaginating = false,
-    this.hasReachedEnd = false,
+    this.hasReachedEndPhotos = false,
+    this.hasReachedEndVideos = false,
     this.paginatedMedias = const [],
     this.currentPage = 0,
     this.currentMediaTye = MediaType.common,
@@ -32,7 +35,8 @@ class MediaPickerState extends Equatable {
     MediaContent? media,
     List<AssetEntity>? pickedFiles,
     bool? isPaginating,
-    bool? hasReachedEnd,
+    bool? hasReachedEndPhotos,
+    bool? hasReachedEndVideos,
     List<AssetEntity>? paginatedMedias,
     int? currentPage,
     List<AssetPathEntity>? albumsPaths,
@@ -44,7 +48,8 @@ class MediaPickerState extends Equatable {
         media: media ?? this.media,
         pickedFiles: pickedFiles ?? this.pickedFiles,
         isPaginating: isPaginating ?? this.isPaginating,
-        hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+        hasReachedEndPhotos: hasReachedEndPhotos ?? this.hasReachedEndPhotos,
+        hasReachedEndVideos: hasReachedEndVideos ?? this.hasReachedEndVideos,
         currentPage: currentPage ?? this.currentPage,
         currentMediaTye: currentMediaTye ?? this.currentMediaTye);
   }
@@ -55,7 +60,8 @@ class MediaPickerState extends Equatable {
         albums,
         media,
         pickedFiles,
-        hasReachedEnd,
+        hasReachedEndPhotos,
+        hasReachedEndVideos,
         isPaginating,
         currentPage,
         currentMediaTye,

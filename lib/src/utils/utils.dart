@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:media_picker/src/all_media_picker_page.dart';
+import 'package:media_picker/src/media_picker_wrapper.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
@@ -55,7 +55,7 @@ Future<void> showMediaPicker({
       Navigator.of(context).push(
         createRoute(
           transitionBuilder,
-          AllMediaPickerPage(
+          MediaPickerPageWrapper(
             allowMultiple: allowMultiple,
             tabBarDecoration: tabBarDecoration,
             scaffoldBackgroundColor: scaffoldBackgroundColor,

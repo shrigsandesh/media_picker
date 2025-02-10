@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/model/media_model.dart';
@@ -34,25 +32,27 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     emit(state.copyWith(
         albums: mergedAlbums,
         media: mediaContent,
-        hasReachedEnd: allMedia.length < pageSize,
         currentPage: state.currentPage + 1,
         isLoading: false));
   }
 
   void loadMoreMedia(
       {int pageSize = 40, MediaType type = MediaType.common}) async {
-    if (state.hasReachedEnd) return;
+    if (_shouldStopLoading(type)) return;
     emit(state.copyWith(isLoading: true, isPaginating: true));
 
     List<AssetPathEntity> albums =
-        await PhotoManager.getAssetPathList(type: RequestType.video);
+        await PhotoManager.getAssetPathList(type: determineMediaType([type]));
 
     final mergedAlbums = await filterAlbum(albums);
+
+    final int count = await albums[0].assetCountAsync;
 
     var allMedia = await albums[0].getAssetListPaged(
       page: state.currentPage,
       size: pageSize,
     );
+
     var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
 
     emit(state.copyWith(
@@ -62,10 +62,23 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
           videos: [...state.media.videos, ...mediaContent.videos],
           common: [...state.media.common, ...mediaContent.common],
         ),
-        hasReachedEnd: allMedia.length < pageSize,
+        hasReachedEndPhotos: type == MediaType.image
+            ? count < pageSize
+            : state.hasReachedEndPhotos,
+        hasReachedEndVideos: type == MediaType.video
+            ? count < pageSize
+            : state.hasReachedEndPhotos,
         currentPage: state.currentPage + 1,
         isLoading: false,
         isPaginating: false));
+  }
+
+  bool _shouldStopLoading(MediaType type) {
+    return (type == MediaType.image && state.hasReachedEndPhotos) ||
+        (type == MediaType.video && state.hasReachedEndVideos) ||
+        (type == MediaType.common &&
+            state.hasReachedEndPhotos &&
+            state.hasReachedEndVideos);
   }
 
   void changeAlbum(String albumName) async {
@@ -124,7 +137,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   }
 
   void changeMediaType(MediaType type) {
-    log("message");
     emit(
       state.copyWith(
         currentMediaTye: type,

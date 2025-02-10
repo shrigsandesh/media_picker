@@ -7,8 +7,8 @@ import 'package:media_picker/src/utils/helpers.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
 
-class AllMediaPickerPage extends StatefulWidget {
-  const AllMediaPickerPage({
+class MediaPickerPage extends StatefulWidget {
+  const MediaPickerPage({
     super.key,
     required this.allowMultiple,
     this.tabBarDecoration,
@@ -53,10 +53,10 @@ class AllMediaPickerPage extends StatefulWidget {
   final int pageSize;
 
   @override
-  State<AllMediaPickerPage> createState() => _AllMediaPickerPageState();
+  State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
 
-class _AllMediaPickerPageState extends State<AllMediaPickerPage>
+class _MediaPickerPageState extends State<MediaPickerPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isInitialized = false;
@@ -87,50 +87,44 @@ class _AllMediaPickerPageState extends State<AllMediaPickerPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => MediaPickerCubit()
-        ..loadMedia(
-          widget.mediaTypes,
-        ),
-      child: Scaffold(
-        backgroundColor: widget.scaffoldBackgroundColor,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              MediaContent(
-                tabController: _tabController,
-                mediaTypes: widget.mediaTypes,
-                tabBarDecoration: widget.tabBarDecoration,
-                allowMultiple: widget.allowMultiple,
-                thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                mediaGridMargin: widget.mediaGridMargin,
-                onSingleFileSelection: (media) {
-                  widget.onMediaPicked([media]);
-                  if (widget.popWhenSingleMediaSelected) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                loading: widget.loading,
-                thumbnailShimmer: widget.thumbnailShimmer,
-                checkedIconColor: widget.checkedIconColor,
-                contentPadding: widget.contentPadding,
-                paginate: widget.paginate,
-                pageSize: widget.pageSize,
+    return Scaffold(
+      backgroundColor: widget.scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            MediaContent(
+              tabController: _tabController,
+              mediaTypes: widget.mediaTypes,
+              tabBarDecoration: widget.tabBarDecoration,
+              allowMultiple: widget.allowMultiple,
+              thumbnailBorderRadius: widget.thumbnailBorderRadius,
+              mediaGridMargin: widget.mediaGridMargin,
+              onSingleFileSelection: (media) {
+                widget.onMediaPicked([media]);
+                if (widget.popWhenSingleMediaSelected) {
+                  Navigator.of(context).pop();
+                }
+              },
+              loading: widget.loading,
+              thumbnailShimmer: widget.thumbnailShimmer,
+              checkedIconColor: widget.checkedIconColor,
+              contentPadding: widget.contentPadding,
+              paginate: widget.paginate,
+              pageSize: widget.pageSize,
+            ),
+            Positioned(
+              bottom: 0,
+              child: SelectedMediasBottomSheet(
+                bottomSheet: widget.pickedMediaBottomSheet,
+                pickedMediaCallback: widget.onMediaPicked,
               ),
-              Positioned(
-                bottom: 0,
-                child: SelectedMediasBottomSheet(
-                  bottomSheet: widget.pickedMediaBottomSheet,
-                  pickedMediaCallback: widget.onMediaPicked,
-                ),
-              ),
-              MediaPickerAppBarSection(
-                albumDropdownColor: widget.dropdownColor,
-                albumTile: widget.albumTileBuilder,
-                albumButtonBuilder: widget.albumDropdownButtonBuilder,
-              ),
-            ],
-          ),
+            ),
+            MediaPickerAppBarSection(
+              albumDropdownColor: widget.dropdownColor,
+              albumTile: widget.albumTileBuilder,
+              albumButtonBuilder: widget.albumDropdownButtonBuilder,
+            ),
+          ],
         ),
       ),
     );
