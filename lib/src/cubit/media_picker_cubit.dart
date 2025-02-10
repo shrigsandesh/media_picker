@@ -11,7 +11,8 @@ part 'media_picker_state.dart';
 class MediaPickerCubit extends Cubit<MediaPickerState> {
   MediaPickerCubit() : super(const MediaPickerState());
 
-  void loadMedia([List<MediaType> mediaType = const []]) async {
+  void loadMedia(
+      [List<MediaType> mediaType = const [], int pageSize = 40]) async {
     emit(state.copyWith(isLoading: true));
 
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
@@ -24,12 +25,40 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       emit(state.copyWith(isLoading: false));
       return;
     }
-    int end = await albums[0].assetCountAsync;
-    var allMedia = await albums[0].getAssetListRange(start: 0, end: end);
+    var allMedia = await albums[0]
+        .getAssetListPaged(page: state.currentPage, size: pageSize);
     var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
 
     emit(state.copyWith(
-        albums: mergedAlbums, media: mediaContent, isLoading: false));
+        albumsPaths: albums,
+        albums: mergedAlbums,
+        media: mediaContent,
+        hasReachedEnd: allMedia.length < pageSize,
+        currentPage: state.currentPage + 1,
+        isLoading: false));
+  }
+
+  void loadMoreMedia([int pageSize = 40]) async {
+    emit(state.copyWith(isLoading: true, isPaginating: true));
+
+    final mergedAlbums = await filterAlbum(state.albumsPaths);
+
+    var allMedia = await state.albumsPaths[0]
+        .getAssetListPaged(page: state.currentPage, size: pageSize);
+    var mediaContent =
+        MediaContent.fromAssetEntity(allMedia, state.albumsPaths[0].name);
+
+    emit(state.copyWith(
+        albums: mergedAlbums,
+        media: mediaContent.copyWith(
+          photos: [...state.media.photos, ...mediaContent.photos],
+          videos: [...state.media.videos, ...mediaContent.videos],
+          common: [...state.media.common, ...mediaContent.common],
+        ),
+        hasReachedEnd: allMedia.length < pageSize,
+        currentPage: state.currentPage + 1,
+        isLoading: false,
+        isPaginating: false));
   }
 
   void changeAlbum(String albumName) async {

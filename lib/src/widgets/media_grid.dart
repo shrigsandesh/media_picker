@@ -16,6 +16,7 @@ class MediaGrid extends StatefulWidget {
     this.thumbnailShimmer,
     this.checkedIconColor,
     this.contentPadding,
+    this.pageSize,
   });
   final List<AssetEntity> medias;
   final String name;
@@ -26,6 +27,7 @@ class MediaGrid extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
+  final int? pageSize;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -39,83 +41,117 @@ class _MediaGridState extends State<MediaGrid> {
         child: Text("No ${widget.name} found for this album."),
       );
     }
-    return GridView.builder(
-      padding: widget.contentPadding ?? const EdgeInsets.fromLTRB(0, 0, 0, 100),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, // Number of items per row
-        childAspectRatio: 1.0,
-      ),
-      itemCount: widget.medias.length,
-      itemBuilder: (context, index) {
-        final video = widget.medias[index];
-        return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-          builder: (context, state) {
-            final isSelected =
-                state.pickedFiles.contains(video); // Check if video is selected
-            final selectionIndex = state.pickedFiles.indexOf(video);
-            return GestureDetector(
-              onTap: () {
-                if (!widget.allowMultiple) {
-                  if (widget.onSingleFileSelection != null) {
-                    widget.onSingleFileSelection!(video);
-                  }
-                  return;
-                }
-                if (!isSelected) {
-                  context.read<MediaPickerCubit>().addPickedFiles(video);
-                } else {
-                  context.read<MediaPickerCubit>().removeSelected(video);
-                }
-              },
-              child: Padding(
-                padding: widget.mediaGridMargin ?? EdgeInsets.zero,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    AssetThumbnail(
-                      borderRadius: widget.thumbnailBorderRadius,
-                      asset: widget.medias[index],
-                    ),
-                    if (widget.allowMultiple)
-                      Positioned(
-                          top: 4,
-                          right: 4,
-                          child: isSelected
-                              ? CircleAvatar(
-                                  radius: 12,
-                                  backgroundColor:
-                                      widget.checkedIconColor ?? Colors.blue,
-                                  child: Text(
-                                    // Display the order number (1-based index)
-                                    (selectionIndex + 1).toString(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                )
-                              : Icon(
-                                  isSelected
-                                      ? Icons.check
-                                      : Icons.circle_outlined,
-                                  color: Colors.white,
-                                )),
-                    if (video.duration > 0)
-                      Positioned(
-                          bottom: 2,
-                          right: 2,
-                          child: Text(
-                            formatTime(video.duration),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 14),
-                          ))
-                  ],
-                ),
-              ),
-            );
-          },
-        );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        // Only trigger pagination when scrolling near the bottom
+        if (notification is ScrollEndNotification &&
+            notification.metrics.pixels >=
+                notification.metrics.maxScrollExtent * 0.8 &&
+            widget.pageSize != null &&
+            !context.read<MediaPickerCubit>().state.isLoading &&
+            !context.read<MediaPickerCubit>().state.hasReachedEnd) {
+          // Check if not already loading
+
+          context.read<MediaPickerCubit>().loadMoreMedia();
+        }
+
+        return false;
       },
+      child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
+        builder: (context, state) {
+          if (state.isLoading && widget.medias.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return GridView.builder(
+            padding: widget.contentPadding ??
+                const EdgeInsets.fromLTRB(0, 0, 0, 100),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, // Number of items per row
+              childAspectRatio: 1.0,
+            ),
+            itemCount: widget.medias.length +
+                (state.isLoading && widget.medias.isNotEmpty ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == widget.medias.length) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final video = widget.medias[index];
+              return BlocBuilder<MediaPickerCubit, MediaPickerState>(
+                builder: (context, state) {
+                  final isSelected = state.pickedFiles
+                      .contains(video); // Check if video is selected
+                  final selectionIndex = state.pickedFiles.indexOf(video);
+                  return GestureDetector(
+                    onTap: () {
+                      if (!widget.allowMultiple) {
+                        if (widget.onSingleFileSelection != null) {
+                          widget.onSingleFileSelection!(video);
+                        }
+                        return;
+                      }
+                      if (!isSelected) {
+                        context.read<MediaPickerCubit>().addPickedFiles(video);
+                      } else {
+                        context.read<MediaPickerCubit>().removeSelected(video);
+                      }
+                    },
+                    child: Padding(
+                      padding: widget.mediaGridMargin ?? EdgeInsets.zero,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          AssetThumbnail(
+                            borderRadius: widget.thumbnailBorderRadius,
+                            asset: widget.medias[index],
+                          ),
+                          if (widget.allowMultiple)
+                            Positioned(
+                                top: 4,
+                                right: 4,
+                                child: isSelected
+                                    ? CircleAvatar(
+                                        radius: 12,
+                                        backgroundColor:
+                                            widget.checkedIconColor ??
+                                                Colors.blue,
+                                        child: Text(
+                                          // Display the order number (1-based index)
+                                          (selectionIndex + 1).toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      )
+                                    : Icon(
+                                        isSelected
+                                            ? Icons.check
+                                            : Icons.circle_outlined,
+                                        color: Colors.white,
+                                      )),
+                          if (video.duration > 0)
+                            Positioned(
+                                bottom: 2,
+                                right: 2,
+                                child: Text(
+                                  formatTime(video.duration),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 14),
+                                ))
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

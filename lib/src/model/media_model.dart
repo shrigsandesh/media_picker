@@ -24,11 +24,12 @@ class MediaContent extends Equatable {
   final List<AssetEntity> videos;
   final List<AssetEntity> photos;
 
-  const MediaContent(
-      {required this.name,
-      required this.common,
-      required this.videos,
-      required this.photos});
+  const MediaContent({
+    required this.name,
+    required this.common,
+    required this.videos,
+    required this.photos,
+  });
 
   factory MediaContent.fromAssetEntity(List<AssetEntity> list, name) {
     return MediaContent(
@@ -39,6 +40,19 @@ class MediaContent extends Equatable {
       videos: list.where((e) => e.type == AssetType.video).toList(),
       photos: list.where((e) => e.type == AssetType.image).toList(),
     );
+  }
+
+  MediaContent copyWith({
+    String? name,
+    List<AssetEntity>? common,
+    List<AssetEntity>? videos,
+    List<AssetEntity>? photos,
+  }) {
+    return MediaContent(
+        name: name ?? this.name,
+        common: common ?? this.common,
+        videos: videos ?? this.videos,
+        photos: photos ?? this.photos);
   }
 
   static const initial = MediaContent(

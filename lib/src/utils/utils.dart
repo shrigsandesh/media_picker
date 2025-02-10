@@ -43,6 +43,8 @@ Future<void> showMediaPicker({
   AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
+  bool isPaginating = false,
+  int pageSize = 20,
 }) async {
   if (mediaTypes != null) {
     assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
@@ -70,9 +72,13 @@ Future<void> showMediaPicker({
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
             contentPadding: contentPadding,
             albumDropdownButtonBuilder: albumDropdownButtonBuilder,
+            paginate: isPaginating,
+            pageSize: pageSize,
           ),
         ),
       );
+    } else {
+      throw Exception("No permission allowed");
     }
   });
 }

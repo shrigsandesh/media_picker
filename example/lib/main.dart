@@ -127,6 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     MediaType.video,
                     MediaType.image
                   },
+                  isPaginating: true,
+                  pageSize: 10,
                   onMediaPicked: (assetEntity) {},
                 );
               },
