@@ -26,7 +26,7 @@ class MediaAppBar extends StatefulWidget {
 class _MediaAppBarState extends State<MediaAppBar> {
   bool _isExpanded = false;
   late String _selected =
-      widget.mediaAlbum.isNotEmpty ? widget.mediaAlbum.first.name : "All";
+      widget.mediaAlbum.isNotEmpty ? widget.mediaAlbum.first.name : "Recent";
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -87,9 +87,9 @@ class _MediaAppBarState extends State<MediaAppBar> {
             ),
             Expanded(
               child: ListView.separated(
-                // padding: const EdgeInsets.only(top: 20),
                 itemCount: widget.mediaAlbum.length,
                 itemBuilder: (context, index) => GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () {
                     setState(() {
                       _selected = widget.mediaAlbum[index].name;
