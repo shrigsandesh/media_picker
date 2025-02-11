@@ -14,7 +14,7 @@ class MediaAppBar extends StatefulWidget {
       this.albumButtonBuilder});
 
   final List<MediaAlbum> mediaAlbum;
-  final Function(String) onChanged;
+  final Function(MediaAlbum) onChanged;
   final Color? albumDropdownColor;
   final AlbumTileBuilder? albumTile;
   final AlbumDropdownButtonBuilder? albumButtonBuilder;
@@ -93,7 +93,10 @@ class _MediaAppBarState extends State<MediaAppBar> {
                   onTap: () {
                     setState(() {
                       _selected = widget.mediaAlbum[index].name;
-                      widget.onChanged(_selected);
+                      widget.onChanged(MediaAlbum(
+                          id: widget.mediaAlbum[index].id,
+                          name: _selected,
+                          size: widget.mediaAlbum[index].size));
                       _isExpanded = false;
                     });
                   },

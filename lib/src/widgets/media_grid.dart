@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
@@ -50,13 +48,17 @@ class _MediaGridState extends State<MediaGrid> {
       onNotification: (notification) {
         // Only trigger pagination when scrolling near the bottom
 
+        bool hasReachedEnd =
+            (context.read<MediaPickerCubit>().state.hasReachedEndPhotos &&
+                    widget.type == MediaType.image) ||
+                (context.read<MediaPickerCubit>().state.hasReachedEndVideos &&
+                    widget.type == MediaType.video);
+
         if (notification is ScrollEndNotification &&
             notification.metrics.pixels >=
                 notification.metrics.maxScrollExtent * 0.8 &&
-            !context.read<MediaPickerCubit>().state.isLoading) {
-          // Check if not already loading
-
-          log("message: here");
+            !context.read<MediaPickerCubit>().state.isLoading &&
+            !hasReachedEnd) {
           context.read<MediaPickerCubit>().loadMoreMedia(type: widget.type);
         }
 

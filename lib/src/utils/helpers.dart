@@ -4,7 +4,8 @@ import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/widgets/media_grid.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums) async {
+Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums,
+    {bool merge = true}) async {
   // Fetch album details (names, sizes, thumbnails)
   List<MediaAlbum> mediaAlbums = await Future.wait(albums.map((album) async {
     String name = album.name;
@@ -12,8 +13,13 @@ Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums) async {
     AssetEntity? thumbnail =
         (await album.getAssetListRange(start: 0, end: 1)).firstOrNull;
 
-    return MediaAlbum(name: name, size: size, thumbnail: thumbnail);
+    return MediaAlbum(
+        id: album.id, name: name, size: size, thumbnail: thumbnail);
   }));
+
+  if (!merge) {
+    return mediaAlbums;
+  }
 
   // Merge albums with the same name (case insensitive)
   Map<String, MediaAlbum> mergedAlbumsMap = {};
@@ -25,6 +31,7 @@ Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums) async {
       // Merge size and keep the thumbnail of the first occurrence
       MediaAlbum existingAlbum = mergedAlbumsMap[lowerCaseName]!;
       mergedAlbumsMap[lowerCaseName] = MediaAlbum(
+        id: existingAlbum.id,
         name: existingAlbum.name, // Keep original case from the first entry
         size: existingAlbum.size + album.size,
         thumbnail: existingAlbum.thumbnail ?? album.thumbnail,

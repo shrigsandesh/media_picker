@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/helpers.dart';
 import 'package:media_picker/src/utils/utils.dart';
+import 'package:collection/collection.dart';
 
 import 'package:photo_manager/photo_manager.dart';
 
@@ -17,9 +18,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
         type: determineMediaType(mediaType));
-    albums.toSet().toList();
 
-    final mergedAlbums = await filterAlbum(albums);
+    final filterdAlbums = await filterAlbum(albums, merge: false);
 
     if (albums.isEmpty) {
       emit(state.copyWith(isLoading: false));
@@ -30,7 +30,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
 
     emit(state.copyWith(
-        albums: mergedAlbums,
+        albums: filterdAlbums,
         media: mediaContent,
         currentPage: state.currentPage + 1,
         isLoading: false));
@@ -44,33 +44,46 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     List<AssetPathEntity> albums =
         await PhotoManager.getAssetPathList(type: determineMediaType([type]));
 
-    final mergedAlbums = await filterAlbum(albums);
+    AssetPathEntity? currentAlbum = albums.firstWhereOrNull(
+      (album) => album.name == state.media.name,
+    );
 
-    final int count = await albums[0].assetCountAsync;
+    if (currentAlbum == null) {
+      emit(state.copyWith(
+        isLoading: false,
+        isPaginating: false,
+        hasReachedEndPhotos:
+            type == MediaType.image ? true : state.hasReachedEndPhotos,
+        hasReachedEndVideos:
+            type == MediaType.video ? true : state.hasReachedEndVideos,
+      ));
+      return;
+    }
 
-    var allMedia = await albums[0].getAssetListPaged(
+    var allMedia = await currentAlbum.getAssetListPaged(
       page: state.currentPage,
       size: pageSize,
     );
 
-    var mediaContent = MediaContent.fromAssetEntity(allMedia, albums[0].name);
+    var mediaContent = MediaContent.fromAssetEntity(allMedia, state.media.name);
+    final bool isVideoEnd = type == MediaType.video &&
+        (mediaContent.videoSize < pageSize || allMedia.isEmpty);
+    final bool isPhotoEnd = type == MediaType.image &&
+        (mediaContent.photoSize < pageSize || allMedia.isEmpty);
 
-    emit(state.copyWith(
-        albums: mergedAlbums,
-        media: mediaContent.copyWith(
-          photos: [...state.media.photos, ...mediaContent.photos],
-          videos: [...state.media.videos, ...mediaContent.videos],
-          common: [...state.media.common, ...mediaContent.common],
-        ),
-        hasReachedEndPhotos: type == MediaType.image
-            ? count < pageSize
-            : state.hasReachedEndPhotos,
-        hasReachedEndVideos: type == MediaType.video
-            ? count < pageSize
-            : state.hasReachedEndPhotos,
-        currentPage: state.currentPage + 1,
-        isLoading: false,
-        isPaginating: false));
+    emit(
+      state.copyWith(
+          media: mediaContent.copyWith(
+            photos: [...state.media.photos, ...mediaContent.photos],
+            videos: [...state.media.videos, ...mediaContent.videos],
+            common: [...state.media.common, ...mediaContent.common],
+          ),
+          hasReachedEndPhotos: isPhotoEnd ? true : state.hasReachedEndPhotos,
+          hasReachedEndVideos: isVideoEnd ? true : state.hasReachedEndVideos,
+          currentPage: state.currentPage + 1,
+          isLoading: false,
+          isPaginating: false),
+    );
   }
 
   bool _shouldStopLoading(MediaType type) {
@@ -81,27 +94,51 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
             state.hasReachedEndVideos);
   }
 
-  void changeAlbum(String albumName) async {
-    if (albumName == state.media.name) {
+  void changeAlbum(MediaAlbum singleAlbum, [int pageSize = 40]) async {
+    if (singleAlbum.name == state.media.name &&
+        singleAlbum.name.toLowerCase().contains('recent')) {
       return;
     }
     emit(state.copyWith(isLoading: true));
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList();
 
-    var newList = albums.where((e) {
-      return e.name == albumName;
-    }).toList();
+    AssetPathEntity? currentAlbum = albums.firstWhere(
+      (album) => album.name == singleAlbum.name && singleAlbum.id == album.id,
+    );
 
-    List<AssetEntity> allAsset = [];
+    emit(state.copyWith(currentPage: 0));
+    var allMedia = await currentAlbum.getAssetListPaged(
+      page: 0,
+      size: pageSize,
+    );
 
-    for (var item in newList) {
-      int end = await item.assetCountAsync;
-      var asset = await item.getAssetListRange(start: 0, end: end);
-      allAsset.addAll(asset);
+    if (allMedia.isEmpty) {
+      emit(state.copyWith(
+        isLoading: false,
+        hasReachedEndPhotos: state.currentMediaTye == MediaType.image
+            ? true
+            : state.hasReachedEndPhotos,
+        hasReachedEndVideos: state.currentMediaTye == MediaType.video
+            ? true
+            : state.hasReachedEndVideos,
+      ));
+      return;
     }
 
-    var mediaContent = MediaContent.fromAssetEntity(allAsset, newList[0].name);
-    emit(state.copyWith(media: mediaContent, isLoading: false));
+    var mediaContent = MediaContent.fromAssetEntity(allMedia, singleAlbum.name);
+    emit(
+      state.copyWith(
+        media: mediaContent,
+        isLoading: false,
+        currentPage: state.currentPage + 1,
+        hasReachedEndPhotos: (mediaContent.photoSize < pageSize &&
+                state.currentMediaTye == MediaType.image) ||
+            mediaContent.photos.isEmpty,
+        hasReachedEndVideos: (mediaContent.videoSize < pageSize &&
+                state.currentMediaTye == MediaType.video) ||
+            mediaContent.videos.isEmpty,
+      ),
+    );
   }
 
   void addPickedFiles(AssetEntity video) {

@@ -366,8 +366,8 @@ class MediaPickerAppBarSection extends StatelessWidget {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
       builder: (context, state) {
         return MediaAppBar(
-          onChanged: (albumName) =>
-              context.read<MediaPickerCubit>().changeAlbum(albumName),
+          onChanged: (album) =>
+              context.read<MediaPickerCubit>().changeAlbum(album),
           mediaAlbum: state.albums,
           albumDropdownColor: albumDropdownColor,
           albumTile: albumTile,
