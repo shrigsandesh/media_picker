@@ -60,7 +60,7 @@ class MediaContent extends Equatable {
   }
 
   static const initial = MediaContent(
-    name: "All",
+    name: "Recent",
     common: [],
     videos: [],
     photos: [],

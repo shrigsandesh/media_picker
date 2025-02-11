@@ -73,7 +73,7 @@ class _AssetThumbnailState extends State<AssetThumbnail>
               borderRadius: BorderRadius.circular(widget.borderRadius ?? 1),
               child: Image(
                 image: imageProvider!,
-                filterQuality: FilterQuality.low,
+                filterQuality: FilterQuality.medium,
                 fit: BoxFit.cover,
                 height: _thumbnailSize.height.toDouble(),
                 width: _thumbnailSize.width.toDouble(),

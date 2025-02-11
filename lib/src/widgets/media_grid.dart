@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:media_picker/src/widgets/asset_thumbnail.dart';
+import 'package:media_picker/src/widgets/widgets_.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaGrid extends StatefulWidget {
@@ -68,8 +68,9 @@ class _MediaGridState extends State<MediaGrid> {
         builder: (context, state) {
           if (state.isLoading && widget.medias.isEmpty) {
             return const Center(
-              child: CircularProgressIndicator(),
-            );
+                child: ThumbnailSkeleton(
+              borderRadius: 12.0,
+            ));
           }
           return GridView.builder(
             padding: widget.contentPadding ??
@@ -83,7 +84,7 @@ class _MediaGridState extends State<MediaGrid> {
             itemBuilder: (context, index) {
               if (index == widget.medias.length) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: ThumbnailSkeleton(borderRadius: 12.0),
                 );
               }
               final video = widget.medias[index];
