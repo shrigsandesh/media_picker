@@ -1,69 +1,94 @@
 part of 'media_picker_cubit.dart';
 
 class MediaPickerState extends Equatable {
-  final bool isLoading;
   final List<MediaAlbum> albums;
   final MediaContent media;
-  final List<AssetEntity> pickedFiles;
+  final int currentPage;
+  final bool isLoading;
   final bool isPaginating;
+
   final bool hasReachedEndPhotos;
   final bool hasReachedEndVideos;
-
-  final List<AssetEntity> paginatedMedias;
-
-  final int currentPage;
+  final bool hasReachedEndCommon;
+  final List<AssetEntity> pickedFiles;
   final MediaType currentMediaTye;
   final int pageSize;
+  final MediaAlbum currentAlubm;
+  final String error;
 
   const MediaPickerState({
-    this.isLoading = false,
     this.albums = const [],
     this.media = MediaContent.initial,
-    this.pickedFiles = const [],
+    this.currentPage = 0,
+    this.isLoading = false,
     this.isPaginating = false,
     this.hasReachedEndPhotos = false,
     this.hasReachedEndVideos = false,
-    this.paginatedMedias = const [],
-    this.currentPage = 0,
+    this.hasReachedEndCommon = false,
+    this.pickedFiles = const [],
     this.currentMediaTye = MediaType.common,
     this.pageSize = 40,
+    this.error = "",
+    this.currentAlubm = const MediaAlbum(id: "", name: "Recent", size: 0),
   });
 
   MediaPickerState copyWith({
-    bool? isLoading,
     List<MediaAlbum>? albums,
     MediaContent? media,
-    List<AssetEntity>? pickedFiles,
+    int? currentPage,
+    bool? isLoading,
     bool? isPaginating,
     bool? hasReachedEndPhotos,
     bool? hasReachedEndVideos,
-    List<AssetEntity>? paginatedMedias,
-    int? currentPage,
-    List<AssetPathEntity>? albumsPaths,
+    bool? hasReachedEndCommon,
+    List<AssetEntity>? pickedFiles,
     MediaType? currentMediaTye,
+    int? pageSize,
+    MediaAlbum? currentAlubm,
+    String? error,
   }) {
     return MediaPickerState(
-        isLoading: isLoading ?? this.isLoading,
-        albums: albums ?? this.albums,
-        media: media ?? this.media,
-        pickedFiles: pickedFiles ?? this.pickedFiles,
-        isPaginating: isPaginating ?? this.isPaginating,
-        hasReachedEndPhotos: hasReachedEndPhotos ?? this.hasReachedEndPhotos,
-        hasReachedEndVideos: hasReachedEndVideos ?? this.hasReachedEndVideos,
-        currentPage: currentPage ?? this.currentPage,
-        currentMediaTye: currentMediaTye ?? this.currentMediaTye);
+      albums: albums ?? this.albums,
+      media: media ?? this.media,
+      currentPage: currentPage ?? this.currentPage,
+      isLoading: isLoading ?? this.isLoading,
+      isPaginating: isPaginating ?? this.isPaginating,
+      hasReachedEndPhotos: hasReachedEndPhotos ?? this.hasReachedEndPhotos,
+      hasReachedEndVideos: hasReachedEndVideos ?? this.hasReachedEndVideos,
+      hasReachedEndCommon: hasReachedEndCommon ?? this.hasReachedEndCommon,
+      pickedFiles: pickedFiles ?? this.pickedFiles,
+      currentMediaTye: currentMediaTye ?? this.currentMediaTye,
+      pageSize: pageSize ?? this.pageSize,
+      currentAlubm: currentAlubm ?? this.currentAlubm,
+      error: error ?? this.error,
+    );
+  }
+
+  bool get hasReachedEnd {
+    switch (currentMediaTye) {
+      case MediaType.image:
+        return hasReachedEndPhotos;
+      case MediaType.video:
+        return hasReachedEndVideos;
+      case MediaType.common:
+        return hasReachedEndCommon;
+    }
   }
 
   @override
   List<Object> get props => [
-        isLoading,
         albums,
         media,
-        pickedFiles,
+        currentPage,
+        isLoading,
+        isPaginating,
         hasReachedEndPhotos,
         hasReachedEndVideos,
-        isPaginating,
-        currentPage,
+        hasReachedEndCommon,
+        pickedFiles,
         currentMediaTye,
+        pageSize,
+        currentAlubm,
+        error,
       ];
 }

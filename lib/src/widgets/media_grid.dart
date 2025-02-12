@@ -17,7 +17,7 @@ class MediaGrid extends StatefulWidget {
     this.thumbnailShimmer,
     this.checkedIconColor,
     this.contentPadding,
-    this.pageSize,
+    required this.pageSize,
     required this.type,
   });
   final List<AssetEntity> medias;
@@ -29,7 +29,7 @@ class MediaGrid extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
-  final int? pageSize;
+  final int pageSize;
   final MediaType type;
 
   @override
@@ -46,20 +46,17 @@ class _MediaGridState extends State<MediaGrid> {
     }
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
-        // Only trigger pagination when scrolling near the bottom
-
         bool hasReachedEnd =
-            (context.read<MediaPickerCubit>().state.hasReachedEndPhotos &&
-                    widget.type == MediaType.image) ||
-                (context.read<MediaPickerCubit>().state.hasReachedEndVideos &&
-                    widget.type == MediaType.video);
+            context.read<MediaPickerCubit>().state.hasReachedEnd;
 
         if (notification is ScrollEndNotification &&
             notification.metrics.pixels >=
                 notification.metrics.maxScrollExtent * 0.8 &&
             !context.read<MediaPickerCubit>().state.isLoading &&
             !hasReachedEnd) {
-          context.read<MediaPickerCubit>().loadMoreMedia(type: widget.type);
+          context
+              .read<MediaPickerCubit>()
+              .loadMoreMedia(type: widget.type, pageSize: widget.pageSize);
         }
 
         return false;

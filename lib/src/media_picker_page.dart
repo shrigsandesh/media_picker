@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/utils/helpers.dart';
 
@@ -26,7 +27,6 @@ class MediaPickerPage extends StatefulWidget {
     required this.popWhenSingleMediaSelected,
     this.contentPadding,
     this.albumDropdownButtonBuilder,
-    required this.paginate,
     required this.pageSize,
   });
 
@@ -49,7 +49,6 @@ class MediaPickerPage extends StatefulWidget {
   final AlbumTileBuilder? albumTileBuilder;
   final AlbumDropdownButtonBuilder? albumDropdownButtonBuilder;
 
-  final bool paginate;
   final int pageSize;
 
   @override
@@ -109,7 +108,6 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               thumbnailShimmer: widget.thumbnailShimmer,
               checkedIconColor: widget.checkedIconColor,
               contentPadding: widget.contentPadding,
-              paginate: widget.paginate,
               pageSize: widget.pageSize,
             ),
             Positioned(
@@ -123,6 +121,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               albumDropdownColor: widget.dropdownColor,
               albumTile: widget.albumTileBuilder,
               albumButtonBuilder: widget.albumDropdownButtonBuilder,
+              pageSize: widget.pageSize,
             ),
           ],
         ),
@@ -145,7 +144,6 @@ class MediaContent extends StatelessWidget {
     this.thumbnailShimmer,
     this.checkedIconColor,
     this.contentPadding,
-    required this.paginate,
     required this.pageSize,
   });
 
@@ -161,7 +159,6 @@ class MediaContent extends StatelessWidget {
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
 
-  final bool paginate;
   final int pageSize;
 
   @override
@@ -187,7 +184,6 @@ class MediaContent extends StatelessWidget {
             thumbnailShimmer: thumbnailShimmer,
             checkedIconColor: checkedIconColor,
             contentPadding: contentPadding,
-            paginate: paginate,
             pageSize: pageSize,
           ),
         ],
@@ -245,7 +241,6 @@ class MediaTabContent extends StatelessWidget {
     this.thumbnailShimmer,
     this.checkedIconColor,
     this.contentPadding,
-    required this.paginate,
     required this.pageSize,
   });
 
@@ -259,7 +254,6 @@ class MediaTabContent extends StatelessWidget {
   final Widget? loading;
   final Widget? thumbnailShimmer;
   final Color? checkedIconColor;
-  final bool paginate;
   final int pageSize;
 
   @override
@@ -298,16 +292,16 @@ class MediaTabContent extends StatelessWidget {
             children: mediaTypes
                 .map(
                   (mediaType) => getTabContent(
-                    mediaType: mediaType,
-                    content: state.media,
-                    allowMultiple: allowMultiple,
-                    thumbnailBorderRadius: thumbnailBorderRadius,
-                    mediaGridMargin: mediaGridMargin,
-                    onSingleFileSelection: onSingleFileSelection,
-                    thumbnailShimmer: thumbnailShimmer,
-                    checkedIconColor: checkedIconColor,
-                    contentPadding: contentPadding,
-                  ),
+                      mediaType: mediaType,
+                      content: state.media,
+                      allowMultiple: allowMultiple,
+                      thumbnailBorderRadius: thumbnailBorderRadius,
+                      mediaGridMargin: mediaGridMargin,
+                      onSingleFileSelection: onSingleFileSelection,
+                      thumbnailShimmer: thumbnailShimmer,
+                      checkedIconColor: checkedIconColor,
+                      contentPadding: contentPadding,
+                      pageSize: pageSize),
                 )
                 .toList(),
           ),
@@ -355,11 +349,13 @@ class MediaPickerAppBarSection extends StatelessWidget {
     this.albumDropdownColor,
     this.albumTile,
     this.albumButtonBuilder,
+    required this.pageSize,
   });
 
   final Color? albumDropdownColor;
   final AlbumTileBuilder? albumTile;
   final AlbumDropdownButtonBuilder? albumButtonBuilder;
+  final int pageSize;
 
   @override
   Widget build(BuildContext context) {
@@ -367,7 +363,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
       builder: (context, state) {
         return MediaAppBar(
           onChanged: (album) =>
-              context.read<MediaPickerCubit>().changeAlbum(album),
+              context.read<MediaPickerCubit>().changeAlbum(album, pageSize),
           mediaAlbum: state.albums,
           albumDropdownColor: albumDropdownColor,
           albumTile: albumTile,

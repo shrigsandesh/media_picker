@@ -1,27 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:media_picker/src/constants/enums.dart';
+import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_wrapper.dart';
-import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
-
-enum MediaType { common, image, video }
-
-typedef PickedMediaCallback = void Function(List<AssetEntity> assetEntity);
-typedef AlbumDropdownButtonBuilder = Widget Function(
-  String selectedAlbumName,
-  bool isDropdownShown,
-);
-
-typedef PickedMediaBottomSheetBuilder = Widget Function(
-  BuildContext context,
-  List<AssetEntity> albums,
-);
-
-typedef AlbumTileBuilder = Widget Function(
-  BuildContext context,
-  MediaAlbum album,
-);
 
 Future<void> showMediaPicker({
   required BuildContext context,
@@ -43,8 +26,7 @@ Future<void> showMediaPicker({
   AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
-  bool isPaginating = false,
-  int pageSize = 20,
+  int? pageSize,
 }) async {
   if (mediaTypes != null) {
     assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
@@ -72,8 +54,7 @@ Future<void> showMediaPicker({
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
             contentPadding: contentPadding,
             albumDropdownButtonBuilder: albumDropdownButtonBuilder,
-            paginate: isPaginating,
-            pageSize: pageSize,
+            pageSize: pageSize ?? 40,
           ),
         ),
       );

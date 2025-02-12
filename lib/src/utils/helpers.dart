@@ -76,17 +76,17 @@ String getTabTitle(MediaType mediaType, TabLabels? tablable) {
   }
 }
 
-Widget getTabContent({
-  required MediaType mediaType,
-  required MediaContent content,
-  required bool allowMultiple,
-  double? thumbnailBorderRadius,
-  EdgeInsetsGeometry? mediaGridMargin,
-  void Function(AssetEntity)? onSingleFileSelection,
-  Widget? thumbnailShimmer,
-  Color? checkedIconColor,
-  final EdgeInsetsGeometry? contentPadding,
-}) {
+Widget getTabContent(
+    {required MediaType mediaType,
+    required MediaContent content,
+    required bool allowMultiple,
+    double? thumbnailBorderRadius,
+    EdgeInsetsGeometry? mediaGridMargin,
+    void Function(AssetEntity)? onSingleFileSelection,
+    Widget? thumbnailShimmer,
+    Color? checkedIconColor,
+    EdgeInsetsGeometry? contentPadding,
+    required int pageSize}) {
   switch (mediaType) {
     case MediaType.common:
       return MediaGrid(
@@ -100,6 +100,7 @@ Widget getTabContent({
         checkedIconColor: checkedIconColor,
         contentPadding: contentPadding,
         type: mediaType,
+        pageSize: pageSize,
       );
     case MediaType.image:
       return MediaGrid(
@@ -113,6 +114,7 @@ Widget getTabContent({
         checkedIconColor: checkedIconColor,
         contentPadding: contentPadding,
         type: mediaType,
+        pageSize: pageSize,
       );
     case MediaType.video:
       return MediaGrid(
@@ -126,6 +128,14 @@ Widget getTabContent({
         checkedIconColor: checkedIconColor,
         contentPadding: contentPadding,
         type: mediaType,
+        pageSize: pageSize,
       );
+  }
+}
+
+extension AssetEntityListExtensions on List<AssetEntity> {
+  void sortByCreateDateDescending() {
+    sort(
+        (a, b) => (b.createDateSecond ?? 0).compareTo(a.createDateSecond ?? 0));
   }
 }

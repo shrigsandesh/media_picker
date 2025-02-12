@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_page.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 
@@ -23,7 +24,6 @@ class MediaPickerPageWrapper extends StatelessWidget {
     this.pickedMediaBottomSheet,
     this.albumTileBuilder,
     this.albumDropdownButtonBuilder,
-    required this.paginate,
     required this.pageSize,
   });
 
@@ -46,13 +46,13 @@ class MediaPickerPageWrapper extends StatelessWidget {
   final AlbumTileBuilder? albumTileBuilder;
   final AlbumDropdownButtonBuilder? albumDropdownButtonBuilder;
 
-  final bool paginate;
   final int pageSize;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MediaPickerCubit()..loadMedia(mediaTypes),
+      create: (context) => MediaPickerCubit()
+        ..loadMedia(mediaType: mediaTypes, pageSize: pageSize),
       child: MediaPickerPage(
         allowMultiple: allowMultiple,
         tabBarDecoration: tabBarDecoration,
@@ -70,7 +70,6 @@ class MediaPickerPageWrapper extends StatelessWidget {
         popWhenSingleMediaSelected: popWhenSingleMediaSelected,
         contentPadding: contentPadding,
         albumDropdownButtonBuilder: albumDropdownButtonBuilder,
-        paginate: paginate,
         pageSize: pageSize,
       ),
     );

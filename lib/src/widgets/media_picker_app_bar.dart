@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/model/media_model.dart';
-import 'package:media_picker/src/utils/utils.dart';
 import 'package:media_picker/src/widgets/animated_expand_icon.dart';
 import 'package:media_picker/src/widgets/asset_thumbnail.dart';
 
@@ -111,9 +111,8 @@ class _MediaAppBarState extends State<MediaAppBar> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(4),
-                              child: SizedBox(
-                                height: 80,
-                                width: 80,
+                              child: SizedBox.square(
+                                dimension: 80,
                                 child: AssetThumbnail(
                                     asset: widget.mediaAlbum[index].thumbnail),
                               ),

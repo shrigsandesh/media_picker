@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:media_picker/media_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaData extends Equatable {
@@ -71,6 +72,21 @@ class MediaContent extends Equatable {
 
   @override
   bool get stringify => true;
+}
+
+extension MediaContentExtensions on MediaContent {
+  bool isVideoEnd(int pageSize, MediaType type) {
+    return type == MediaType.video && (videoSize < pageSize || videos.isEmpty);
+  }
+
+  bool isPhotoEnd(int pageSize, MediaType type) {
+    return type == MediaType.image && (photoSize < pageSize || photos.isEmpty);
+  }
+
+  bool isCommonEnd(int pageSize, MediaType type) {
+    return type == MediaType.common &&
+        (commonSize < pageSize || common.isEmpty);
+  }
 }
 
 class MediaAlbum extends Equatable {
