@@ -52,6 +52,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  int sortScreenshotAlbumsFirst(AssetPathEntity a, AssetPathEntity b) {
+    const screenshotName = "Screenshots";
+
+    if (a.name == screenshotName && b.name != screenshotName) {
+      return -1; // a comes before b
+    } else if (a.name != screenshotName && b.name == screenshotName) {
+      return 1; // b comes before a
+    } else {
+      return a.name.compareTo(b.name); // fallback to alphabetical order
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text("data: ${alubms.name}"),
                       );
                     },
+                    sortFunction: sortScreenshotAlbumsFirst,
                     crossAxisCount: 4,
                     pageSize: 50);
               },
