@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_wrapper.dart';
@@ -27,6 +28,7 @@ Future<void> showMediaPicker({
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
   int? pageSize,
+  int? crossAxisCount,
 }) async {
   if (mediaTypes != null) {
     assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
@@ -54,7 +56,8 @@ Future<void> showMediaPicker({
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
             contentPadding: contentPadding,
             albumDropdownButtonBuilder: albumDropdownButtonBuilder,
-            pageSize: pageSize ?? 40,
+            pageSize: pageSize ?? defaultPageSize,
+            crossAxisCount: crossAxisCount,
           ),
         ),
       );

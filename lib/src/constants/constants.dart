@@ -6,3 +6,5 @@ const defaultMediaTypes = [
   MediaType.common,
 ];
 const int defaultPageSize = 40;
+
+const int defaultCrossAxisCount = 3;

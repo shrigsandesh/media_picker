@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -19,6 +20,7 @@ class MediaGrid extends StatefulWidget {
     this.contentPadding,
     required this.pageSize,
     required this.type,
+    this.crossAxisCount,
   });
   final List<AssetEntity> medias;
   final String name;
@@ -31,6 +33,7 @@ class MediaGrid extends StatefulWidget {
   final Color? checkedIconColor;
   final int pageSize;
   final MediaType type;
+  final int? crossAxisCount;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -72,8 +75,8 @@ class _MediaGridState extends State<MediaGrid> {
           return GridView.builder(
             padding: widget.contentPadding ??
                 const EdgeInsets.fromLTRB(0, 0, 0, 100),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, // Number of items per row
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: widget.crossAxisCount ?? defaultCrossAxisCount,
               childAspectRatio: 1.0,
             ),
             itemCount: widget.medias.length +

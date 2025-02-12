@@ -25,6 +25,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
     this.albumTileBuilder,
     this.albumDropdownButtonBuilder,
     required this.pageSize,
+    this.crossAxisCount,
   });
 
   final bool allowMultiple;
@@ -47,6 +48,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
   final AlbumDropdownButtonBuilder? albumDropdownButtonBuilder;
 
   final int pageSize;
+  final int? crossAxisCount;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +73,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
         contentPadding: contentPadding,
         albumDropdownButtonBuilder: albumDropdownButtonBuilder,
         pageSize: pageSize,
+        crossAxisCount: crossAxisCount,
       ),
     );
   }

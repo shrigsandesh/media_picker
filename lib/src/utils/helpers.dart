@@ -86,22 +86,23 @@ Widget getTabContent(
     Widget? thumbnailShimmer,
     Color? checkedIconColor,
     EdgeInsetsGeometry? contentPadding,
-    required int pageSize}) {
+    required int pageSize,
+    int? crossAxisCount}) {
   switch (mediaType) {
     case MediaType.common:
       return MediaGrid(
-        medias: content.common,
-        name: "media",
-        allowMultiple: allowMultiple,
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
-        contentPadding: contentPadding,
-        type: mediaType,
-        pageSize: pageSize,
-      );
+          medias: content.common,
+          name: "media",
+          allowMultiple: allowMultiple,
+          thumbnailBorderRadius: thumbnailBorderRadius,
+          mediaGridMargin: mediaGridMargin,
+          onSingleFileSelection: onSingleFileSelection,
+          thumbnailShimmer: thumbnailShimmer,
+          checkedIconColor: checkedIconColor,
+          contentPadding: contentPadding,
+          type: mediaType,
+          pageSize: pageSize,
+          crossAxisCount: crossAxisCount);
     case MediaType.image:
       return MediaGrid(
         medias: content.photos,
@@ -115,6 +116,7 @@ Widget getTabContent(
         contentPadding: contentPadding,
         type: mediaType,
         pageSize: pageSize,
+        crossAxisCount: crossAxisCount,
       );
     case MediaType.video:
       return MediaGrid(
@@ -129,6 +131,7 @@ Widget getTabContent(
         contentPadding: contentPadding,
         type: mediaType,
         pageSize: pageSize,
+        crossAxisCount: crossAxisCount,
       );
   }
 }
