@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
@@ -17,10 +19,17 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     List<MediaType> mediaType = defaultMediaTypes,
     int pageSize = defaultPageSize,
     MediaAlbum? album,
+    int Function(AssetPathEntity, AssetPathEntity)? sortFunction,
   }) async {
     emit(state.copyWith(isLoading: true, currentPage: 0));
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
         type: determineMediaType(mediaType));
+
+    if (sortFunction != null) {
+      log("message");
+      albums.sort(sortFunction);
+    }
+    log(albums.toString());
 
     final filterdAlbums = await filterAlbum(albums, merge: false);
 
@@ -44,11 +53,15 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       );
       mediaContent = MediaContent.fromAssetEntity(media, albums[0].name);
     } else {
+      List<AssetPathEntity> tempAlbum = [];
       for (var type in mediaType) {
         switch (type) {
           case MediaType.image:
-            List<AssetPathEntity> tempAlbum =
+            tempAlbum =
                 await PhotoManager.getAssetPathList(type: RequestType.image);
+            if (sortFunction != null) {
+              tempAlbum.sort(sortFunction);
+            }
 
             if (album != null) {
               tempAlbum = tempAlbum
@@ -65,8 +78,11 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
               size: pageSize,
             );
           case MediaType.video:
-            List<AssetPathEntity> tempAlbum =
+            tempAlbum =
                 await PhotoManager.getAssetPathList(type: RequestType.video);
+            if (sortFunction != null) {
+              tempAlbum.sort(sortFunction);
+            }
 
             if (album != null) {
               tempAlbum = tempAlbum
@@ -84,8 +100,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
             );
             break;
           case MediaType.common:
-            List<AssetPathEntity> tempAlbum =
+            tempAlbum =
                 await PhotoManager.getAssetPathList(type: RequestType.common);
+
+            if (sortFunction != null) {
+              tempAlbum.sort(sortFunction);
+            }
 
             if (album != null) {
               tempAlbum = tempAlbum
@@ -104,8 +124,11 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
             break;
         }
       }
+
+      log("temp album : ${tempAlbum[0].name}");
       mediaContent = MediaContent(
-        name: album?.name ?? albums[0].name,
+        name: album?.name ??
+            (tempAlbum.isNotEmpty ? tempAlbum[0].name : 'Recent'),
         common: common,
         photos: photos,
         videos: videos,

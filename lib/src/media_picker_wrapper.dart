@@ -26,6 +26,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
     this.albumDropdownButtonBuilder,
     required this.pageSize,
     this.crossAxisCount,
+    required this.sortFunction,
   });
 
   final bool allowMultiple;
@@ -49,12 +50,17 @@ class MediaPickerPageWrapper extends StatelessWidget {
 
   final int pageSize;
   final int? crossAxisCount;
+  final SortFunction? sortFunction;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => MediaPickerCubit()
-        ..loadMedia(mediaType: mediaTypes, pageSize: pageSize),
+        ..loadMedia(
+          mediaType: mediaTypes,
+          pageSize: pageSize,
+          sortFunction: sortFunction,
+        ),
       child: MediaPickerPage(
         allowMultiple: allowMultiple,
         tabBarDecoration: tabBarDecoration,

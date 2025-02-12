@@ -29,6 +29,7 @@ Future<void> showMediaPicker({
       transitionBuilder,
   int? pageSize,
   int? crossAxisCount,
+  SortFunction? sortFunction,
 }) async {
   if (mediaTypes != null) {
     assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
@@ -58,6 +59,7 @@ Future<void> showMediaPicker({
             albumDropdownButtonBuilder: albumDropdownButtonBuilder,
             pageSize: pageSize ?? defaultPageSize,
             crossAxisCount: crossAxisCount,
+            sortFunction: sortFunction,
           ),
         ),
       );

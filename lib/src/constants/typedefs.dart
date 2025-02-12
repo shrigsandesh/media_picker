@@ -4,6 +4,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 typedef PickedMediaCallback = void Function(List<AssetEntity> assetEntity);
 typedef AlbumDropdownButtonBuilder = Widget Function(
+  bool isLoading,
   String selectedAlbumName,
   bool isDropdownShown,
 );
@@ -17,3 +18,5 @@ typedef AlbumTileBuilder = Widget Function(
   BuildContext context,
   MediaAlbum album,
 );
+
+typedef SortFunction = int Function(AssetPathEntity, AssetPathEntity);

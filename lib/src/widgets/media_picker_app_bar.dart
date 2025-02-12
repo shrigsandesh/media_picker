@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
+import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/widgets/animated_expand_icon.dart';
 import 'package:media_picker/src/widgets/asset_thumbnail.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class MediaAppBar extends StatefulWidget {
   const MediaAppBar(
@@ -25,8 +28,12 @@ class MediaAppBar extends StatefulWidget {
 
 class _MediaAppBarState extends State<MediaAppBar> {
   bool _isExpanded = false;
-  late String _selected =
-      widget.mediaAlbum.isNotEmpty ? widget.mediaAlbum.first.name : "Recent";
+  String? _selected;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -52,35 +59,44 @@ class _MediaAppBarState extends State<MediaAppBar> {
                     },
                     child: const Icon(Icons.close),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      if (widget.mediaAlbum.isEmpty) return;
-                      setState(() {
-                        _isExpanded = !_isExpanded;
-                      });
-                    },
-                    child: widget.albumButtonBuilder != null
-                        ? widget.albumButtonBuilder!(_selected, _isExpanded)
-                        : Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                                color: const Color(0xFFD3D3D3),
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Row(
-                              children: [
-                                Text(
-                                  _selected,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                  GestureDetector(onTap: () {
+                    if (widget.mediaAlbum.isEmpty) return;
+                    setState(() {
+                      _isExpanded = !_isExpanded;
+                    });
+                  }, child: SizedBox(
+                    child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
+                      builder: (context, state) {
+                        return widget.albumButtonBuilder != null
+                            ? widget.albumButtonBuilder!(
+                                state.isLoading, _selected ?? '', _isExpanded)
+                            : Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                    color: const Color(0xFFD3D3D3),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Row(
+                                  children: [
+                                    Skeletonizer(
+                                      enabled: state.isLoading &&
+                                          state.albums.isEmpty,
+                                      child: Text(
+                                        _selected ?? state.media.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    AnimatedExpansionIcon(
+                                        isExpanded: _isExpanded),
+                                  ],
                                 ),
-                                const SizedBox(width: 5),
-                                AnimatedExpansionIcon(isExpanded: _isExpanded),
-                              ],
-                            ),
-                          ),
-                  ),
+                              );
+                      },
+                    ),
+                  )),
                   const SizedBox.shrink(),
                 ],
               ),
@@ -95,7 +111,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                       _selected = widget.mediaAlbum[index].name;
                       widget.onChanged(MediaAlbum(
                           id: widget.mediaAlbum[index].id,
-                          name: _selected,
+                          name: _selected ?? '',
                           size: widget.mediaAlbum[index].size));
                       _isExpanded = false;
                     });
