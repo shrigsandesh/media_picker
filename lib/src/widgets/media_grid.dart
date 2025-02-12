@@ -142,10 +142,22 @@ class _MediaGridState extends State<MediaGrid> {
                             Positioned(
                                 bottom: 2,
                                 right: 2,
-                                child: Text(
-                                  formatTime(video.duration),
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 14),
+                                child: Row(
+                                  spacing: 4.0,
+                                  children: [
+                                    Icon(
+                                      Icons.videocam,
+                                      size: 18,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      formatTime(video.duration),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
                                 ))
                         ],
                       ),
