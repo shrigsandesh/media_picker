@@ -78,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                     }
                   },
+                  mediaTypes: {
+                    MediaType.image,
+                  },
                   albumTileBuilder: (context, alubms) {
                     return Container(
                       color: Colors.green,
@@ -125,10 +128,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   mediaTypes: {
                     MediaType.common,
                     MediaType.video,
-                    MediaType.image
+                    MediaType.image,
                   },
-                  isPaginating: true,
-                  pageSize: 10,
+                  pageSize: 20,
                   onMediaPicked: (assetEntity) {},
                 );
               },
