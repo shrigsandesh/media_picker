@@ -65,29 +65,30 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () async {
                 showMediaPicker(
-                  context: context,
-                  transitionBuilder: slideTransitionBuilder,
-                  onMediaPicked: (assetEntity) async {
-                    if (assetEntity.isNotEmpty) {
-                      final file = await assetEntity.first.file;
-                      if (mounted) {
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NextPage(file: file!),
-                        ));
+                    context: context,
+                    transitionBuilder: slideTransitionBuilder,
+                    onMediaPicked: (assetEntity) async {
+                      if (assetEntity.isNotEmpty) {
+                        final file = await assetEntity.first.file;
+                        if (mounted) {
+                          // ignore: use_build_context_synchronously
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NextPage(file: file!),
+                          ));
+                        }
                       }
-                    }
-                  },
-                  mediaTypes: {
-                    MediaType.image,
-                  },
-                  albumTileBuilder: (context, alubms) {
-                    return Container(
-                      color: Colors.green,
-                      child: Text("data: ${alubms.name}"),
-                    );
-                  },
-                );
+                    },
+                    mediaTypes: {
+                      MediaType.image,
+                    },
+                    albumTileBuilder: (context, alubms) {
+                      return Container(
+                        color: Colors.green,
+                        child: Text("data: ${alubms.name}"),
+                      );
+                    },
+                    crossAxisCount: 4,
+                    pageSize: 50);
               },
               child: const Text("Pick Photos"),
             ),
