@@ -26,10 +26,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         type: determineMediaType(mediaType));
 
     if (sortFunction != null) {
-      log("message");
       albums.sort(sortFunction);
     }
-    log(albums.toString());
 
     final filterdAlbums = await filterAlbum(albums, merge: false);
 
@@ -125,7 +123,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         }
       }
 
-      log("temp album : ${tempAlbum[0].name}");
       mediaContent = MediaContent(
         name: album?.name ??
             (tempAlbum.isNotEmpty ? tempAlbum[0].name : 'Recent'),
