@@ -83,7 +83,7 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `transitionBuilder`      | `Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?`               | Custom transition builder for the navigation.                                                                                               |
 | `popWhenSingleMediaSelected`              | `bool` (default: `true`) |                                   Whether to pop media picker page after single media file is picked (Ignored if  `allowMultiple`is set to `true`.)  |
 | `contentPadding`              | `EdgeInsetsGeometry?` | Padding around the media grid  |
-| `pageSize`               | `int` (default: `50`)  | Number of media items to load per page.  |
+| `pageSize`               | `int` (default: `40`)  | Number of media items to load per page.  |
 
 
 ## Dependencies
