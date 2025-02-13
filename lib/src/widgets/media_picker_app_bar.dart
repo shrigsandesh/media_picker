@@ -14,13 +14,15 @@ class MediaAppBar extends StatefulWidget {
       required this.onChanged,
       this.albumDropdownColor,
       this.albumTile,
-      this.albumButtonBuilder});
+      this.albumButtonBuilder,
+      this.dropdownButtonColor});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(MediaAlbum) onChanged;
   final Color? albumDropdownColor;
   final AlbumTileBuilder? albumTile;
   final AlbumDropdownButtonBuilder? albumButtonBuilder;
+  final Color? dropdownButtonColor;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -74,7 +76,8 @@ class _MediaAppBarState extends State<MediaAppBar> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 2),
                                 decoration: BoxDecoration(
-                                    color: const Color(0xFFD3D3D3),
+                                    color: widget.dropdownButtonColor ??
+                                        const Color(0xFFD3D3D3),
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Row(
                                   children: [

@@ -148,7 +148,7 @@ class _MediaGridState extends State<MediaGrid> {
                                 child: Row(
                                   spacing: 4.0,
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.videocam,
                                       size: 18,
                                       color: Colors.white,
