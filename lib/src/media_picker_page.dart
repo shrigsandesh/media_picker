@@ -29,6 +29,7 @@ class MediaPickerPage extends StatefulWidget {
     this.albumDropdownButtonBuilder,
     required this.pageSize,
     this.crossAxisCount,
+    this.dropdownButtonColor,
   });
 
   final bool allowMultiple;
@@ -52,6 +53,7 @@ class MediaPickerPage extends StatefulWidget {
 
   final int pageSize;
   final int? crossAxisCount;
+  final Color? dropdownButtonColor;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -125,6 +127,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               albumTile: widget.albumTileBuilder,
               albumButtonBuilder: widget.albumDropdownButtonBuilder,
               pageSize: widget.pageSize,
+              dropdownButtonColor: widget.dropdownButtonColor,
             ),
           ],
         ),
@@ -364,12 +367,14 @@ class MediaPickerAppBarSection extends StatelessWidget {
     this.albumTile,
     this.albumButtonBuilder,
     required this.pageSize,
+    this.dropdownButtonColor,
   });
 
   final Color? albumDropdownColor;
   final AlbumTileBuilder? albumTile;
   final AlbumDropdownButtonBuilder? albumButtonBuilder;
   final int pageSize;
+  final Color? dropdownButtonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -382,6 +387,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
           albumDropdownColor: albumDropdownColor,
           albumTile: albumTile,
           albumButtonBuilder: albumButtonBuilder,
+          dropdownButtonColor: dropdownButtonColor,
         );
       },
     );

@@ -27,6 +27,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
     required this.pageSize,
     this.crossAxisCount,
     required this.sortFunction,
+    this.dropdownButtonColor,
   });
 
   final bool allowMultiple;
@@ -51,6 +52,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
   final int pageSize;
   final int? crossAxisCount;
   final SortFunction? sortFunction;
+  final Color? dropdownButtonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +82,7 @@ class MediaPickerPageWrapper extends StatelessWidget {
         albumDropdownButtonBuilder: albumDropdownButtonBuilder,
         pageSize: pageSize,
         crossAxisCount: crossAxisCount,
+        dropdownButtonColor: dropdownButtonColor,
       ),
     );
   }

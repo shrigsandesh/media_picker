@@ -7,30 +7,30 @@ import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-Future<void> showMediaPicker({
-  required BuildContext context,
-  required PickedMediaCallback onMediaPicked,
-  bool allowMultiple = false,
-  Color? albumDropdownColor,
-  TabBarDecoration? tabBarDecoration,
-  Set<MediaType>? mediaTypes,
-  Color? scaffoldBackgroundColor,
-  Color? checkedIconColor,
-  double? thumbnailBorderRadius,
-  EdgeInsetsGeometry? mediaGridMargin,
-  EdgeInsetsGeometry? contentPadding,
-  Widget? loading,
-  Widget? thumbnailLoader,
-  bool popWhenSingleMediaSelected = true,
-  PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
-  AlbumTileBuilder? albumTileBuilder,
-  AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
-  Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-      transitionBuilder,
-  int? pageSize,
-  int? crossAxisCount,
-  SortFunction? sortFunction,
-}) async {
+Future<void> showMediaPicker(
+    {required BuildContext context,
+    required PickedMediaCallback onMediaPicked,
+    bool allowMultiple = false,
+    Color? albumDropdownColor,
+    TabBarDecoration? tabBarDecoration,
+    Set<MediaType>? mediaTypes,
+    Color? scaffoldBackgroundColor,
+    Color? checkedIconColor,
+    double? thumbnailBorderRadius,
+    EdgeInsetsGeometry? mediaGridMargin,
+    EdgeInsetsGeometry? contentPadding,
+    Widget? loading,
+    Widget? thumbnailLoader,
+    bool popWhenSingleMediaSelected = true,
+    PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
+    AlbumTileBuilder? albumTileBuilder,
+    AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transitionBuilder,
+    int? pageSize,
+    int? crossAxisCount,
+    SortFunction? sortFunction,
+    Color? dropdownButtonColor}) async {
   if (mediaTypes != null) {
     assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
   }
@@ -60,6 +60,7 @@ Future<void> showMediaPicker({
             pageSize: pageSize ?? defaultPageSize,
             crossAxisCount: crossAxisCount,
             sortFunction: sortFunction,
+            dropdownButtonColor: dropdownButtonColor,
           ),
         ),
       );
