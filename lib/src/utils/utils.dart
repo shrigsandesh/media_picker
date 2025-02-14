@@ -57,7 +57,7 @@ Future<void> showMediaPicker(
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
             contentPadding: contentPadding,
             albumDropdownButtonBuilder: albumDropdownButtonBuilder,
-            pageSize: pageSize ?? defaultPageSize,
+            pageSize: pageSize ?? kPageSize,
             crossAxisCount: crossAxisCount,
             sortFunction: sortFunction,
             dropdownButtonColor: dropdownButtonColor,

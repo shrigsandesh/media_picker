@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/widgets/thumbnail_skeleton.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/foundation.dart';
 
 class AssetThumbnail extends StatefulWidget {
-  const AssetThumbnail(
-      {super.key,
-      this.asset,
-      this.thumbnailSize,
-      this.borderRadius,
-      this.showSkeleton = true,
-      this.thumbnailShimmer});
+  const AssetThumbnail({
+    super.key,
+    this.asset,
+    this.thumbnailSize,
+    this.borderRadius,
+    this.showSkeleton = true,
+    this.thumbnailShimmer,
+    this.thumbnailQuality = 100,
+    this.memoryCacheWidth,
+    this.memoryCacheHeight,
+  });
 
   final AssetEntity? asset;
   final ThumbnailSize? thumbnailSize;
   final double? borderRadius;
   final bool? showSkeleton;
   final Widget? thumbnailShimmer;
+  final int thumbnailQuality;
+  final int? memoryCacheWidth;
+  final int? memoryCacheHeight;
 
   @override
   State<AssetThumbnail> createState() => _AssetThumbnailState();
@@ -23,69 +32,77 @@ class AssetThumbnail extends StatefulWidget {
 
 class _AssetThumbnailState extends State<AssetThumbnail>
     with AutomaticKeepAliveClientMixin {
-  ImageProvider? imageProvider;
-  late ImageStreamListener _imageListener;
+  Future<Uint8List?>? _thumbnailFuture;
   bool isImageLoaded = false;
   late ThumbnailSize _thumbnailSize;
 
   @override
   void initState() {
     super.initState();
-    _thumbnailSize = widget.thumbnailSize ?? const ThumbnailSize.square(200);
-    loadThumbnailImage();
-  }
-
-  void loadThumbnailImage() async {
-    final thumbnailFuture = await widget.asset?.thumbnailDataWithSize(
-      _thumbnailSize,
-    );
-    if (thumbnailFuture == null) return;
-    imageProvider = MemoryImage(thumbnailFuture);
-    if (imageProvider == null) return;
-    final ImageStream stream = imageProvider!.resolve(ImageConfiguration.empty);
-    _imageListener = ImageStreamListener((info, __) {
-      if (mounted) {
-        setState(() {
-          isImageLoaded = true;
-        });
-      }
-    });
-    stream.addListener(_imageListener);
+    _thumbnailSize = widget.thumbnailSize ?? kThumbnailSize;
+    _loadThumbnail();
   }
 
   @override
-  void dispose() {
-    if (imageProvider != null) {
-      final ImageStream stream =
-          imageProvider!.resolve(ImageConfiguration.empty);
-      stream.removeListener(_imageListener);
+  void didUpdateWidget(AssetThumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.asset?.id != widget.asset?.id) {
+      _loadThumbnail();
     }
-    super.dispose();
+  }
+
+  void _loadThumbnail() {
+    if (widget.asset == null) return;
+
+    _thumbnailFuture = widget.asset!.thumbnailDataWithOption(
+      ThumbnailOption(
+        size: _thumbnailSize,
+        quality: widget.thumbnailQuality,
+        format: ThumbnailFormat.jpeg,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 400),
-      child: (imageProvider != null && isImageLoaded)
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? 1),
-              child: Image(
-                image: imageProvider!,
-                filterQuality: FilterQuality.medium,
-                fit: BoxFit.cover,
-                height: _thumbnailSize.height.toDouble(),
-                width: _thumbnailSize.width.toDouble(),
-              ),
-            )
-          : widget.showSkeleton == true
-              ? widget.thumbnailShimmer ??
-                  ThumbnailSkeleton(
-                    borderRadius: widget.borderRadius ?? 1,
-                    size: widget.thumbnailSize?.height.toDouble(),
-                  )
-              : const SizedBox.shrink(),
+
+    return FutureBuilder<Uint8List?>(
+      future: _thumbnailFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 1),
+            child: Image.memory(
+              snapshot.data!,
+              fit: BoxFit.cover,
+              height: _thumbnailSize.height.toDouble(),
+              width: _thumbnailSize.width.toDouble(),
+              gaplessPlayback: true,
+              cacheWidth: widget.memoryCacheWidth,
+              cacheHeight: widget.memoryCacheHeight,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (frame == null && widget.showSkeleton == true) {
+                  return widget.thumbnailShimmer ??
+                      ThumbnailSkeleton(
+                        borderRadius: widget.borderRadius ?? 1,
+                        size: widget.thumbnailSize?.height.toDouble(),
+                      );
+                }
+                return child;
+              },
+            ),
+          );
+        }
+
+        return widget.showSkeleton == true
+            ? widget.thumbnailShimmer ??
+                ThumbnailSkeleton(
+                  borderRadius: widget.borderRadius ?? 1,
+                  size: widget.thumbnailSize?.height.toDouble(),
+                )
+            : const SizedBox.shrink();
+      },
     );
   }
 

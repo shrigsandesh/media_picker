@@ -16,10 +16,11 @@ class LoadingGridShimmer extends StatelessWidget {
     return Skeletonizer(
       child: GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount ?? defaultCrossAxisCount),
-        itemCount: pageSize ?? defaultPageSize,
+            crossAxisCount: crossAxisCount ?? kCrossAxisCount),
+        itemCount: pageSize ?? kPageSize,
         itemBuilder: (context, index) {
-          return ThumbnailSkeleton(borderRadius: borderRadius ?? 10.0);
+          return ThumbnailSkeleton(
+              borderRadius: borderRadius ?? kThumbnailBorderRadius);
         },
       ),
     );

@@ -14,8 +14,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   MediaPickerCubit() : super(const MediaPickerState());
 
   void loadMedia({
-    List<MediaType> mediaType = defaultMediaTypes,
-    int pageSize = defaultPageSize,
+    List<MediaType> mediaType = kMediaTypes,
+    int pageSize = kPageSize,
     MediaAlbum? album,
     int Function(AssetPathEntity, AssetPathEntity)? sortFunction,
   }) async {

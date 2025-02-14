@@ -67,24 +67,30 @@ class _MediaGridState extends State<MediaGrid> {
       child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
         builder: (context, state) {
           if (state.isLoading && widget.medias.isEmpty) {
-            return const Center(
-                child: ThumbnailSkeleton(
-              borderRadius: 12.0,
-            ));
+            return Center(
+                child: widget.thumbnailShimmer ??
+                    ThumbnailSkeleton(
+                      borderRadius: widget.thumbnailBorderRadius ??
+                          kThumbnailBorderRadius,
+                    ));
           }
           return GridView.builder(
+            key: PageStorageKey("asset_grid"),
             padding: widget.contentPadding ??
                 const EdgeInsets.fromLTRB(0, 0, 0, 100),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: widget.crossAxisCount ?? defaultCrossAxisCount,
+              crossAxisCount: widget.crossAxisCount ?? kCrossAxisCount,
               childAspectRatio: 1.0,
             ),
             itemCount: widget.medias.length +
                 (state.isLoading && widget.medias.isNotEmpty ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == widget.medias.length) {
-                return const Center(
-                  child: ThumbnailSkeleton(borderRadius: 12.0),
+                return Center(
+                  child: widget.thumbnailShimmer ??
+                      ThumbnailSkeleton(
+                          borderRadius: widget.thumbnailBorderRadius ??
+                              kThumbnailBorderRadius),
                 );
               }
               final video = widget.medias[index];
