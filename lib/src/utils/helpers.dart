@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/model/media_model.dart';
+import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/widgets/media_grid.dart';
 import 'package:photo_manager/photo_manager.dart';
 

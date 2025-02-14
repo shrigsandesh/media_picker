@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/constants/enums.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class MediaData extends Equatable {

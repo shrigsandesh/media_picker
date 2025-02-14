@@ -1,5 +1,4 @@
 import 'package:media_picker/media_picker.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 const kMediaTypes = [
   MediaType.image,
