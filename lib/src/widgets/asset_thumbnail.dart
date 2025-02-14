@@ -12,7 +12,7 @@ class AssetThumbnail extends StatefulWidget {
     this.borderRadius,
     this.showSkeleton = true,
     this.thumbnailShimmer,
-    this.thumbnailQuality = 100,
+    this.thumbnailQuality = kThumbnailQuality,
     this.memoryCacheWidth,
     this.memoryCacheHeight,
   });
