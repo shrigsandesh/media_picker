@@ -15,6 +15,7 @@ class AssetThumbnail extends StatefulWidget {
     this.thumbnailQuality = kThumbnailQuality,
     this.memoryCacheWidth,
     this.memoryCacheHeight,
+    this.showCircularPlaceholder,
   });
 
   final AssetEntity? asset;
@@ -25,6 +26,8 @@ class AssetThumbnail extends StatefulWidget {
   final int thumbnailQuality;
   final int? memoryCacheWidth;
   final int? memoryCacheHeight;
+
+  final bool? showCircularPlaceholder;
 
   @override
   State<AssetThumbnail> createState() => _AssetThumbnailState();
@@ -87,6 +90,7 @@ class _AssetThumbnailState extends State<AssetThumbnail>
                       ThumbnailSkeleton(
                         borderRadius: widget.borderRadius ?? 1,
                         size: widget.thumbnailSize?.height.toDouble(),
+                        showCircularPlaceholder: widget.showCircularPlaceholder,
                       );
                 }
                 return child;
@@ -100,6 +104,7 @@ class _AssetThumbnailState extends State<AssetThumbnail>
                 ThumbnailSkeleton(
                   borderRadius: widget.borderRadius ?? 1,
                   size: widget.thumbnailSize?.height.toDouble(),
+                  showCircularPlaceholder: widget.showCircularPlaceholder,
                 )
             : const SizedBox.shrink();
       },

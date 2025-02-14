@@ -4,12 +4,18 @@ import 'package:media_picker/src/widgets/thumbnail_skeleton.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class LoadingGridShimmer extends StatelessWidget {
-  const LoadingGridShimmer(
-      {super.key, this.borderRadius, this.crossAxisCount, this.pageSize});
+  const LoadingGridShimmer({
+    super.key,
+    this.borderRadius,
+    this.crossAxisCount,
+    this.pageSize,
+    this.showCircularPlaceholder,
+  });
 
   final double? borderRadius;
   final int? crossAxisCount;
   final int? pageSize;
+  final bool? showCircularPlaceholder;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,8 @@ class LoadingGridShimmer extends StatelessWidget {
         itemCount: pageSize ?? kPageSize,
         itemBuilder: (context, index) {
           return ThumbnailSkeleton(
-              borderRadius: borderRadius ?? kThumbnailBorderRadius);
+              borderRadius: borderRadius ?? kThumbnailBorderRadius,
+              showCircularPlaceholder: showCircularPlaceholder);
         },
       ),
     );

@@ -72,6 +72,7 @@ class _MediaGridState extends State<MediaGrid> {
                     ThumbnailSkeleton(
                       borderRadius: widget.thumbnailBorderRadius ??
                           kThumbnailBorderRadius,
+                      showCircularPlaceholder: widget.allowMultiple,
                     ));
           }
           return GridView.builder(
@@ -89,8 +90,10 @@ class _MediaGridState extends State<MediaGrid> {
                 return Center(
                   child: widget.thumbnailShimmer ??
                       ThumbnailSkeleton(
-                          borderRadius: widget.thumbnailBorderRadius ??
-                              kThumbnailBorderRadius),
+                        borderRadius: widget.thumbnailBorderRadius ??
+                            kThumbnailBorderRadius,
+                        showCircularPlaceholder: widget.allowMultiple,
+                      ),
                 );
               }
               final video = widget.medias[index];

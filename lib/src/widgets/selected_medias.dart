@@ -9,10 +9,13 @@ class SelectedMedias extends StatelessWidget {
     super.key,
     required this.pickedVideos,
     required this.onPicked,
+    this.showCircularPlaceholder,
   });
 
   final List<AssetEntity> pickedVideos;
   final Function(List<AssetEntity>) onPicked;
+
+  final bool? showCircularPlaceholder;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +45,7 @@ class SelectedMedias extends StatelessWidget {
                           thumbnailSize: const ThumbnailSize(60, 80),
                           borderRadius: 10,
                           showSkeleton: false,
+                          showCircularPlaceholder: showCircularPlaceholder,
                         ),
                         Positioned(
                           right: 0,

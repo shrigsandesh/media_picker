@@ -15,7 +15,8 @@ class MediaAppBar extends StatefulWidget {
       this.albumDropdownColor,
       this.albumTile,
       this.albumButtonBuilder,
-      this.dropdownButtonColor});
+      this.dropdownButtonColor,
+      this.showCircularPlaceholder});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(MediaAlbum) onChanged;
@@ -23,6 +24,8 @@ class MediaAppBar extends StatefulWidget {
   final AlbumTileBuilder? albumTile;
   final AlbumDropdownButtonBuilder? albumButtonBuilder;
   final Color? dropdownButtonColor;
+
+  final bool? showCircularPlaceholder;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -133,7 +136,10 @@ class _MediaAppBarState extends State<MediaAppBar> {
                               child: SizedBox.square(
                                 dimension: 80,
                                 child: AssetThumbnail(
-                                    asset: widget.mediaAlbum[index].thumbnail),
+                                  asset: widget.mediaAlbum[index].thumbnail,
+                                  showCircularPlaceholder:
+                                      widget.showCircularPlaceholder,
+                                ),
                               ),
                             ),
                             const SizedBox(width: 12),

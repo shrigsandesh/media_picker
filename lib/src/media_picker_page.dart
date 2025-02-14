@@ -121,6 +121,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               child: SelectedMediasBottomSheet(
                 bottomSheet: widget.pickedMediaBottomSheet,
                 pickedMediaCallback: widget.onMediaPicked,
+                showCircularPlaceholder: widget.allowMultiple,
               ),
             ),
             MediaPickerAppBarSection(
@@ -129,6 +130,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               albumButtonBuilder: widget.albumDropdownButtonBuilder,
               pageSize: widget.pageSize,
               dropdownButtonColor: widget.dropdownButtonColor,
+              showCircularPlaceholder: widget.allowMultiple,
             ),
           ],
         ),
@@ -279,6 +281,7 @@ class MediaTabContent extends StatelessWidget {
                   crossAxisCount: crossAxisCount,
                   borderRadius: thumbnailBorderRadius,
                   pageSize: pageSize,
+                  showCircularPlaceholder: allowMultiple,
                 ),
           );
         }
@@ -334,11 +337,14 @@ class SelectedMediasBottomSheet extends StatelessWidget {
     super.key,
     this.bottomSheet,
     required this.pickedMediaCallback,
+    this.showCircularPlaceholder,
   });
 
   final Widget Function(BuildContext context, List<AssetEntity> alubms)?
       bottomSheet;
   final PickedMediaCallback pickedMediaCallback;
+
+  final bool? showCircularPlaceholder;
 
   @override
   Widget build(BuildContext context) {
@@ -355,6 +361,7 @@ class SelectedMediasBottomSheet extends StatelessWidget {
           onPicked: (assets) {
             pickedMediaCallback(assets);
           },
+          showCircularPlaceholder: showCircularPlaceholder,
         );
       },
     );
@@ -369,6 +376,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
     this.albumButtonBuilder,
     required this.pageSize,
     this.dropdownButtonColor,
+    this.showCircularPlaceholder,
   });
 
   final Color? albumDropdownColor;
@@ -376,6 +384,8 @@ class MediaPickerAppBarSection extends StatelessWidget {
   final AlbumDropdownButtonBuilder? albumButtonBuilder;
   final int pageSize;
   final Color? dropdownButtonColor;
+
+  final bool? showCircularPlaceholder;
 
   @override
   Widget build(BuildContext context) {
@@ -389,6 +399,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
           albumTile: albumTile,
           albumButtonBuilder: albumButtonBuilder,
           dropdownButtonColor: dropdownButtonColor,
+          showCircularPlaceholder: showCircularPlaceholder,
         );
       },
     );
