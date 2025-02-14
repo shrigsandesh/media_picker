@@ -139,12 +139,17 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
     emit(
       state.copyWith(
-        albums: album != null ? state.albums : filterdAlbums,
-        media: mediaContent,
-        currentPage: state.currentPage + 1,
-        isLoading: false,
-        pageSize: pageSize,
-      ),
+          albums: album != null ? state.albums : filterdAlbums,
+          media: mediaContent,
+          currentPage: state.currentPage + 1,
+          isLoading: false,
+          pageSize: pageSize,
+          hasReachedEndCommon:
+              mediaContent.isCommonEnd(pageSize, MediaType.common),
+          hasReachedEndPhotos:
+              mediaContent.isPhotoEnd(pageSize, MediaType.image),
+          hasReachedEndVideos:
+              mediaContent.isVideoEnd(pageSize, MediaType.video)),
     );
   }
 
