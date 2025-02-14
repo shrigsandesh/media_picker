@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Text("data: ${alubms.name}"),
                       );
                     },
-                    sortFunction: sortScreenshotAlbumsFirst,
+                    sortAlbumFunction: sortScreenshotAlbumsFirst,
                     crossAxisCount: 4,
                     pageSize: 50);
               },
