@@ -124,6 +124,7 @@ class _MediaGridState extends State<MediaGrid> {
                           AssetThumbnail(
                             borderRadius: widget.thumbnailBorderRadius,
                             asset: widget.medias[index],
+                            showCircularPlaceholder: widget.allowMultiple,
                           ),
                           if (widget.allowMultiple)
                             Positioned(
