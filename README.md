@@ -85,7 +85,7 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `contentPadding`              | `EdgeInsetsGeometry?` | Padding around the media grid  |
 | `pageSize`               | `int` (default: `40`)  | Number of media items to load per page.  |
 | `crossAxisCount`         | `int` (default: `3`)  | Number of columns in the media grid layout.  |
-| `sortFunction`           | `int Function(AssetPathEntity, AssetPathEntity)?`  | Custom sorting function for sorting albums.  |
+| `sortAlbumFunction`           | `int Function(AssetPathEntity, AssetPathEntity)?`  | Custom sorting function for sorting albums.  |
 | `dropdownButtonColor`    | `Color?`  | Background color for the dropdown button.  |
 
 
