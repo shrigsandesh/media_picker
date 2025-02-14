@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/constants.dart';
+import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/helpers.dart';
 import 'package:collection/collection.dart';
