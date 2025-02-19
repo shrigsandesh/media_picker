@@ -136,10 +136,3 @@ Widget getTabContent(
       );
   }
 }
-
-extension AssetEntityListExtensions on List<AssetEntity> {
-  void sortByCreateDateDescending() {
-    sort(
-        (a, b) => (b.createDateSecond ?? 0).compareTo(a.createDateSecond ?? 0));
-  }
-}

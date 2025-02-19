@@ -87,6 +87,8 @@ extension MediaContentExtensions on MediaContent {
     return type == MediaType.common &&
         (commonSize < pageSize || common.isEmpty);
   }
+
+  bool isEmpty() => videoSize == 0 && photoSize == 0 && commonSize == 0;
 }
 
 class MediaAlbum extends Equatable {
