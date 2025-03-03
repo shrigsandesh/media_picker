@@ -23,6 +23,20 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
         type: determineMediaType(mediaType));
 
+    // Create a new filtered list
+    List<AssetPathEntity> filteredAlbums = [];
+
+    // Check each album's length
+    for (final album in albums) {
+      int count = await album.assetCountAsync;
+      if (count > 0) {
+        filteredAlbums.add(album);
+      }
+    }
+
+    // Replace the original list with the filtered one
+    albums = filteredAlbums;
+
     if (sortFunction != null) {
       albums.sort(sortFunction);
     }
