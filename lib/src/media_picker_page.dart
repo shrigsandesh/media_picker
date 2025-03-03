@@ -31,6 +31,10 @@ class MediaPickerPage extends StatefulWidget {
     required this.pageSize,
     this.crossAxisCount,
     this.dropdownButtonColor,
+    this.closeIcon,
+    this.closeIconColor,
+    this.albumNameStyle,
+    this.albumCountStyle,
   });
 
   final bool allowMultiple;
@@ -55,6 +59,11 @@ class MediaPickerPage extends StatefulWidget {
   final int pageSize;
   final int? crossAxisCount;
   final Color? dropdownButtonColor;
+
+  final Widget? closeIcon;
+  final Color? closeIconColor;
+  final TextStyle? albumNameStyle;
+  final TextStyle? albumCountStyle;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -131,6 +140,10 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               pageSize: widget.pageSize,
               dropdownButtonColor: widget.dropdownButtonColor,
               showCircularPlaceholder: widget.allowMultiple,
+              closeIcon: widget.closeIcon,
+              closeIconColor: widget.closeIconColor,
+              albumCountStyle: widget.albumCountStyle,
+              albumNameStyle: widget.albumNameStyle,
             ),
           ],
         ),
@@ -377,6 +390,10 @@ class MediaPickerAppBarSection extends StatelessWidget {
     required this.pageSize,
     this.dropdownButtonColor,
     this.showCircularPlaceholder,
+    this.closeIcon,
+    this.closeIconColor,
+    this.albumNameStyle,
+    this.albumCountStyle,
   });
 
   final Color? albumDropdownColor;
@@ -386,6 +403,11 @@ class MediaPickerAppBarSection extends StatelessWidget {
   final Color? dropdownButtonColor;
 
   final bool? showCircularPlaceholder;
+
+  final Widget? closeIcon;
+  final Color? closeIconColor;
+  final TextStyle? albumNameStyle;
+  final TextStyle? albumCountStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -400,6 +422,10 @@ class MediaPickerAppBarSection extends StatelessWidget {
           albumButtonBuilder: albumButtonBuilder,
           dropdownButtonColor: dropdownButtonColor,
           showCircularPlaceholder: showCircularPlaceholder,
+          closeIcon: closeIcon,
+          closeIconColor: closeIconColor,
+          albumCountStyle: albumCountStyle,
+          albumNameStyle: albumNameStyle,
         );
       },
     );

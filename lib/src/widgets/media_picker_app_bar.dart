@@ -16,7 +16,11 @@ class MediaAppBar extends StatefulWidget {
       this.albumTile,
       this.albumButtonBuilder,
       this.dropdownButtonColor,
-      this.showCircularPlaceholder});
+      this.showCircularPlaceholder,
+      this.closeIcon,
+      this.closeIconColor,
+      this.albumNameStyle,
+      this.albumCountStyle});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(MediaAlbum) onChanged;
@@ -26,6 +30,11 @@ class MediaAppBar extends StatefulWidget {
   final Color? dropdownButtonColor;
 
   final bool? showCircularPlaceholder;
+
+  final Widget? closeIcon;
+  final Color? closeIconColor;
+  final TextStyle? albumNameStyle;
+  final TextStyle? albumCountStyle;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -62,7 +71,11 @@ class _MediaAppBarState extends State<MediaAppBar> {
                     onTap: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Icon(Icons.close),
+                    child: widget.closeIcon ??
+                        Icon(
+                          Icons.close,
+                          color: widget.closeIconColor,
+                        ),
                   ),
                   GestureDetector(onTap: () {
                     if (widget.mediaAlbum.isEmpty) return;
@@ -149,15 +162,17 @@ class _MediaAppBarState extends State<MediaAppBar> {
                               children: [
                                 Text(
                                   widget.mediaAlbum[index].name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: widget.albumNameStyle ??
+                                      const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                 ),
                                 Text(
                                   widget.mediaAlbum[index].size.toString(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey),
+                                  style: widget.albumCountStyle ??
+                                      const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.grey),
                                 ),
                               ],
                             ),

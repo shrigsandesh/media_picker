@@ -1,4 +1,4 @@
-Customizable flutter package to load media(image and video).
+# Customizable flutter package to load media(image and video).
 
 ![Sample image](https://github.com/shrigsandesh/media_picker/blob/main/assets/sample.jpg)
 
@@ -10,7 +10,6 @@ Add the following to your `pubspec.yaml` file:
 media_picker:
   git: https://github.com/shrigsandesh/media_picker.git 
       
-
 ```
 
 ## Adding Permissions
@@ -87,7 +86,10 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `crossAxisCount`         | `int` (default: `3`)  | Number of columns in the media grid layout.  |
 | `sortAlbumFunction`           | `int Function(AssetPathEntity, AssetPathEntity)?`  | Custom sorting function for sorting albums.  |
 | `dropdownButtonColor`    | `Color?`  | Background color for the dropdown button.  |
-
+| `closeIcon`              | `Widget?`  | Custom widget for the close/back button. If provided, `closeIconColor` will be ignored.  |
+| `closeIconColor`         | `Color?`  | Color for the default close/back icon. Only applied if `closeIcon` is not provided.  |
+| `albumNameStyle`         | `TextStyle?`  | Text style for album name in the album dropdown and list.  |
+| `albumCountStyle`        | `TextStyle?`  | Text style for the media count displayed alongside album names.  |
 
 ## Dependencies
 
@@ -100,4 +102,4 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 
 ## Additional information
 
-Available on **ANDROID** & **iOS** only. 
+Available on **ANDROID** & **iOS** only.

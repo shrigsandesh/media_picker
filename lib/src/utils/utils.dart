@@ -59,6 +59,14 @@ import 'package:photo_manager/photo_manager.dart';
 ///
 /// [dropdownButtonColor] sets the color of the dropdown button.
 ///
+/// [closeIcon] is a custom widget for closing media picker page.
+///
+/// [closeIconColor] is a custom color for close icon (ignored if [closeIcon] provided).
+///
+/// [albumNameStyle] custom text style for album name (ignored if [albumTileBuilder] provided).
+///
+/// [albumCountStyle] custom text style for album count (ignored if [albumTileBuilder] provided).
+///
 /// Throws an exception if permissions are not granted.
 ///
 /// Example:
@@ -73,30 +81,35 @@ import 'package:photo_manager/photo_manager.dart';
 /// );
 ///
 
-Future<void> showMediaPicker(
-    {required BuildContext context,
-    required PickedMediaCallback onMediaPicked,
-    bool allowMultiple = false,
-    Color? albumDropdownColor,
-    TabBarDecoration? tabBarDecoration,
-    Set<MediaType>? mediaTypes,
-    Color? scaffoldBackgroundColor,
-    Color? checkedIconColor,
-    double? thumbnailBorderRadius,
-    EdgeInsetsGeometry? mediaGridMargin,
-    EdgeInsetsGeometry? contentPadding,
-    Widget? loading,
-    Widget? thumbnailLoader,
-    bool popWhenSingleMediaSelected = true,
-    PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
-    AlbumTileBuilder? albumTileBuilder,
-    AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
-    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transitionBuilder,
-    int? pageSize,
-    int? crossAxisCount,
-    SortFunction? sortAlbumFunction,
-    Color? dropdownButtonColor}) async {
+Future<void> showMediaPicker({
+  required BuildContext context,
+  required PickedMediaCallback onMediaPicked,
+  bool allowMultiple = false,
+  Color? albumDropdownColor,
+  TabBarDecoration? tabBarDecoration,
+  Set<MediaType>? mediaTypes,
+  Color? scaffoldBackgroundColor,
+  Color? checkedIconColor,
+  double? thumbnailBorderRadius,
+  EdgeInsetsGeometry? mediaGridMargin,
+  EdgeInsetsGeometry? contentPadding,
+  Widget? loading,
+  Widget? thumbnailLoader,
+  bool popWhenSingleMediaSelected = true,
+  PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
+  AlbumTileBuilder? albumTileBuilder,
+  AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
+  Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+      transitionBuilder,
+  int? pageSize,
+  int? crossAxisCount,
+  SortFunction? sortAlbumFunction,
+  Color? dropdownButtonColor,
+  final Widget? closeIcon,
+  final Color? closeIconColor,
+  final TextStyle? albumNameStyle,
+  final TextStyle? albumCountStyle,
+}) async {
   if (mediaTypes != null) {
     assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
   }
@@ -127,6 +140,10 @@ Future<void> showMediaPicker(
             crossAxisCount: crossAxisCount,
             sortFunction: sortAlbumFunction,
             dropdownButtonColor: dropdownButtonColor,
+            closeIcon: closeIcon,
+            closeIconColor: closeIconColor,
+            albumNameStyle: albumNameStyle,
+            albumCountStyle: albumCountStyle,
           ),
         ),
       );

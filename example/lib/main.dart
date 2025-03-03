@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }
                     },
+                    closeIconColor: Colors.red,
                     mediaTypes: {
                       MediaType.image,
                     },
