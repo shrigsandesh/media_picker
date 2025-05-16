@@ -43,10 +43,6 @@ class MediaAppBar extends StatefulWidget {
 class _MediaAppBarState extends State<MediaAppBar> {
   bool _isExpanded = false;
   String? _selected;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

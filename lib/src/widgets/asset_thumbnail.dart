@@ -90,7 +90,6 @@ class _AssetThumbnailState extends State<AssetThumbnail>
                       ThumbnailSkeleton(
                         borderRadius: widget.borderRadius ?? 1,
                         size: widget.thumbnailSize?.height.toDouble(),
-                        showCircularPlaceholder: widget.showCircularPlaceholder,
                       );
                 }
                 return child;
@@ -104,7 +103,6 @@ class _AssetThumbnailState extends State<AssetThumbnail>
                 ThumbnailSkeleton(
                   borderRadius: widget.borderRadius ?? 1,
                   size: widget.thumbnailSize?.height.toDouble(),
-                  showCircularPlaceholder: widget.showCircularPlaceholder,
                 )
             : const SizedBox.shrink();
       },

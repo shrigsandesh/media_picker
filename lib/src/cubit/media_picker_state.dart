@@ -6,9 +6,6 @@ class MediaPickerState extends Equatable {
   final int currentPage;
   final bool isLoading;
   final bool isPaginating;
-
-  final bool hasReachedEndPhotos;
-  final bool hasReachedEndVideos;
   final bool hasReachedEndCommon;
   final List<AssetEntity> pickedFiles;
   final MediaType currentMediaTye;
@@ -22,8 +19,6 @@ class MediaPickerState extends Equatable {
     this.currentPage = 0,
     this.isLoading = false,
     this.isPaginating = false,
-    this.hasReachedEndPhotos = false,
-    this.hasReachedEndVideos = false,
     this.hasReachedEndCommon = false,
     this.pickedFiles = const [],
     this.currentMediaTye = MediaType.common,
@@ -38,8 +33,6 @@ class MediaPickerState extends Equatable {
     int? currentPage,
     bool? isLoading,
     bool? isPaginating,
-    bool? hasReachedEndPhotos,
-    bool? hasReachedEndVideos,
     bool? hasReachedEndCommon,
     List<AssetEntity>? pickedFiles,
     MediaType? currentMediaTye,
@@ -53,8 +46,6 @@ class MediaPickerState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       isLoading: isLoading ?? this.isLoading,
       isPaginating: isPaginating ?? this.isPaginating,
-      hasReachedEndPhotos: hasReachedEndPhotos ?? this.hasReachedEndPhotos,
-      hasReachedEndVideos: hasReachedEndVideos ?? this.hasReachedEndVideos,
       hasReachedEndCommon: hasReachedEndCommon ?? this.hasReachedEndCommon,
       pickedFiles: pickedFiles ?? this.pickedFiles,
       currentMediaTye: currentMediaTye ?? this.currentMediaTye,
@@ -64,16 +55,7 @@ class MediaPickerState extends Equatable {
     );
   }
 
-  bool get hasReachedEnd {
-    switch (currentMediaTye) {
-      case MediaType.image:
-        return hasReachedEndPhotos;
-      case MediaType.video:
-        return hasReachedEndVideos;
-      case MediaType.common:
-        return hasReachedEndCommon;
-    }
-  }
+  bool get hasReachedEnd => hasReachedEndCommon;
 
   @override
   List<Object> get props => [
@@ -82,8 +64,6 @@ class MediaPickerState extends Equatable {
         currentPage,
         isLoading,
         isPaginating,
-        hasReachedEndPhotos,
-        hasReachedEndVideos,
         hasReachedEndCommon,
         pickedFiles,
         currentMediaTye,

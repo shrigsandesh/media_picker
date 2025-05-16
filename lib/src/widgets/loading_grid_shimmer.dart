@@ -26,8 +26,8 @@ class LoadingGridShimmer extends StatelessWidget {
         itemCount: pageSize ?? kPageSize,
         itemBuilder: (context, index) {
           return ThumbnailSkeleton(
-              borderRadius: borderRadius ?? kThumbnailBorderRadius,
-              showCircularPlaceholder: showCircularPlaceholder);
+            borderRadius: borderRadius ?? kThumbnailBorderRadius,
+          );
         },
       ),
     );

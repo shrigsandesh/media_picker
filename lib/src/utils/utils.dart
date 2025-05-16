@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:media_picker/src/constants/constants.dart';
-import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_wrapper.dart';
-import 'package:media_picker/src/model/styles.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -17,18 +15,9 @@ import 'package:photo_manager/photo_manager.dart';
 ///
 /// [onMediaPicked] is a required callback function that returns the selected media.
 ///
-/// [allowMultiple] determines whether multiple media selection is allowed. Defaults to `false`.
-///
 /// [albumDropdownColor] sets the background color of the album dropdown menu.
 ///
-/// [tabBarDecoration] allows customizing the appearance of the tab bar.
-///
-/// [mediaTypes] specifies the types of media that can be selected (e.g., images, videos).
-/// It must not be an empty set if provided.
-///
 /// [scaffoldBackgroundColor] defines the background color of the media picker screen.
-///
-/// [checkedIconColor] sets the color of the icon displayed on selected media thumbnails.
 ///
 /// [thumbnailBorderRadius] controls the border radius of media thumbnails.
 ///
@@ -76,20 +65,14 @@ import 'package:photo_manager/photo_manager.dart';
 ///   onMediaPicked: (media) {
 ///     print("Selected media: $media");
 ///   },
-///   allowMultiple: true,
-///   mediaTypes: {MediaType.image, MediaType.video},
 /// );
 ///
 
 Future<void> showMediaPicker({
   required BuildContext context,
   required PickedMediaCallback onMediaPicked,
-  bool allowMultiple = false,
   Color? albumDropdownColor,
-  TabBarDecoration? tabBarDecoration,
-  Set<MediaType>? mediaTypes,
   Color? scaffoldBackgroundColor,
-  Color? checkedIconColor,
   double? thumbnailBorderRadius,
   EdgeInsetsGeometry? mediaGridMargin,
   EdgeInsetsGeometry? contentPadding,
@@ -110,9 +93,6 @@ Future<void> showMediaPicker({
   final TextStyle? albumNameStyle,
   final TextStyle? albumCountStyle,
 }) async {
-  if (mediaTypes != null) {
-    assert(mediaTypes.isNotEmpty, 'MediaTypes must not be empty.');
-  }
   await Permission.requestPermission().then((granted) {
     if (granted.isAuth) {
       if (!context.mounted) return;
@@ -120,10 +100,7 @@ Future<void> showMediaPicker({
         createRoute(
           transitionBuilder,
           MediaPickerPageWrapper(
-            allowMultiple: allowMultiple,
-            tabBarDecoration: tabBarDecoration,
             scaffoldBackgroundColor: scaffoldBackgroundColor,
-            mediaTypes: mediaTypes?.toList() ?? [],
             dropdownColor: albumDropdownColor,
             pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
             albumTileBuilder: albumTileBuilder,
@@ -132,7 +109,6 @@ Future<void> showMediaPicker({
             mediaGridMargin: mediaGridMargin,
             loading: loading,
             thumbnailShimmer: thumbnailLoader,
-            checkedIconColor: checkedIconColor,
             popWhenSingleMediaSelected: popWhenSingleMediaSelected,
             contentPadding: contentPadding,
             albumDropdownButtonBuilder: albumDropdownButtonBuilder,

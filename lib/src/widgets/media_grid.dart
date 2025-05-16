@@ -11,12 +11,10 @@ class MediaGrid extends StatefulWidget {
     super.key,
     required this.medias,
     required this.name,
-    required this.allowMultiple,
     this.onSingleFileSelection,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
     this.thumbnailShimmer,
-    this.checkedIconColor,
     this.contentPadding,
     required this.pageSize,
     required this.type,
@@ -24,13 +22,11 @@ class MediaGrid extends StatefulWidget {
   });
   final List<AssetEntity> medias;
   final String name;
-  final bool allowMultiple;
   final Function(AssetEntity)? onSingleFileSelection;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
   final EdgeInsetsGeometry? contentPadding;
   final Widget? thumbnailShimmer;
-  final Color? checkedIconColor;
   final int pageSize;
   final MediaType type;
   final int? crossAxisCount;
@@ -52,14 +48,14 @@ class _MediaGridState extends State<MediaGrid> {
         bool hasReachedEnd =
             context.read<MediaPickerCubit>().state.hasReachedEnd;
 
-        if (notification is ScrollEndNotification &&
+        if (notification is ScrollUpdateNotification &&
             notification.metrics.pixels >=
                 notification.metrics.maxScrollExtent * 0.8 &&
             !context.read<MediaPickerCubit>().state.isLoading &&
             !hasReachedEnd) {
           context
               .read<MediaPickerCubit>()
-              .loadMoreMedia(type: widget.type, pageSize: widget.pageSize);
+              .loadMoreMedia(pageSize: widget.pageSize);
         }
 
         return false;
@@ -72,7 +68,6 @@ class _MediaGridState extends State<MediaGrid> {
                     ThumbnailSkeleton(
                       borderRadius: widget.thumbnailBorderRadius ??
                           kThumbnailBorderRadius,
-                      showCircularPlaceholder: widget.allowMultiple,
                     ));
           }
           return GridView.builder(
@@ -85,6 +80,7 @@ class _MediaGridState extends State<MediaGrid> {
             ),
             itemCount: widget.medias.length +
                 (state.isLoading && widget.medias.isNotEmpty ? 1 : 0),
+            cacheExtent: 1000,
             itemBuilder: (context, index) {
               if (index == widget.medias.length) {
                 return Center(
@@ -92,91 +88,50 @@ class _MediaGridState extends State<MediaGrid> {
                       ThumbnailSkeleton(
                         borderRadius: widget.thumbnailBorderRadius ??
                             kThumbnailBorderRadius,
-                        showCircularPlaceholder: widget.allowMultiple,
                       ),
                 );
               }
               final video = widget.medias[index];
-              return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-                builder: (context, state) {
-                  final isSelected = state.pickedFiles
-                      .contains(video); // Check if video is selected
-                  final selectionIndex = state.pickedFiles.indexOf(video);
-                  return GestureDetector(
-                    onTap: () {
-                      if (!widget.allowMultiple) {
-                        if (widget.onSingleFileSelection != null) {
-                          widget.onSingleFileSelection!(video);
-                        }
-                        return;
-                      }
-                      if (!isSelected) {
-                        context.read<MediaPickerCubit>().addPickedFiles(video);
-                      } else {
-                        context.read<MediaPickerCubit>().removeSelected(video);
-                      }
-                    },
-                    child: Padding(
-                      padding: widget.mediaGridMargin ?? EdgeInsets.zero,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          AssetThumbnail(
-                            borderRadius: widget.thumbnailBorderRadius,
-                            asset: widget.medias[index],
-                            showCircularPlaceholder: widget.allowMultiple,
-                          ),
-                          if (widget.allowMultiple)
-                            Positioned(
-                                top: 4,
-                                right: 4,
-                                child: isSelected
-                                    ? CircleAvatar(
-                                        radius: 12,
-                                        backgroundColor:
-                                            widget.checkedIconColor ??
-                                                Colors.blue,
-                                        child: Text(
-                                          // Display the order number (1-based index)
-                                          (selectionIndex + 1).toString(),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      )
-                                    : Icon(
-                                        isSelected
-                                            ? Icons.check
-                                            : Icons.circle_outlined,
-                                        color: Colors.white,
-                                      )),
-                          if (video.duration > 0)
-                            Positioned(
-                                bottom: 2,
-                                right: 2,
-                                child: Row(
-                                  spacing: 4.0,
-                                  children: [
-                                    const Icon(
-                                      Icons.videocam,
-                                      size: 18,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      formatTime(video.duration),
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ))
-                        ],
-                      ),
-                    ),
-                  );
+              return GestureDetector(
+                onTap: () {
+                  if (widget.onSingleFileSelection != null) {
+                    widget.onSingleFileSelection!(video);
+                  }
+                  return;
                 },
+                child: Padding(
+                  padding: widget.mediaGridMargin ?? EdgeInsets.zero,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      AssetThumbnail(
+                        borderRadius: widget.thumbnailBorderRadius,
+                        asset: widget.medias[index],
+                      ),
+                      if (video.duration > 0)
+                        Positioned(
+                            bottom: 2,
+                            right: 2,
+                            child: Row(
+                              spacing: 4.0,
+                              children: [
+                                const Icon(
+                                  Icons.videocam,
+                                  size: 18,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  video.duration.formattedDuration,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ))
+                    ],
+                  ),
+                ),
               );
             },
           );
@@ -186,8 +141,10 @@ class _MediaGridState extends State<MediaGrid> {
   }
 }
 
-String formatTime(int timeInSeconds) {
-  final minutes = ((timeInSeconds % 3600) ~/ 60).toString().padLeft(2, '0');
-  final seconds = (timeInSeconds % 60).toString().padLeft(2, '0');
-  return '$minutes:$seconds';
+extension DurationFormat on int {
+  String get formattedDuration {
+    final minutes = ((this % 3600) ~/ 60).toString().padLeft(2, '0');
+    final seconds = (this % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
 }

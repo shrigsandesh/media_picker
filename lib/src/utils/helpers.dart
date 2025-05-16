@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/model/media_model.dart';
-import 'package:media_picker/src/model/styles.dart';
-import 'package:media_picker/src/widgets/media_grid.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums,
@@ -47,94 +43,6 @@ Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums,
   List<MediaAlbum> mergedAlbums = mergedAlbumsMap.values.toList();
 
   return mergedAlbums;
-}
-
-RequestType determineMediaType(List<MediaType> mediaTypes) {
-  if (mediaTypes.isEmpty) return RequestType.common;
-
-  final isOnlyImages =
-      mediaTypes.every((mediaType) => mediaType == MediaType.image);
-  final isOnlyVideos =
-      mediaTypes.every((mediaType) => mediaType == MediaType.video);
-
-  if (isOnlyImages) {
-    return RequestType.image;
-  } else if (isOnlyVideos) {
-    return RequestType.video;
-  } else {
-    return RequestType.common;
-  }
-}
-
-String getTabTitle(MediaType mediaType, TabLabels? tablable) {
-  switch (mediaType) {
-    case MediaType.common:
-      return tablable?.all ?? 'All';
-    case MediaType.image:
-      return tablable?.image ?? "Photo";
-    case MediaType.video:
-      return tablable?.video ?? 'Video';
-  }
-}
-
-Widget getTabContent(
-    {required MediaType mediaType,
-    required MediaContent content,
-    required bool allowMultiple,
-    double? thumbnailBorderRadius,
-    EdgeInsetsGeometry? mediaGridMargin,
-    void Function(AssetEntity)? onSingleFileSelection,
-    Widget? thumbnailShimmer,
-    Color? checkedIconColor,
-    EdgeInsetsGeometry? contentPadding,
-    required int pageSize,
-    int? crossAxisCount}) {
-  switch (mediaType) {
-    case MediaType.common:
-      return MediaGrid(
-          medias: content.common,
-          name: "media",
-          allowMultiple: allowMultiple,
-          thumbnailBorderRadius: thumbnailBorderRadius,
-          mediaGridMargin: mediaGridMargin,
-          onSingleFileSelection: onSingleFileSelection,
-          thumbnailShimmer: thumbnailShimmer,
-          checkedIconColor: checkedIconColor,
-          contentPadding: contentPadding,
-          type: mediaType,
-          pageSize: pageSize,
-          crossAxisCount: crossAxisCount);
-    case MediaType.image:
-      return MediaGrid(
-        medias: content.photos,
-        name: "photos",
-        allowMultiple: allowMultiple,
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
-        contentPadding: contentPadding,
-        type: mediaType,
-        pageSize: pageSize,
-        crossAxisCount: crossAxisCount,
-      );
-    case MediaType.video:
-      return MediaGrid(
-        medias: content.videos,
-        name: "video",
-        allowMultiple: allowMultiple,
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
-        contentPadding: contentPadding,
-        type: mediaType,
-        pageSize: pageSize,
-        crossAxisCount: crossAxisCount,
-      );
-  }
 }
 
 extension AssetEntityListExtensions on List<AssetEntity> {

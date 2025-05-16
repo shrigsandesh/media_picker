@@ -6,12 +6,10 @@ class ThumbnailSkeleton extends StatelessWidget {
     super.key,
     required this.borderRadius,
     this.size,
-    this.showCircularPlaceholder,
   });
 
   final double borderRadius;
   final double? size;
-  final bool? showCircularPlaceholder;
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +22,6 @@ class ThumbnailSkeleton extends StatelessWidget {
               size: size ?? 200.0,
               borderRadius: BorderRadius.circular(borderRadius),
             ),
-            if (showCircularPlaceholder ?? false)
-              Positioned(
-                top: 2,
-                right: 4,
-                child: Icon(
-                  Icons.circle,
-                  color: Colors.grey.shade300,
-                ),
-              )
           ],
         ),
       ),

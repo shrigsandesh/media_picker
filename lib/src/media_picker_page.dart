@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:media_picker/src/model/styles.dart';
-import 'package:media_picker/src/utils/helpers.dart';
 
 import 'package:photo_manager/photo_manager.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
@@ -12,9 +10,6 @@ import 'package:media_picker/src/widgets/widgets_.dart';
 class MediaPickerPage extends StatefulWidget {
   const MediaPickerPage({
     super.key,
-    required this.allowMultiple,
-    this.tabBarDecoration,
-    required this.mediaTypes,
     this.scaffoldBackgroundColor,
     this.dropdownColor,
     this.pickedMediaBottomSheet,
@@ -24,7 +19,6 @@ class MediaPickerPage extends StatefulWidget {
     this.mediaGridMargin,
     this.loading,
     this.thumbnailShimmer,
-    this.checkedIconColor,
     required this.popWhenSingleMediaSelected,
     this.contentPadding,
     this.albumDropdownButtonBuilder,
@@ -37,9 +31,6 @@ class MediaPickerPage extends StatefulWidget {
     this.albumCountStyle,
   });
 
-  final bool allowMultiple;
-  final TabBarDecoration? tabBarDecoration;
-  final List<MediaType> mediaTypes;
   final Color? scaffoldBackgroundColor;
   final Color? dropdownColor;
   final PickedMediaCallback onMediaPicked;
@@ -49,7 +40,6 @@ class MediaPickerPage extends StatefulWidget {
 
   final Widget? loading;
   final Widget? thumbnailShimmer;
-  final Color? checkedIconColor;
   final bool popWhenSingleMediaSelected;
 
   final PickedMediaBottomSheetBuilder? pickedMediaBottomSheet;
@@ -71,33 +61,6 @@ class MediaPickerPage extends StatefulWidget {
 
 class _MediaPickerPageState extends State<MediaPickerPage>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  bool _isInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController =
-        TabController(length: widget.mediaTypes.length, vsync: this);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Only set up the listener once
-    if (!_isInitialized) {
-      _tabController.addListener(() {
-        if (!_tabController.indexIsChanging) {
-          context
-              .read<MediaPickerCubit>()
-              .changeMediaType(widget.mediaTypes[_tabController.index]);
-        }
-      });
-      _isInitialized = true;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,10 +69,6 @@ class _MediaPickerPageState extends State<MediaPickerPage>
         child: Stack(
           children: [
             MediaContent(
-              tabController: _tabController,
-              mediaTypes: widget.mediaTypes,
-              tabBarDecoration: widget.tabBarDecoration,
-              allowMultiple: widget.allowMultiple,
               thumbnailBorderRadius: widget.thumbnailBorderRadius,
               mediaGridMargin: widget.mediaGridMargin,
               onSingleFileSelection: (media) {
@@ -120,18 +79,9 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               },
               loading: widget.loading,
               thumbnailShimmer: widget.thumbnailShimmer,
-              checkedIconColor: widget.checkedIconColor,
               contentPadding: widget.contentPadding,
               pageSize: widget.pageSize,
               crossAxisCount: widget.crossAxisCount,
-            ),
-            Positioned(
-              bottom: 0,
-              child: SelectedMediasBottomSheet(
-                bottomSheet: widget.pickedMediaBottomSheet,
-                pickedMediaCallback: widget.onMediaPicked,
-                showCircularPlaceholder: widget.allowMultiple,
-              ),
             ),
             MediaPickerAppBarSection(
               albumDropdownColor: widget.dropdownColor,
@@ -139,7 +89,6 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               albumButtonBuilder: widget.albumDropdownButtonBuilder,
               pageSize: widget.pageSize,
               dropdownButtonColor: widget.dropdownButtonColor,
-              showCircularPlaceholder: widget.allowMultiple,
               closeIcon: widget.closeIcon,
               closeIconColor: widget.closeIconColor,
               albumCountStyle: widget.albumCountStyle,
@@ -155,32 +104,22 @@ class _MediaPickerPageState extends State<MediaPickerPage>
 class MediaContent extends StatelessWidget {
   const MediaContent({
     super.key,
-    required this.tabController,
-    required this.mediaTypes,
-    required this.tabBarDecoration,
-    required this.allowMultiple,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
     this.onSingleFileSelection,
     this.loading,
     this.thumbnailShimmer,
-    this.checkedIconColor,
     this.contentPadding,
     required this.pageSize,
     this.crossAxisCount,
   });
 
-  final TabController tabController;
-  final List<MediaType> mediaTypes;
-  final TabBarDecoration? tabBarDecoration;
-  final bool allowMultiple;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
   final EdgeInsetsGeometry? contentPadding;
   final Function(AssetEntity)? onSingleFileSelection;
   final Widget? loading;
   final Widget? thumbnailShimmer;
-  final Color? checkedIconColor;
 
   final int pageSize;
   final int? crossAxisCount;
@@ -191,22 +130,12 @@ class MediaContent extends StatelessWidget {
       padding: const EdgeInsets.only(top: kToolbarHeight - 8),
       child: Column(
         children: [
-          if (mediaTypes.length > 1)
-            MediaTabBar(
-              tabController: tabController,
-              mediaTypes: mediaTypes,
-              tabBarDecoration: tabBarDecoration,
-            ),
           MediaTabContent(
-            tabController: tabController,
-            mediaTypes: mediaTypes,
-            allowMultiple: allowMultiple,
             thumbnailBorderRadius: thumbnailBorderRadius,
             mediaGridMargin: mediaGridMargin,
             onSingleFileSelection: onSingleFileSelection,
             loading: loading,
             thumbnailShimmer: thumbnailShimmer,
-            checkedIconColor: checkedIconColor,
             contentPadding: contentPadding,
             pageSize: pageSize,
             crossAxisCount: crossAxisCount,
@@ -217,48 +146,9 @@ class MediaContent extends StatelessWidget {
   }
 }
 
-class MediaTabBar extends StatelessWidget {
-  const MediaTabBar({
-    super.key,
-    required this.tabController,
-    required this.mediaTypes,
-    required this.tabBarDecoration,
-  });
-
-  final TabController tabController;
-  final List<MediaType> mediaTypes;
-  final TabBarDecoration? tabBarDecoration;
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: tabBarDecoration?.backgroundColor ?? Colors.white,
-      child: TabBar(
-        controller: tabController,
-        unselectedLabelStyle: tabBarDecoration?.unselectedLabelStyle ??
-            const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-        labelStyle: tabBarDecoration?.labelStyle ??
-            const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w500, fontSize: 14),
-        indicatorSize:
-            tabBarDecoration?.indicatorSize ?? TabBarIndicatorSize.tab,
-        indicatorColor: tabBarDecoration?.indicatorColor ?? Colors.black,
-        indicator: tabBarDecoration?.indicator,
-        tabs: mediaTypes
-            .map((mediaType) =>
-                Tab(text: getTabTitle(mediaType, tabBarDecoration?.tabLabels)))
-            .toList(),
-      ),
-    );
-  }
-}
-
 class MediaTabContent extends StatelessWidget {
   const MediaTabContent({
     super.key,
-    required this.tabController,
-    required this.mediaTypes,
-    required this.allowMultiple,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
     this.onSingleFileSelection,
@@ -270,9 +160,6 @@ class MediaTabContent extends StatelessWidget {
     this.crossAxisCount,
   });
 
-  final TabController tabController;
-  final List<MediaType> mediaTypes;
-  final bool allowMultiple;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
   final EdgeInsetsGeometry? contentPadding;
@@ -286,98 +173,33 @@ class MediaTabContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-      builder: (context, state) {
-        if (state.isLoading && !state.isPaginating) {
-          return Expanded(
-            child: loading ??
-                LoadingGridShimmer(
-                  crossAxisCount: crossAxisCount,
-                  borderRadius: thumbnailBorderRadius,
-                  pageSize: pageSize,
-                  showCircularPlaceholder: allowMultiple,
-                ),
-          );
-        }
-
-        if (mediaTypes.isEmpty) {
-          return Expanded(
-            child: MediaGrid(
-              type: MediaType.common,
-              medias: state.media.common,
-              name: "media",
-              allowMultiple: allowMultiple,
-              thumbnailBorderRadius: thumbnailBorderRadius,
-              mediaGridMargin: mediaGridMargin,
-              onSingleFileSelection: onSingleFileSelection,
-              thumbnailShimmer: thumbnailShimmer,
-              checkedIconColor: checkedIconColor,
-              contentPadding: contentPadding,
-              pageSize: pageSize,
-              crossAxisCount: crossAxisCount,
-            ),
-          );
-        }
-
+        builder: (context, state) {
+      if (state.isLoading && !state.isPaginating) {
         return Expanded(
-          child: TabBarView(
-            controller: tabController,
-            children: mediaTypes
-                .map(
-                  (mediaType) => getTabContent(
-                    mediaType: mediaType,
-                    content: state.media,
-                    allowMultiple: allowMultiple,
-                    thumbnailBorderRadius: thumbnailBorderRadius,
-                    mediaGridMargin: mediaGridMargin,
-                    onSingleFileSelection: onSingleFileSelection,
-                    thumbnailShimmer: thumbnailShimmer,
-                    checkedIconColor: checkedIconColor,
-                    contentPadding: contentPadding,
-                    pageSize: pageSize,
-                    crossAxisCount: crossAxisCount,
-                  ),
-                )
-                .toList(),
-          ),
+          child: loading ??
+              LoadingGridShimmer(
+                crossAxisCount: crossAxisCount,
+                borderRadius: thumbnailBorderRadius,
+                pageSize: pageSize,
+              ),
         );
-      },
-    );
-  }
-}
+      }
 
-class SelectedMediasBottomSheet extends StatelessWidget {
-  const SelectedMediasBottomSheet({
-    super.key,
-    this.bottomSheet,
-    required this.pickedMediaCallback,
-    this.showCircularPlaceholder,
-  });
-
-  final Widget Function(BuildContext context, List<AssetEntity> alubms)?
-      bottomSheet;
-  final PickedMediaCallback pickedMediaCallback;
-
-  final bool? showCircularPlaceholder;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-      builder: (context, state) {
-        if (bottomSheet != null) {
-          return Container(child: bottomSheet!(context, state.pickedFiles));
-        }
-        if (state.pickedFiles.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        return SelectedMedias(
-          pickedVideos: state.pickedFiles,
-          onPicked: (assets) {
-            pickedMediaCallback(assets);
-          },
-          showCircularPlaceholder: showCircularPlaceholder,
-        );
-      },
-    );
+      return Expanded(
+        child: MediaGrid(
+          type: MediaType.common,
+          medias: state.media.common,
+          name: "media",
+          thumbnailBorderRadius: thumbnailBorderRadius,
+          mediaGridMargin: mediaGridMargin,
+          onSingleFileSelection: onSingleFileSelection,
+          thumbnailShimmer: thumbnailShimmer,
+          contentPadding: contentPadding,
+          pageSize: pageSize,
+          crossAxisCount: crossAxisCount,
+        ),
+      );
+    });
   }
 }
 

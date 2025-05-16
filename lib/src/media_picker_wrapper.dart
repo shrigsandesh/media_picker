@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_page.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
@@ -8,9 +7,6 @@ import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 class MediaPickerPageWrapper extends StatelessWidget {
   const MediaPickerPageWrapper({
     super.key,
-    required this.allowMultiple,
-    this.tabBarDecoration,
-    required this.mediaTypes,
     this.scaffoldBackgroundColor,
     this.dropdownColor,
     required this.onMediaPicked,
@@ -19,7 +15,6 @@ class MediaPickerPageWrapper extends StatelessWidget {
     this.contentPadding,
     this.loading,
     this.thumbnailShimmer,
-    this.checkedIconColor,
     required this.popWhenSingleMediaSelected,
     this.pickedMediaBottomSheet,
     this.albumTileBuilder,
@@ -34,9 +29,6 @@ class MediaPickerPageWrapper extends StatelessWidget {
     this.albumCountStyle,
   });
 
-  final bool allowMultiple;
-  final TabBarDecoration? tabBarDecoration;
-  final List<MediaType> mediaTypes;
   final Color? scaffoldBackgroundColor;
   final Color? dropdownColor;
   final PickedMediaCallback onMediaPicked;
@@ -46,7 +38,6 @@ class MediaPickerPageWrapper extends StatelessWidget {
 
   final Widget? loading;
   final Widget? thumbnailShimmer;
-  final Color? checkedIconColor;
   final bool popWhenSingleMediaSelected;
 
   final PickedMediaBottomSheetBuilder? pickedMediaBottomSheet;
@@ -68,15 +59,11 @@ class MediaPickerPageWrapper extends StatelessWidget {
     return BlocProvider(
       create: (context) => MediaPickerCubit()
         ..loadMedia(
-          mediaType: mediaTypes,
           pageSize: pageSize,
           sortFunction: sortFunction,
         ),
       child: MediaPickerPage(
-        allowMultiple: allowMultiple,
-        tabBarDecoration: tabBarDecoration,
         scaffoldBackgroundColor: scaffoldBackgroundColor,
-        mediaTypes: mediaTypes,
         dropdownColor: dropdownColor,
         pickedMediaBottomSheet: pickedMediaBottomSheet,
         albumTileBuilder: albumTileBuilder,
@@ -85,7 +72,6 @@ class MediaPickerPageWrapper extends StatelessWidget {
         mediaGridMargin: mediaGridMargin,
         loading: loading,
         thumbnailShimmer: thumbnailShimmer,
-        checkedIconColor: checkedIconColor,
         popWhenSingleMediaSelected: popWhenSingleMediaSelected,
         contentPadding: contentPadding,
         albumDropdownButtonBuilder: albumDropdownButtonBuilder,

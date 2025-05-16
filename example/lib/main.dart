@@ -91,9 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       }
                     },
                     closeIconColor: Colors.red,
-                    mediaTypes: {
-                      MediaType.image,
-                    },
                     albumTileBuilder: (context, alubms) {
                       return Container(
                         color: Colors.green,
@@ -104,52 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisCount: 4,
                     pageSize: 50);
               },
-              child: const Text("Pick Photos"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                showMediaPicker(
-                  context: context,
-                  allowMultiple: true,
-                  checkedIconColor: Colors.green,
-                  mediaTypes: {
-                    MediaType.video,
-                  },
-                  onMediaPicked: (assetEntity) {},
-                  pickedMediaBottomSheetBuilder: (context, albums) {
-                    if (albums.isNotEmpty) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.black,
-                        height: 50,
-                        child: Text(
-                          "data ${albums.first.id}",
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                );
-              },
-              child: const Text("Pick videos"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                showMediaPicker(
-                  context: context,
-                  allowMultiple: true,
-                  mediaTypes: {
-                    MediaType.common,
-                    MediaType.video,
-                    MediaType.image,
-                  },
-                  pageSize: 20,
-                  onMediaPicked: (assetEntity) {},
-                );
-              },
-              child: const Text("Pick photos & videos"),
+              child: const Text("Pick Media"),
             ),
           ],
         ),
