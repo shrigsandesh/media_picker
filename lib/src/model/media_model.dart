@@ -93,13 +93,14 @@ class MediaAlbum extends Equatable {
   final String id;
   final String name;
   final int size;
-  final AssetEntity? thumbnail;
+  final AssetEntity? previewAsset;
 
   const MediaAlbum(
       {required this.id,
       required this.name,
       required this.size,
-      this.thumbnail});
+      this.previewAsset,
+      p});
 
   @override
   List<Object> get props => [name, size, id];

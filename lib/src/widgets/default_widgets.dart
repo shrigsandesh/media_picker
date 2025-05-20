@@ -1,0 +1,98 @@
+import 'package:flutter/material.dart';
+import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/widgets/animated_expand_icon.dart';
+import 'package:media_picker/src/widgets/asset_thumbnail.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+class DefaultAlbumTile extends StatelessWidget {
+  const DefaultAlbumTile({
+    super.key,
+    this.mediaAlbum,
+    this.albumNameStyle,
+    this.albumCountStyle,
+  });
+
+  final MediaAlbum? mediaAlbum;
+  final TextStyle? albumNameStyle;
+  final TextStyle? albumCountStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: SizedBox.square(
+            dimension: 80,
+            child: AssetThumbnail(
+              asset: mediaAlbum?.previewAsset,
+              showCircularPlaceholder: false,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              mediaAlbum?.name ?? "",
+              style: albumNameStyle ??
+                  const TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            Text(
+              mediaAlbum!.size.toString(),
+              style: albumCountStyle ??
+                  const TextStyle(
+                      fontWeight: FontWeight.w400, color: Colors.grey),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class DefaultAlbumButton extends StatelessWidget {
+  const DefaultAlbumButton({
+    super.key,
+    this.dropdownButtonColor,
+    required this.isEnabled,
+    required this.name,
+    required this.isExpanded,
+  });
+
+  final Color? dropdownButtonColor;
+  final bool isEnabled;
+  final String name;
+  final bool isExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+          color: dropdownButtonColor ?? const Color(0xFFD3D3D3),
+          borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        children: [
+          Skeletonizer(
+            enabled: isEnabled,
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const SizedBox(width: 5),
+          AnimatedExpansionIcon(
+            isExpanded: isExpanded,
+          ),
+        ],
+      ),
+    );
+  }
+}

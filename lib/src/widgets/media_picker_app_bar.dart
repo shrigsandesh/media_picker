@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/model/media_model.dart';
-import 'package:media_picker/src/widgets/animated_expand_icon.dart';
-import 'package:media_picker/src/widgets/asset_thumbnail.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:media_picker/src/widgets/default_widgets.dart';
 
 class MediaAppBar extends StatefulWidget {
   const MediaAppBar(
@@ -93,32 +91,14 @@ class _MediaAppBarState extends State<MediaAppBar> {
                         return widget.albumButtonBuilder != null
                             ? widget.albumButtonBuilder!(
                                 state.isLoading, _selected ?? '', _isExpanded)
-                            : Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                    color: widget.dropdownButtonColor ??
-                                        const Color(0xFFD3D3D3),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Row(
-                                  children: [
-                                    Skeletonizer(
-                                      enabled: state.isLoading &&
-                                          _mediaAlbum.isEmpty,
-                                      child: Text(
-                                        _selected ??
-                                            widget.customAlbum?.name ??
-                                            state.media.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    AnimatedExpansionIcon(
-                                        isExpanded: _isExpanded),
-                                  ],
-                                ),
+                            : DefaultAlbumButton(
+                                dropdownButtonColor: widget.dropdownButtonColor,
+                                isEnabled:
+                                    state.isLoading && _mediaAlbum.isEmpty,
+                                name: _selected ??
+                                    widget.customAlbum?.name ??
+                                    state.media.name,
+                                isExpanded: _isExpanded,
                               );
                       },
                     ),
@@ -149,41 +129,10 @@ class _MediaAppBarState extends State<MediaAppBar> {
                                 context, _mediaAlbum[index]);
                           },
                         )
-                      : Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: SizedBox.square(
-                                dimension: 80,
-                                child: AssetThumbnail(
-                                  asset: _mediaAlbum[index].thumbnail,
-                                  showCircularPlaceholder:
-                                      widget.showCircularPlaceholder,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _mediaAlbum[index].name,
-                                  style: widget.albumNameStyle ??
-                                      const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
-                                Text(
-                                  _mediaAlbum[index].size.toString(),
-                                  style: widget.albumCountStyle ??
-                                      const TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ],
+                      : DefaultAlbumTile(
+                          mediaAlbum: _mediaAlbum[index],
+                          albumNameStyle: widget.albumNameStyle,
+                          albumCountStyle: widget.albumCountStyle,
                         ),
                 ),
                 separatorBuilder: (context, index) => const SizedBox(

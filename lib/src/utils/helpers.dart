@@ -11,7 +11,7 @@ Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums,
         (await album.getAssetListRange(start: 0, end: 1)).firstOrNull;
 
     return MediaAlbum(
-        id: album.id, name: name, size: size, thumbnail: thumbnail);
+        id: album.id, name: name, size: size, previewAsset: thumbnail);
   }));
 
   if (!merge) {
@@ -31,7 +31,7 @@ Future<List<MediaAlbum>> filterAlbum(List<AssetPathEntity> albums,
         id: existingAlbum.id,
         name: existingAlbum.name, // Keep original case from the first entry
         size: existingAlbum.size + album.size,
-        thumbnail: existingAlbum.thumbnail ?? album.thumbnail,
+        previewAsset: existingAlbum.previewAsset ?? album.previewAsset,
       );
     } else {
       // Add new album to the map
