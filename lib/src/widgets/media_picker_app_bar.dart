@@ -20,7 +20,8 @@ class MediaAppBar extends StatefulWidget {
       this.closeIcon,
       this.closeIconColor,
       this.albumNameStyle,
-      this.albumCountStyle});
+      this.albumCountStyle,
+      this.customAlbum});
 
   final List<MediaAlbum> mediaAlbum;
   final Function(MediaAlbum) onChanged;
@@ -35,6 +36,7 @@ class MediaAppBar extends StatefulWidget {
   final Color? closeIconColor;
   final TextStyle? albumNameStyle;
   final TextStyle? albumCountStyle;
+  final MediaAlbum? customAlbum;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -43,6 +45,13 @@ class MediaAppBar extends StatefulWidget {
 class _MediaAppBarState extends State<MediaAppBar> {
   bool _isExpanded = false;
   String? _selected;
+
+  List<MediaAlbum> get _mediaAlbum {
+    if (widget.customAlbum != null) {
+      return [widget.customAlbum!, ...widget.mediaAlbum];
+    }
+    return widget.mediaAlbum;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +83,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                         ),
                   ),
                   GestureDetector(onTap: () {
-                    if (widget.mediaAlbum.isEmpty) return;
+                    if (_mediaAlbum.isEmpty) return;
                     setState(() {
                       _isExpanded = !_isExpanded;
                     });
@@ -95,9 +104,11 @@ class _MediaAppBarState extends State<MediaAppBar> {
                                   children: [
                                     Skeletonizer(
                                       enabled: state.isLoading &&
-                                          state.albums.isEmpty,
+                                          _mediaAlbum.isEmpty,
                                       child: Text(
-                                        _selected ?? state.media.name,
+                                        _selected ??
+                                            widget.customAlbum?.name ??
+                                            state.media.name,
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -118,16 +129,16 @@ class _MediaAppBarState extends State<MediaAppBar> {
             ),
             Expanded(
               child: ListView.separated(
-                itemCount: widget.mediaAlbum.length,
+                itemCount: _mediaAlbum.length,
                 itemBuilder: (context, index) => GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
                     setState(() {
-                      _selected = widget.mediaAlbum[index].name;
+                      _selected = _mediaAlbum[index].name;
                       widget.onChanged(MediaAlbum(
-                          id: widget.mediaAlbum[index].id,
+                          id: _mediaAlbum[index].id,
                           name: _selected ?? '',
-                          size: widget.mediaAlbum[index].size));
+                          size: _mediaAlbum[index].size));
                       _isExpanded = false;
                     });
                   },
@@ -135,7 +146,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                       ? Builder(
                           builder: (context) {
                             return widget.albumTile!(
-                                context, widget.mediaAlbum[index]);
+                                context, _mediaAlbum[index]);
                           },
                         )
                       : Row(
@@ -145,7 +156,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                               child: SizedBox.square(
                                 dimension: 80,
                                 child: AssetThumbnail(
-                                  asset: widget.mediaAlbum[index].thumbnail,
+                                  asset: _mediaAlbum[index].thumbnail,
                                   showCircularPlaceholder:
                                       widget.showCircularPlaceholder,
                                 ),
@@ -157,14 +168,14 @@ class _MediaAppBarState extends State<MediaAppBar> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  widget.mediaAlbum[index].name,
+                                  _mediaAlbum[index].name,
                                   style: widget.albumNameStyle ??
                                       const TextStyle(
                                         fontWeight: FontWeight.w600,
                                       ),
                                 ),
                                 Text(
-                                  widget.mediaAlbum[index].size.toString(),
+                                  _mediaAlbum[index].size.toString(),
                                   style: widget.albumCountStyle ??
                                       const TextStyle(
                                           fontWeight: FontWeight.w400,

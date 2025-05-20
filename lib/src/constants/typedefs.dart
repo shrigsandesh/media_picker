@@ -19,4 +19,8 @@ typedef AlbumTileBuilder = Widget Function(
   MediaAlbum album,
 );
 
+typedef MediaGridBuilder = Widget Function(
+  BuildContext context,
+);
+
 typedef SortFunction = int Function(AssetPathEntity, AssetPathEntity);

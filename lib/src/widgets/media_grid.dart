@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/enums.dart';
+import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -19,6 +20,7 @@ class MediaGrid extends StatefulWidget {
     required this.pageSize,
     required this.type,
     this.crossAxisCount,
+    this.mediaGridBuilder,
   });
   final List<AssetEntity> medias;
   final String name;
@@ -30,6 +32,7 @@ class MediaGrid extends StatefulWidget {
   final int pageSize;
   final MediaType type;
   final int? crossAxisCount;
+  final MediaGridBuilder? mediaGridBuilder;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -69,6 +72,9 @@ class _MediaGridState extends State<MediaGrid> {
                       borderRadius: widget.thumbnailBorderRadius ??
                           kThumbnailBorderRadius,
                     ));
+          }
+          if (widget.mediaGridBuilder != null) {
+            return widget.mediaGridBuilder!(context);
           }
           return GridView.builder(
             key: const PageStorageKey("asset_grid"),

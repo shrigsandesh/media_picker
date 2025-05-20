@@ -12,20 +12,23 @@ class MediaPickerState extends Equatable {
   final int pageSize;
   final MediaAlbum currentAlubm;
   final String error;
+  final bool hasCustomAlbum;
+  final MediaAlbum? customAlbum;
 
-  const MediaPickerState({
-    this.albums = const [],
-    this.media = MediaContent.initial,
-    this.currentPage = 0,
-    this.isLoading = false,
-    this.isPaginating = false,
-    this.hasReachedEndCommon = false,
-    this.pickedFiles = const [],
-    this.currentMediaTye = MediaType.common,
-    this.pageSize = 40,
-    this.error = "",
-    this.currentAlubm = const MediaAlbum(id: "", name: "Recent", size: 0),
-  });
+  const MediaPickerState(
+      {this.albums = const [],
+      this.media = MediaContent.initial,
+      this.currentPage = 0,
+      this.isLoading = false,
+      this.isPaginating = false,
+      this.hasReachedEndCommon = false,
+      this.pickedFiles = const [],
+      this.currentMediaTye = MediaType.common,
+      this.pageSize = 40,
+      this.error = "",
+      this.currentAlubm = const MediaAlbum(id: "", name: "Recent", size: 0),
+      this.hasCustomAlbum = false,
+      this.customAlbum});
 
   MediaPickerState copyWith({
     List<MediaAlbum>? albums,
@@ -39,6 +42,8 @@ class MediaPickerState extends Equatable {
     int? pageSize,
     MediaAlbum? currentAlubm,
     String? error,
+    bool? hasCustomAlbum,
+    MediaAlbum? customAlbum,
   }) {
     return MediaPickerState(
       albums: albums ?? this.albums,
@@ -52,6 +57,8 @@ class MediaPickerState extends Equatable {
       pageSize: pageSize ?? this.pageSize,
       currentAlubm: currentAlubm ?? this.currentAlubm,
       error: error ?? this.error,
+      hasCustomAlbum: hasCustomAlbum ?? this.hasCustomAlbum,
+      customAlbum: customAlbum ?? this.customAlbum,
     );
   }
 
@@ -70,5 +77,6 @@ class MediaPickerState extends Equatable {
         pageSize,
         currentAlubm,
         error,
+        hasCustomAlbum,
       ];
 }

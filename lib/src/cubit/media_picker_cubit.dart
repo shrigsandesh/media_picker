@@ -16,8 +16,16 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     int pageSize = kPageSize,
     MediaAlbum? album,
     int Function(AssetPathEntity, AssetPathEntity)? sortFunction,
+    bool hasCustomAlbum = false,
+    MediaAlbum? customAlbum,
   }) async {
-    emit(state.copyWith(isLoading: true, currentPage: 0));
+    emit(state.copyWith(
+      isLoading: true,
+      currentPage: 0,
+    ));
+    if (hasCustomAlbum) {
+      emit(state.copyWith(currentAlubm: customAlbum, hasCustomAlbum: true));
+    }
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
       type: RequestType.common,
     );

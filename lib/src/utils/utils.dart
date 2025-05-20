@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_wrapper.dart';
+import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -92,6 +93,8 @@ Future<void> showMediaPicker({
   final Color? closeIconColor,
   final TextStyle? albumNameStyle,
   final TextStyle? albumCountStyle,
+  final MediaAlbum? customAlbum,
+  final MediaGridBuilder? mediaGridBuilder,
 }) async {
   await Permission.requestPermission().then((granted) {
     if (granted.isAuth) {
@@ -120,6 +123,8 @@ Future<void> showMediaPicker({
             closeIconColor: closeIconColor,
             albumNameStyle: albumNameStyle,
             albumCountStyle: albumCountStyle,
+            customAlbum: customAlbum,
+            mediaGridBuilder: mediaGridBuilder,
           ),
         ),
       );

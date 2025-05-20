@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/media_picker_page.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:media_picker/src/model/media_model.dart';
 
 class MediaPickerPageWrapper extends StatelessWidget {
   const MediaPickerPageWrapper({
@@ -27,6 +28,8 @@ class MediaPickerPageWrapper extends StatelessWidget {
     this.closeIconColor,
     this.albumNameStyle,
     this.albumCountStyle,
+    this.customAlbum,
+    this.mediaGridBuilder,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -53,6 +56,8 @@ class MediaPickerPageWrapper extends StatelessWidget {
   final Color? closeIconColor;
   final TextStyle? albumNameStyle;
   final TextStyle? albumCountStyle;
+  final MediaAlbum? customAlbum;
+  final MediaGridBuilder? mediaGridBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +66,8 @@ class MediaPickerPageWrapper extends StatelessWidget {
         ..loadMedia(
           pageSize: pageSize,
           sortFunction: sortFunction,
+          hasCustomAlbum: customAlbum != null,
+          customAlbum: customAlbum,
         ),
       child: MediaPickerPage(
         scaffoldBackgroundColor: scaffoldBackgroundColor,
@@ -82,6 +89,8 @@ class MediaPickerPageWrapper extends StatelessWidget {
         closeIconColor: closeIconColor,
         albumNameStyle: albumNameStyle,
         albumCountStyle: albumCountStyle,
+        mediaGridBuilder: mediaGridBuilder,
+        customAlbum: customAlbum,
       ),
     );
   }

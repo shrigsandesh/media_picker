@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:media_picker/src/model/media_model.dart';
 
 import 'package:photo_manager/photo_manager.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
@@ -29,6 +30,8 @@ class MediaPickerPage extends StatefulWidget {
     this.closeIconColor,
     this.albumNameStyle,
     this.albumCountStyle,
+    this.customAlbum,
+    this.mediaGridBuilder,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -54,6 +57,9 @@ class MediaPickerPage extends StatefulWidget {
   final Color? closeIconColor;
   final TextStyle? albumNameStyle;
   final TextStyle? albumCountStyle;
+
+  final MediaAlbum? customAlbum;
+  final MediaGridBuilder? mediaGridBuilder;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -82,6 +88,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               contentPadding: widget.contentPadding,
               pageSize: widget.pageSize,
               crossAxisCount: widget.crossAxisCount,
+              mediaGridBuilder: widget.mediaGridBuilder,
+              customAlbum: widget.customAlbum,
             ),
             MediaPickerAppBarSection(
               albumDropdownColor: widget.dropdownColor,
@@ -93,6 +101,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               closeIconColor: widget.closeIconColor,
               albumCountStyle: widget.albumCountStyle,
               albumNameStyle: widget.albumNameStyle,
+              customAlbum: widget.customAlbum,
             ),
           ],
         ),
@@ -112,6 +121,8 @@ class MediaContent extends StatelessWidget {
     this.contentPadding,
     required this.pageSize,
     this.crossAxisCount,
+    this.mediaGridBuilder,
+    this.customAlbum,
   });
 
   final double? thumbnailBorderRadius;
@@ -123,6 +134,8 @@ class MediaContent extends StatelessWidget {
 
   final int pageSize;
   final int? crossAxisCount;
+  final MediaGridBuilder? mediaGridBuilder;
+  final MediaAlbum? customAlbum;
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +152,8 @@ class MediaContent extends StatelessWidget {
             contentPadding: contentPadding,
             pageSize: pageSize,
             crossAxisCount: crossAxisCount,
+            mediaGridBuilder: mediaGridBuilder,
+            customAlbum: customAlbum,
           ),
         ],
       ),
@@ -158,6 +173,8 @@ class MediaTabContent extends StatelessWidget {
     this.contentPadding,
     required this.pageSize,
     this.crossAxisCount,
+    this.mediaGridBuilder,
+    this.customAlbum,
   });
 
   final double? thumbnailBorderRadius;
@@ -169,6 +186,8 @@ class MediaTabContent extends StatelessWidget {
   final Color? checkedIconColor;
   final int pageSize;
   final int? crossAxisCount;
+  final MediaGridBuilder? mediaGridBuilder;
+  final MediaAlbum? customAlbum;
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +202,11 @@ class MediaTabContent extends StatelessWidget {
                 pageSize: pageSize,
               ),
         );
+      }
+      if (mediaGridBuilder != null &&
+          state.hasCustomAlbum &&
+          state.currentAlubm.name == customAlbum?.name) {
+        return mediaGridBuilder!(context);
       }
 
       return Expanded(
@@ -216,6 +240,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
     this.closeIconColor,
     this.albumNameStyle,
     this.albumCountStyle,
+    this.customAlbum,
   });
 
   final Color? albumDropdownColor;
@@ -230,6 +255,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
   final Color? closeIconColor;
   final TextStyle? albumNameStyle;
   final TextStyle? albumCountStyle;
+  final MediaAlbum? customAlbum;
 
   @override
   Widget build(BuildContext context) {
@@ -248,6 +274,7 @@ class MediaPickerAppBarSection extends StatelessWidget {
           closeIconColor: closeIconColor,
           albumCountStyle: albumCountStyle,
           albumNameStyle: albumNameStyle,
+          customAlbum: customAlbum,
         );
       },
     );
