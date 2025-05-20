@@ -96,3 +96,14 @@ class DefaultAlbumButton extends StatelessWidget {
     );
   }
 }
+
+class CustomAlbumPlaceHolder extends StatelessWidget {
+  const CustomAlbumPlaceHolder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('No media found.'),
+    );
+  }
+}

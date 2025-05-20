@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
@@ -203,10 +206,14 @@ class MediaTabContent extends StatelessWidget {
               ),
         );
       }
-      if (mediaGridBuilder != null &&
+      if (mediaGridBuilder != null ||
           state.hasCustomAlbum &&
-          state.currentAlubm.name == customAlbum?.name) {
-        return mediaGridBuilder!(context);
+              state.currentAlubm.name == customAlbum?.name) {
+        log("Custom Album: ${state.currentAlubm.name}");
+        return Expanded(
+            child: mediaGridBuilder != null
+                ? mediaGridBuilder!(context)
+                : const CustomAlbumPlaceHolder());
       }
 
       return Expanded(
