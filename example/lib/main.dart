@@ -90,6 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }
                     },
+                    customAlbum: const MediaAlbum(
+                      name: "Custom Album",
+                      size: 0,
+                      id: "custom_album_id",
+                    ),
+                    mediaGridBuilder: (context) => const SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: Text("Custom Media Grid"),
+                          ),
+                        ),
                     closeIconColor: Colors.red,
                     albumTileBuilder: (context, alubms) {
                       return Container(
