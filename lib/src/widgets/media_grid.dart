@@ -109,7 +109,6 @@ class _MediaGridState extends State<MediaGrid> {
 
           return GridView.builder(
             controller: _scrollController,
-            key: const PageStorageKey("asset_grid"),
             padding: widget.contentPadding ??
                 const EdgeInsets.fromLTRB(0, 0, 0, 100),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
