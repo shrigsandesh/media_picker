@@ -75,7 +75,12 @@ class _MediaAppBarState extends State<MediaAppBar> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: widget.onClose,
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      if (widget.onClose != null) {
+                        widget.onClose!();
+                      }
+                    },
                     child: widget.closeIcon ??
                         Icon(
                           Icons.close,
