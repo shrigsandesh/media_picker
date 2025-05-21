@@ -101,6 +101,11 @@ Future<void> showMediaPicker({
   final double? crossAxisSpacing,
   final double? mainAxisSpacing,
 }) async {
+  assert(
+    (mediaGridBuilder == null && customAlbum == null) ||
+        (mediaGridBuilder != null && customAlbum != null),
+    'Both mediaGridBuilder and customAlbum must be provided together, or both must be null.',
+  );
   await Permission.requestPermission().then((granted) {
     if (granted.isAuth) {
       if (!context.mounted) return;
@@ -138,7 +143,8 @@ Future<void> showMediaPicker({
               customAlbum: customAlbum,
               mediaGridBuilder: mediaGridBuilder,
               videoIconBuilder: videoIconBuilder,
-              crossAxisSpacing: crossAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing ?? 0.0,
+              mainAxisSpacing: mainAxisSpacing ?? 0.0,
             ),
           ),
         ),

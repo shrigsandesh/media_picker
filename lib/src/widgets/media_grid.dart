@@ -22,8 +22,8 @@ class MediaGrid extends StatefulWidget {
     this.crossAxisCount,
     this.mediaGridBuilder,
     this.videoIconBuilder,
-    this.crossAxisSpacing,
-    this.mainAxisSpacing,
+    required this.crossAxisSpacing,
+    required this.mainAxisSpacing,
   });
 
   final List<AssetEntity> medias;
@@ -38,8 +38,8 @@ class MediaGrid extends StatefulWidget {
   final int? crossAxisCount;
   final MediaGridBuilder? mediaGridBuilder;
   final VideoIconBuilder? videoIconBuilder;
-  final double? crossAxisSpacing;
-  final double? mainAxisSpacing;
+  final double crossAxisSpacing;
+  final double mainAxisSpacing;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -123,8 +123,8 @@ class _MediaGridState extends State<MediaGrid> {
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: widget.crossAxisCount ?? kCrossAxisCount,
               childAspectRatio: 1.0,
-              crossAxisSpacing: widget.crossAxisSpacing ?? 0.0,
-              mainAxisSpacing: widget.mainAxisSpacing ?? 0.0,
+              crossAxisSpacing: widget.crossAxisSpacing,
+              mainAxisSpacing: widget.mainAxisSpacing,
             ),
             itemCount: widget.medias.length +
                 (state.isLoading && widget.medias.isNotEmpty ? 1 : 0),

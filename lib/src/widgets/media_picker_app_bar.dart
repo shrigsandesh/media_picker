@@ -88,16 +88,18 @@ class _MediaAppBarState extends State<MediaAppBar> {
                   }, child: SizedBox(
                     child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
                       builder: (context, state) {
+                        final name = _selected ??
+                            widget.customAlbum?.name ??
+                            state.media.name;
+                        final isEnabled =
+                            state.isLoading && _mediaAlbum.isEmpty;
                         return widget.albumButtonBuilder != null
                             ? widget.albumButtonBuilder!(
-                                state.isLoading, _selected ?? '', _isExpanded)
+                                isEnabled, name, _isExpanded)
                             : DefaultAlbumButton(
                                 dropdownButtonColor: widget.dropdownButtonColor,
-                                isEnabled:
-                                    state.isLoading && _mediaAlbum.isEmpty,
-                                name: _selected ??
-                                    widget.customAlbum?.name ??
-                                    state.media.name,
+                                isEnabled: isEnabled,
+                                name: name,
                                 isExpanded: _isExpanded,
                               );
                       },
