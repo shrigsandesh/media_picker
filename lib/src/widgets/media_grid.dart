@@ -21,6 +21,7 @@ class MediaGrid extends StatefulWidget {
     required this.type,
     this.crossAxisCount,
     this.mediaGridBuilder,
+    this.videoIconBuilder,
   });
 
   final List<AssetEntity> medias;
@@ -34,6 +35,7 @@ class MediaGrid extends StatefulWidget {
   final MediaType type;
   final int? crossAxisCount;
   final MediaGridBuilder? mediaGridBuilder;
+  final VideoIconBuilder? videoIconBuilder;
 
   @override
   State<MediaGrid> createState() => _MediaGridState();
@@ -132,7 +134,7 @@ class _MediaGridState extends State<MediaGrid> {
                 );
               }
 
-              final video = widget.medias[index];
+              final media = widget.medias[index];
               return GestureDetector(
                 onTap: () =>
                     widget.onSingleFileSelection?.call(widget.medias[index]),
@@ -145,25 +147,27 @@ class _MediaGridState extends State<MediaGrid> {
                         borderRadius: widget.thumbnailBorderRadius,
                         asset: widget.medias[index],
                       ),
-                      if (video.duration > 0)
-                        Positioned(
-                          bottom: 2,
-                          right: 2,
-                          child: Row(
-                            children: [
-                              const Icon(Icons.videocam,
-                                  size: 18, color: Colors.white),
-                              const SizedBox(width: 4),
-                              Text(
-                                video.duration.formattedDuration,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        )
+                      if (media.duration > 0)
+                        widget.videoIconBuilder != null
+                            ? widget.videoIconBuilder!(context, media.duration)
+                            : Positioned(
+                                bottom: 2,
+                                right: 2,
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.videocam,
+                                        size: 18, color: Colors.white),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      media.duration.formattedDuration,
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              )
                     ],
                   ),
                 ),

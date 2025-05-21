@@ -97,6 +97,7 @@ Future<void> showMediaPicker({
   final TextStyle? albumCountStyle,
   final MediaAlbum? customAlbum,
   final MediaGridBuilder? mediaGridBuilder,
+  final VideoIconBuilder? videoIconBuilder,
 }) async {
   await Permission.requestPermission().then((granted) {
     if (granted.isAuth) {
@@ -134,6 +135,7 @@ Future<void> showMediaPicker({
               albumCountStyle: albumCountStyle,
               customAlbum: customAlbum,
               mediaGridBuilder: mediaGridBuilder,
+              videoIconBuilder: videoIconBuilder,
             ),
           ),
         ),

@@ -24,3 +24,5 @@ typedef MediaGridBuilder = Widget Function(
 );
 
 typedef SortFunction = int Function(AssetPathEntity, AssetPathEntity);
+
+typedef VideoIconBuilder = Widget Function(BuildContext context, int duration);
