@@ -45,10 +45,11 @@ class _MediaGridState extends State<MediaGrid> {
   @override
   void initState() {
     super.initState();
+    final cubit = context.read<MediaPickerCubit>();
 
+    debugPrint("Media Grid for ${cubit.state.currentAlubm.name} Initialized");
     _scrollController = ScrollController()
       ..addListener(() {
-        final cubit = context.read<MediaPickerCubit>();
         final state = cubit.state;
 
         if (_scrollController.position.pixels >=
@@ -62,6 +63,8 @@ class _MediaGridState extends State<MediaGrid> {
 
   @override
   void dispose() {
+    debugPrint("Media Grid Destroyed");
+
     _scrollController.dispose();
     super.dispose();
   }
