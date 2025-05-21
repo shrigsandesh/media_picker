@@ -89,78 +89,38 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               mediaGridBuilder: widget.mediaGridBuilder,
               customAlbum: widget.customAlbum,
             ),
-            MediaPickerAppBarSection(
-              albumDropdownColor: widget.dropdownColor,
-              albumTile: widget.albumTileBuilder,
-              albumButtonBuilder: widget.albumDropdownButtonBuilder,
-              pageSize: widget.pageSize,
-              dropdownButtonColor: widget.dropdownButtonColor,
-              closeIcon: widget.closeIcon,
-              closeIconColor: widget.closeIconColor,
-              albumCountStyle: widget.albumCountStyle,
-              albumNameStyle: widget.albumNameStyle,
-              customAlbum: widget.customAlbum,
-            ),
+            _buildMediaAppBar(context),
           ],
         ),
       ),
+    );
+  }
+
+  _buildMediaAppBar(BuildContext context) {
+    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
+      builder: (context, state) {
+        return MediaAppBar(
+          onChanged: (album) => context
+              .read<MediaPickerCubit>()
+              .changeAlbum(album, widget.pageSize),
+          mediaAlbum: state.albums,
+          albumDropdownColor: widget.dropdownColor,
+          albumTile: widget.albumTileBuilder,
+          albumButtonBuilder: widget.albumDropdownButtonBuilder,
+          dropdownButtonColor: widget.dropdownButtonColor,
+          closeIcon: widget.closeIcon,
+          closeIconColor: widget.closeIconColor,
+          albumCountStyle: widget.albumCountStyle,
+          albumNameStyle: widget.albumNameStyle,
+          customAlbum: widget.customAlbum,
+        );
+      },
     );
   }
 }
 
 class MediaContent extends StatelessWidget {
   const MediaContent({
-    super.key,
-    this.thumbnailBorderRadius,
-    this.mediaGridMargin,
-    this.onSingleFileSelection,
-    this.loading,
-    this.thumbnailShimmer,
-    this.contentPadding,
-    required this.pageSize,
-    this.crossAxisCount,
-    this.mediaGridBuilder,
-    this.customAlbum,
-  });
-
-  final double? thumbnailBorderRadius;
-  final EdgeInsetsGeometry? mediaGridMargin;
-  final EdgeInsetsGeometry? contentPadding;
-  final Function(AssetEntity)? onSingleFileSelection;
-  final Widget? loading;
-  final Widget? thumbnailShimmer;
-
-  final int pageSize;
-  final int? crossAxisCount;
-  final MediaGridBuilder? mediaGridBuilder;
-  final MediaAlbum? customAlbum;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: kToolbarHeight - 8),
-      child: Column(
-        children: [
-          MediaTabContent(
-            thumbnailBorderRadius: thumbnailBorderRadius,
-            mediaGridMargin: mediaGridMargin,
-            onSingleFileSelection: onSingleFileSelection,
-            loading: loading,
-            thumbnailShimmer: thumbnailShimmer,
-            contentPadding: contentPadding,
-            pageSize: pageSize,
-            crossAxisCount: crossAxisCount,
-            mediaGridBuilder: mediaGridBuilder,
-            customAlbum: customAlbum,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MediaTabContent extends StatelessWidget {
-  const MediaTabContent({
     super.key,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
@@ -224,59 +184,5 @@ class MediaTabContent extends StatelessWidget {
         ),
       );
     });
-  }
-}
-
-class MediaPickerAppBarSection extends StatelessWidget {
-  const MediaPickerAppBarSection({
-    super.key,
-    this.albumDropdownColor,
-    this.albumTile,
-    this.albumButtonBuilder,
-    required this.pageSize,
-    this.dropdownButtonColor,
-    this.showCircularPlaceholder,
-    this.closeIcon,
-    this.closeIconColor,
-    this.albumNameStyle,
-    this.albumCountStyle,
-    this.customAlbum,
-  });
-
-  final Color? albumDropdownColor;
-  final AlbumTileBuilder? albumTile;
-  final AlbumDropdownButtonBuilder? albumButtonBuilder;
-  final int pageSize;
-  final Color? dropdownButtonColor;
-
-  final bool? showCircularPlaceholder;
-
-  final Widget? closeIcon;
-  final Color? closeIconColor;
-  final TextStyle? albumNameStyle;
-  final TextStyle? albumCountStyle;
-  final MediaAlbum? customAlbum;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-      builder: (context, state) {
-        return MediaAppBar(
-          onChanged: (album) =>
-              context.read<MediaPickerCubit>().changeAlbum(album, pageSize),
-          mediaAlbum: state.albums,
-          albumDropdownColor: albumDropdownColor,
-          albumTile: albumTile,
-          albumButtonBuilder: albumButtonBuilder,
-          dropdownButtonColor: dropdownButtonColor,
-          showCircularPlaceholder: showCircularPlaceholder,
-          closeIcon: closeIcon,
-          closeIconColor: closeIconColor,
-          albumCountStyle: albumCountStyle,
-          albumNameStyle: albumNameStyle,
-          customAlbum: customAlbum,
-        );
-      },
-    );
   }
 }
