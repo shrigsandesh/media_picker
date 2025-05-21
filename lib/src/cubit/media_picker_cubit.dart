@@ -77,8 +77,6 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       name:
           album?.name ?? (tempAlbum.isNotEmpty ? tempAlbum[0].name : 'Recent'),
       common: common,
-      photos: const [],
-      videos: const [],
     );
 
     if (mediaContent.common.isEmpty) {
@@ -126,6 +124,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     var mediaContent = MediaContent.fromAssetEntity(allMedia, state.media.name);
+
+    if (isClosed) return;
 
     emit(
       state.copyWith(

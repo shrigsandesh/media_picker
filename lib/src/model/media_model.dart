@@ -22,19 +22,13 @@ class MediaData extends Equatable {
 class MediaContent extends Equatable {
   final String name;
   final List<AssetEntity> common;
-  final List<AssetEntity> videos;
-  final List<AssetEntity> photos;
 
   const MediaContent({
     required this.name,
     required this.common,
-    required this.videos,
-    required this.photos,
   });
 
   int get commonSize => common.length;
-  int get videoSize => videos.length;
-  int get photoSize => photos.length;
 
   factory MediaContent.fromAssetEntity(List<AssetEntity> list, name) {
     return MediaContent(
@@ -42,8 +36,6 @@ class MediaContent extends Equatable {
       common: list
           .where((e) => e.type == AssetType.video || e.type == AssetType.image)
           .toList(),
-      videos: list.where((e) => e.type == AssetType.video).toList(),
-      photos: list.where((e) => e.type == AssetType.image).toList(),
     );
   }
 
@@ -54,35 +46,24 @@ class MediaContent extends Equatable {
     List<AssetEntity>? photos,
   }) {
     return MediaContent(
-        name: name ?? this.name,
-        common: common ?? this.common,
-        videos: videos ?? this.videos,
-        photos: photos ?? this.photos);
+      name: name ?? this.name,
+      common: common ?? this.common,
+    );
   }
 
   static const initial = MediaContent(
     name: "Recent",
     common: [],
-    videos: [],
-    photos: [],
   );
 
   @override
-  List<Object> get props => [common, videos, photos];
+  List<Object> get props => [common];
 
   @override
   bool get stringify => true;
 }
 
 extension MediaContentExtensions on MediaContent {
-  bool isVideoEnd(int pageSize, MediaType type) {
-    return type == MediaType.video && (videoSize < pageSize || videos.isEmpty);
-  }
-
-  bool isPhotoEnd(int pageSize, MediaType type) {
-    return type == MediaType.image && (photoSize < pageSize || photos.isEmpty);
-  }
-
   bool isCommonEnd(int pageSize, MediaType type) {
     return type == MediaType.common &&
         (commonSize < pageSize || common.isEmpty);
