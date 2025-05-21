@@ -1,14 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
-import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:media_picker/src/model/media_model.dart';
 
-import 'package:photo_manager/photo_manager.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
 
 class MediaPickerPage extends StatefulWidget {
@@ -206,10 +201,8 @@ class MediaTabContent extends StatelessWidget {
               ),
         );
       }
-      if (mediaGridBuilder != null ||
-          state.hasCustomAlbum &&
-              state.currentAlubm.name == customAlbum?.name) {
-        log("Custom Album: ${state.currentAlubm.name}");
+      if (state.hasCustomAlbum &&
+          state.currentAlubm.name == customAlbum?.name) {
         return Expanded(
             child: mediaGridBuilder != null
                 ? mediaGridBuilder!(context)

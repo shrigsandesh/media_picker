@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/constants.dart';
@@ -140,11 +142,15 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
   }
 
   void changeAlbum(MediaAlbum singleAlbum, [int pageSize = 40]) async {
+    log("Change album to ${singleAlbum.name}");
+
     if (singleAlbum.name == state.media.name &&
         (singleAlbum.id == state.currentAlubm.id ||
             state.currentAlubm.name.toLowerCase().contains('recent'))) {
+      ;
       return;
     }
+
     emit(state.copyWith(
       media: MediaContent.initial,
       currentPage: 0,
