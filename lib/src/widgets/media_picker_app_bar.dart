@@ -49,7 +49,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
   String? _selected;
 
   List<MediaAlbum> get _mediaAlbum {
-    if (widget.customAlbum != null) {
+    if (widget.customAlbum != null && !widget.customAlbum.isEmpty()) {
       return [widget.customAlbum!, ...widget.mediaAlbum];
     }
     return widget.mediaAlbum;
@@ -96,8 +96,10 @@ class _MediaAppBarState extends State<MediaAppBar> {
                     child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
                       builder: (context, state) {
                         final name = _selected ??
-                            widget.customAlbum?.name ??
-                            state.media.name;
+                            ((widget.customAlbum != null &&
+                                    !widget.customAlbum!.isEmpty())
+                                ? (widget.customAlbum?.name ?? state.media.name)
+                                : state.media.name);
                         final isEnabled =
                             state.isLoading && _mediaAlbum.isEmpty;
                         return widget.albumButtonBuilder != null

@@ -24,7 +24,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       isLoading: true,
       currentPage: 0,
     ));
-    if (hasCustomAlbum) {
+    if (hasCustomAlbum && !customAlbum.isEmpty()) {
       emit(state.copyWith(currentAlubm: customAlbum, hasCustomAlbum: true));
     }
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
@@ -74,8 +74,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     final mediaContent = MediaContent(
-      name:
-          album?.name ?? (tempAlbum.isNotEmpty ? tempAlbum[0].name : 'Recent'),
+      name: album?.name ?? (tempAlbum.isNotEmpty ? tempAlbum[0].name : ''),
       common: common,
     );
 

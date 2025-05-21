@@ -52,7 +52,7 @@ class MediaContent extends Equatable {
   }
 
   static const initial = MediaContent(
-    name: "Recent",
+    name: " ",
     common: [],
   );
 
@@ -88,4 +88,8 @@ class MediaAlbum extends Equatable {
 
   @override
   bool get stringify => true;
+}
+
+extension MediaAlbumNullableX on MediaAlbum? {
+  bool isEmpty() => this == null || this!.size == 0;
 }

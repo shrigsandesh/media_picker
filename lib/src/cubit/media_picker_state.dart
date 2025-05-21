@@ -26,7 +26,7 @@ class MediaPickerState extends Equatable {
       this.currentMediaTye = MediaType.common,
       this.pageSize = 40,
       this.error = "",
-      this.currentAlubm = const MediaAlbum(id: "", name: "Recent", size: 0),
+      this.currentAlubm = const MediaAlbum(id: "", name: "", size: 0),
       this.hasCustomAlbum = false,
       this.customAlbum});
 

@@ -118,7 +118,7 @@ Future<void> showMediaPicker({
               ..loadMedia(
                 pageSize: pageSize,
                 sortFunction: sortAlbumFunction,
-                hasCustomAlbum: customAlbum != null,
+                hasCustomAlbum: customAlbum != null && !customAlbum.isEmpty(),
                 customAlbum: customAlbum,
               ),
             child: MediaPickerPage(

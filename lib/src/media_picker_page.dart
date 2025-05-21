@@ -173,7 +173,8 @@ class MediaContent extends StatelessWidget {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
         builder: (context, state) {
       if (state.hasCustomAlbum &&
-          state.currentAlubm.name == customAlbum?.name) {
+          state.currentAlubm.name == customAlbum?.name &&
+          !customAlbum.isEmpty()) {
         return mediaGridBuilder != null
             ? mediaGridBuilder!(context)
             : const CustomAlbumPlaceHolder();
