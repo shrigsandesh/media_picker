@@ -31,6 +31,8 @@ class MediaPickerPage extends StatefulWidget {
     this.customAlbum,
     this.mediaGridBuilder,
     this.videoIconBuilder,
+    this.crossAxisSpacing,
+    this.mainAxisSpacing,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -60,6 +62,9 @@ class MediaPickerPage extends StatefulWidget {
   final MediaAlbum? customAlbum;
   final MediaGridBuilder? mediaGridBuilder;
   final VideoIconBuilder? videoIconBuilder;
+
+  final double? crossAxisSpacing;
+  final double? mainAxisSpacing;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -93,6 +98,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                 mediaGridBuilder: widget.mediaGridBuilder,
                 customAlbum: widget.customAlbum,
                 videoIconBuilder: widget.videoIconBuilder,
+                crossAxisSpacing: widget.crossAxisSpacing,
+                mainAxisSpacing: widget.mainAxisSpacing,
               ),
             ),
             _buildMediaAppBar(context),
@@ -140,6 +147,8 @@ class MediaContent extends StatelessWidget {
     this.mediaGridBuilder,
     this.customAlbum,
     this.videoIconBuilder,
+    this.crossAxisSpacing,
+    this.mainAxisSpacing,
   });
 
   final double? thumbnailBorderRadius;
@@ -154,6 +163,8 @@ class MediaContent extends StatelessWidget {
   final MediaGridBuilder? mediaGridBuilder;
   final MediaAlbum? customAlbum;
   final VideoIconBuilder? videoIconBuilder;
+  final double? crossAxisSpacing;
+  final double? mainAxisSpacing;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +197,8 @@ class MediaContent extends StatelessWidget {
         pageSize: pageSize,
         crossAxisCount: crossAxisCount,
         videoIconBuilder: videoIconBuilder,
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
       );
     });
   }

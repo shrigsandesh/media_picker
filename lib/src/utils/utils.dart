@@ -98,6 +98,8 @@ Future<void> showMediaPicker({
   final MediaAlbum? customAlbum,
   final MediaGridBuilder? mediaGridBuilder,
   final VideoIconBuilder? videoIconBuilder,
+  final double? crossAxisSpacing,
+  final double? mainAxisSpacing,
 }) async {
   await Permission.requestPermission().then((granted) {
     if (granted.isAuth) {
@@ -136,6 +138,7 @@ Future<void> showMediaPicker({
               customAlbum: customAlbum,
               mediaGridBuilder: mediaGridBuilder,
               videoIconBuilder: videoIconBuilder,
+              crossAxisSpacing: crossAxisSpacing,
             ),
           ),
         ),
