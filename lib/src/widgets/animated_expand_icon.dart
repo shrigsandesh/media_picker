@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 
 class AnimatedExpansionIcon extends StatefulWidget {
   final bool isExpanded;
-  final Widget? child;
+  final Widget? icon;
 
-  const AnimatedExpansionIcon(
-      {required this.isExpanded, super.key, this.child});
+  const AnimatedExpansionIcon({required this.isExpanded, super.key, this.icon});
 
   @override
   State<AnimatedExpansionIcon> createState() => _AnimatedExpansionIconState();
@@ -49,7 +48,7 @@ class _AnimatedExpansionIconState extends State<AnimatedExpansionIcon>
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: _controller.drive(Tween<double>(begin: 0.0, end: 0.5)),
-      child: widget.child ?? const Icon(Icons.expand_more),
+      child: widget.icon ?? const Icon(Icons.expand_more),
     );
   }
 }
