@@ -10,7 +10,7 @@ Route createRoute(
     pageBuilder: (context, animation, secondaryAnimation) => destinationPage,
     transitionsBuilder: customTransition ??
         (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 1.0); // Start from bottom
+          const begin = Offset(1.0, 0.0); // Start from right
           const end = Offset.zero;
           const curve = Curves.easeOut;
 
@@ -43,16 +43,13 @@ Route createRoute(
             ),
           );
 
-          return Container(
-            color: Colors.black.withValues(alpha: animation.value * 0.5),
-            child: SlideTransition(
-              position: slideAnimation,
-              child: FadeTransition(
-                opacity: fadeAnimation,
-                child: ScaleTransition(
-                  scale: scaleAnimation,
-                  child: child,
-                ),
+          return SlideTransition(
+            position: slideAnimation,
+            child: FadeTransition(
+              opacity: fadeAnimation,
+              child: ScaleTransition(
+                scale: scaleAnimation,
+                child: child,
               ),
             ),
           );

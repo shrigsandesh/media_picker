@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Widget slideTransitionBuilder(
+  Widget slideFromBottomTransitionBuilder(
       BuildContext context,
       Animation<double> animation,
       Animation<double> secondaryAnimation,
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 showMediaPicker(
                     context: context,
-                    transitionBuilder: slideTransitionBuilder,
+                    transitionBuilder: slideFromBottomTransitionBuilder,
                     onMediaPicked: (assetEntity) async {
                       if (assetEntity.isNotEmpty) {
                         final file = await assetEntity.first.file;
@@ -92,7 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     onClose: () {
                       // Handle close action
-                      Navigator.of(context).pop();
                     },
                     customAlbum: const MediaAlbum(
                       name: "Custom Album",
