@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
-import 'package:media_picker/src/widgets/animated_expand_icon.dart';
-import 'package:media_picker/src/widgets/asset_thumbnail.dart';
+
 import 'package:skeletonizer/skeletonizer.dart';
 
 class DefaultAlbumTile extends StatelessWidget {
@@ -73,17 +72,25 @@ class DefaultAlbumButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
       decoration: BoxDecoration(
           color: dropdownButtonColor ?? const Color(0xFFD3D3D3),
           borderRadius: BorderRadius.circular(20)),
       child: Row(
         children: [
-          Skeletonizer(
-            enabled: isEnabled,
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
+          Flexible(
+            child: Skeletonizer(
+              enabled: isEnabled,
+              child: Skeleton.shade(
+                child: Text(
+                  name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           ),
