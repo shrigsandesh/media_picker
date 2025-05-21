@@ -117,12 +117,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     //       ),
                     //     ),
                     closeIconColor: Colors.red,
-                    albumTileBuilder: (context, alubms) {
-                      return Container(
-                        color: Colors.green,
-                        child: Text("data: ${alubms.name}"),
-                      );
-                    },
+                    // albumTileBuilder: (context, alubms) {
+                    //   return Container(
+                    //     color: Colors.green,
+                    //     child: Text("data: ${alubms.name}"),
+                    //   );
+                    // },
                     sortAlbumFunction: sortScreenshotAlbumsFirst,
                     crossAxisCount: 4,
                     pageSize: 50);

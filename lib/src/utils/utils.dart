@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
-import 'package:media_picker/src/media_picker_wrapper.dart';
+import 'package:media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:media_picker/src/media_picker_page.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -85,7 +87,7 @@ Future<void> showMediaPicker({
   AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
       transitionBuilder,
-  int? pageSize,
+  int pageSize = kPageSize,
   int? crossAxisCount,
   SortFunction? sortAlbumFunction,
   Color? dropdownButtonColor,
@@ -102,29 +104,37 @@ Future<void> showMediaPicker({
       Navigator.of(context).push(
         createRoute(
           transitionBuilder,
-          MediaPickerPageWrapper(
-            scaffoldBackgroundColor: scaffoldBackgroundColor,
-            dropdownColor: albumDropdownColor,
-            pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
-            albumTileBuilder: albumTileBuilder,
-            onMediaPicked: onMediaPicked,
-            thumbnailBorderRadius: thumbnailBorderRadius,
-            mediaGridMargin: mediaGridMargin,
-            loading: loading,
-            thumbnailShimmer: thumbnailLoader,
-            popWhenSingleMediaSelected: popWhenSingleMediaSelected,
-            contentPadding: contentPadding,
-            albumDropdownButtonBuilder: albumDropdownButtonBuilder,
-            pageSize: pageSize ?? kPageSize,
-            crossAxisCount: crossAxisCount,
-            sortFunction: sortAlbumFunction,
-            dropdownButtonColor: dropdownButtonColor,
-            closeIcon: closeIcon,
-            closeIconColor: closeIconColor,
-            albumNameStyle: albumNameStyle,
-            albumCountStyle: albumCountStyle,
-            customAlbum: customAlbum,
-            mediaGridBuilder: mediaGridBuilder,
+          BlocProvider(
+            create: (context) => MediaPickerCubit()
+              ..loadMedia(
+                pageSize: pageSize,
+                sortFunction: sortAlbumFunction,
+                hasCustomAlbum: customAlbum != null,
+                customAlbum: customAlbum,
+              ),
+            child: MediaPickerPage(
+              scaffoldBackgroundColor: scaffoldBackgroundColor,
+              dropdownColor: albumDropdownColor,
+              pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
+              albumTileBuilder: albumTileBuilder,
+              onMediaPicked: onMediaPicked,
+              thumbnailBorderRadius: thumbnailBorderRadius,
+              mediaGridMargin: mediaGridMargin,
+              loading: loading,
+              thumbnailShimmer: thumbnailLoader,
+              popWhenSingleMediaSelected: popWhenSingleMediaSelected,
+              contentPadding: contentPadding,
+              albumDropdownButtonBuilder: albumDropdownButtonBuilder,
+              pageSize: pageSize,
+              crossAxisCount: crossAxisCount,
+              dropdownButtonColor: dropdownButtonColor,
+              closeIcon: closeIcon,
+              closeIconColor: closeIconColor,
+              albumNameStyle: albumNameStyle,
+              albumCountStyle: albumCountStyle,
+              customAlbum: customAlbum,
+              mediaGridBuilder: mediaGridBuilder,
+            ),
           ),
         ),
       );
