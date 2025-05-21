@@ -110,5 +110,5 @@ class _AssetThumbnailState extends State<AssetThumbnail>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => false;
 }

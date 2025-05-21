@@ -72,22 +72,25 @@ class _MediaPickerPageState extends State<MediaPickerPage>
       body: SafeArea(
         child: Stack(
           children: [
-            MediaContent(
-              thumbnailBorderRadius: widget.thumbnailBorderRadius,
-              mediaGridMargin: widget.mediaGridMargin,
-              onSingleFileSelection: (media) {
-                widget.onMediaPicked([media]);
-                if (widget.popWhenSingleMediaSelected) {
-                  Navigator.of(context).pop();
-                }
-              },
-              loading: widget.loading,
-              thumbnailShimmer: widget.thumbnailShimmer,
-              contentPadding: widget.contentPadding,
-              pageSize: widget.pageSize,
-              crossAxisCount: widget.crossAxisCount,
-              mediaGridBuilder: widget.mediaGridBuilder,
-              customAlbum: widget.customAlbum,
+            Padding(
+              padding: const EdgeInsets.only(top: kToolbarHeight - 8),
+              child: MediaContent(
+                thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                mediaGridMargin: widget.mediaGridMargin,
+                onSingleFileSelection: (media) {
+                  widget.onMediaPicked([media]);
+                  if (widget.popWhenSingleMediaSelected) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                loading: widget.loading,
+                thumbnailShimmer: widget.thumbnailShimmer,
+                contentPadding: widget.contentPadding,
+                pageSize: widget.pageSize,
+                crossAxisCount: widget.crossAxisCount,
+                mediaGridBuilder: widget.mediaGridBuilder,
+                customAlbum: widget.customAlbum,
+              ),
             ),
             _buildMediaAppBar(context),
           ],
@@ -151,37 +154,32 @@ class MediaContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
         builder: (context, state) {
-      if (state.isLoading && !state.isPaginating) {
-        return Expanded(
-          child: loading ??
-              LoadingGridShimmer(
-                crossAxisCount: crossAxisCount,
-                borderRadius: thumbnailBorderRadius,
-                pageSize: pageSize,
-              ),
-        );
-      }
       if (state.hasCustomAlbum &&
           state.currentAlubm.name == customAlbum?.name) {
-        return Expanded(
-            child: mediaGridBuilder != null
-                ? mediaGridBuilder!(context)
-                : const CustomAlbumPlaceHolder());
+        return mediaGridBuilder != null
+            ? mediaGridBuilder!(context)
+            : const CustomAlbumPlaceHolder();
+      }
+      if (state.isLoading && !state.isPaginating) {
+        return loading ??
+            LoadingGridShimmer(
+              crossAxisCount: crossAxisCount,
+              borderRadius: thumbnailBorderRadius,
+              pageSize: pageSize,
+            );
       }
 
-      return Expanded(
-        child: MediaGrid(
-          type: MediaType.common,
-          medias: state.media.common,
-          name: "media",
-          thumbnailBorderRadius: thumbnailBorderRadius,
-          mediaGridMargin: mediaGridMargin,
-          onSingleFileSelection: onSingleFileSelection,
-          thumbnailShimmer: thumbnailShimmer,
-          contentPadding: contentPadding,
-          pageSize: pageSize,
-          crossAxisCount: crossAxisCount,
-        ),
+      return MediaGrid(
+        type: MediaType.common,
+        medias: state.media.common,
+        name: "media",
+        thumbnailBorderRadius: thumbnailBorderRadius,
+        mediaGridMargin: mediaGridMargin,
+        onSingleFileSelection: onSingleFileSelection,
+        thumbnailShimmer: thumbnailShimmer,
+        contentPadding: contentPadding,
+        pageSize: pageSize,
+        crossAxisCount: crossAxisCount,
       );
     });
   }

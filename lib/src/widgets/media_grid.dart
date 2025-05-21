@@ -22,6 +22,7 @@ class MediaGrid extends StatefulWidget {
     this.crossAxisCount,
     this.mediaGridBuilder,
   });
+
   final List<AssetEntity> medias;
   final String name;
   final Function(AssetEntity)? onSingleFileSelection;
@@ -39,44 +40,74 @@ class MediaGrid extends StatefulWidget {
 }
 
 class _MediaGridState extends State<MediaGrid> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() {
+      final cubit = context.read<MediaPickerCubit>();
+      final state = cubit.state;
+
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent * 0.8 &&
+          !state.isLoading &&
+          !state.hasReachedEnd) {
+        cubit.loadMoreMedia(pageSize: widget.pageSize);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _checkAndFetchNextPageIfNeeded(MediaPickerCubit cubit) {
+    final state = cubit.state;
+
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    if (maxScroll <= 0 && !state.isLoading && !state.hasReachedEnd) {
+      cubit.loadMoreMedia(pageSize: widget.pageSize);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.medias.isEmpty) {
-      return Center(
-        child: Text("No ${widget.name} found for this album."),
-      );
-    }
-    return NotificationListener<ScrollNotification>(
-      onNotification: (notification) {
-        bool hasReachedEnd =
-            context.read<MediaPickerCubit>().state.hasReachedEnd;
-
-        if (notification is ScrollUpdateNotification &&
-            notification.metrics.pixels >=
-                notification.metrics.maxScrollExtent * 0.8 &&
-            !context.read<MediaPickerCubit>().state.isLoading &&
-            !hasReachedEnd) {
-          context
-              .read<MediaPickerCubit>()
-              .loadMoreMedia(pageSize: widget.pageSize);
-        }
-
-        return false;
-      },
-      child: BlocBuilder<MediaPickerCubit, MediaPickerState>(
+    if (widget.mediaGridBuilder != null) {
+      return widget.mediaGridBuilder!(context);
+    } else {
+      return BlocConsumer<MediaPickerCubit, MediaPickerState>(
+        listener: (context, state) {
+          final cubit = context.read<MediaPickerCubit>();
+          if (!state.isLoading && widget.medias.isNotEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _checkAndFetchNextPageIfNeeded(cubit);
+            });
+          }
+        },
         builder: (context, state) {
           if (state.isLoading && widget.medias.isEmpty) {
             return Center(
-                child: widget.thumbnailShimmer ??
-                    ThumbnailSkeleton(
-                      borderRadius: widget.thumbnailBorderRadius ??
-                          kThumbnailBorderRadius,
-                    ));
+              child: widget.thumbnailShimmer ??
+                  ThumbnailSkeleton(
+                    borderRadius:
+                        widget.thumbnailBorderRadius ?? kThumbnailBorderRadius,
+                  ),
+            );
           }
-          if (widget.mediaGridBuilder != null) {
-            return widget.mediaGridBuilder!(context);
+
+          if (widget.medias.isEmpty) {
+            return Center(
+                child: Text("No ${widget.name} found for this album."));
           }
+
           return GridView.builder(
+            controller: _scrollController,
             key: const PageStorageKey("asset_grid"),
             padding: widget.contentPadding ??
                 const EdgeInsets.fromLTRB(0, 0, 0, 100),
@@ -97,14 +128,11 @@ class _MediaGridState extends State<MediaGrid> {
                       ),
                 );
               }
+
               final video = widget.medias[index];
               return GestureDetector(
-                onTap: () {
-                  if (widget.onSingleFileSelection != null) {
-                    widget.onSingleFileSelection!(video);
-                  }
-                  return;
-                },
+                onTap: () =>
+                    widget.onSingleFileSelection?.call(widget.medias[index]),
                 child: Padding(
                   padding: widget.mediaGridMargin ?? EdgeInsets.zero,
                   child: Stack(
@@ -116,25 +144,23 @@ class _MediaGridState extends State<MediaGrid> {
                       ),
                       if (video.duration > 0)
                         Positioned(
-                            bottom: 2,
-                            right: 2,
-                            child: Row(
-                              spacing: 4.0,
-                              children: [
-                                const Icon(
-                                  Icons.videocam,
-                                  size: 18,
-                                  color: Colors.white,
-                                ),
-                                Text(
-                                  video.duration.formattedDuration,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ))
+                          bottom: 2,
+                          right: 2,
+                          child: Row(
+                            children: [
+                              const Icon(Icons.videocam,
+                                  size: 18, color: Colors.white),
+                              const SizedBox(width: 4),
+                              Text(
+                                video.duration.formattedDuration,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        )
                     ],
                   ),
                 ),
@@ -142,8 +168,8 @@ class _MediaGridState extends State<MediaGrid> {
             },
           );
         },
-      ),
-    );
+      );
+    }
   }
 }
 

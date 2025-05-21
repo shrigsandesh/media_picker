@@ -1,7 +1,6 @@
 name: media_picker
 description: "Flutter package to load media(image and video)."
 version: 0.0.1
-homepage:
 
 environment:
   sdk: ^3.5.0
@@ -20,36 +19,3 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-
-flutter:
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  

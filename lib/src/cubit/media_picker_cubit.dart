@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/enums.dart';
@@ -64,6 +65,9 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       emit(state.copyWith(isLoading: false));
       return;
     }
+
+    debugPrint("Fetching page ${state.currentPage + 1} for ${album?.name}");
+
     common = await tempAlbum[0].getAssetListPaged(
       page: 0,
       size: pageSize,
@@ -115,7 +119,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       ));
       return;
     }
-
+    debugPrint("Fetching page ${state.currentPage + 1} for $currentAlbum");
     var allMedia = await currentAlbum.getAssetListPaged(
       page: state.currentPage,
       size: pageSize,
