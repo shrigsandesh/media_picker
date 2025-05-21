@@ -40,23 +40,24 @@ class MediaGrid extends StatefulWidget {
 }
 
 class _MediaGridState extends State<MediaGrid> {
-  final ScrollController _scrollController = ScrollController();
+  late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
 
-    _scrollController.addListener(() {
-      final cubit = context.read<MediaPickerCubit>();
-      final state = cubit.state;
+    _scrollController = ScrollController()
+      ..addListener(() {
+        final cubit = context.read<MediaPickerCubit>();
+        final state = cubit.state;
 
-      if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent * 0.8 &&
-          !state.isLoading &&
-          !state.hasReachedEnd) {
-        cubit.loadMoreMedia(pageSize: widget.pageSize);
-      }
-    });
+        if (_scrollController.position.pixels >=
+                _scrollController.position.maxScrollExtent * 0.8 &&
+            !state.isLoading &&
+            !state.hasReachedEnd) {
+          cubit.loadMoreMedia(pageSize: widget.pageSize);
+        }
+      });
   }
 
   @override
