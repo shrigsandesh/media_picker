@@ -70,36 +70,41 @@ class DefaultAlbumButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      constraints:
-          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
-      decoration: BoxDecoration(
-          color: dropdownButtonColor ?? const Color(0xFFD3D3D3),
-          borderRadius: BorderRadius.circular(20)),
-      child: Row(
-        children: [
-          Flexible(
-            child: Skeletonizer(
-              enabled: isEnabled,
-              child: Skeleton.shade(
-                child: Text(
-                  name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          constraints:
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+          decoration: BoxDecoration(
+              color: dropdownButtonColor ?? const Color(0xFFD3D3D3),
+              borderRadius: BorderRadius.circular(20)),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Skeletonizer(
+                  enabled: isEnabled,
+                  child: Skeleton.shade(
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
+              const SizedBox(width: 5),
+              AnimatedExpansionIcon(
+                isExpanded: isExpanded,
+              ),
+            ],
           ),
-          const SizedBox(width: 5),
-          AnimatedExpansionIcon(
-            isExpanded: isExpanded,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
