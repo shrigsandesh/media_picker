@@ -32,6 +32,7 @@ class MediaPickerPage extends StatefulWidget {
     this.videoIconBuilder,
     required this.crossAxisSpacing,
     required this.mainAxisSpacing,
+    this.onClose,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -64,6 +65,7 @@ class MediaPickerPage extends StatefulWidget {
 
   final double crossAxisSpacing;
   final double mainAxisSpacing;
+  final VoidCallback? onClose;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -101,14 +103,14 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                 mainAxisSpacing: widget.mainAxisSpacing,
               ),
             ),
-            _buildMediaAppBar(context),
+            _buildMediaAppBar(context, widget.onClose),
           ],
         ),
       ),
     );
   }
 
-  _buildMediaAppBar(BuildContext context) {
+  _buildMediaAppBar(BuildContext context, VoidCallback? onClose) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
       builder: (context, state) {
         return MediaAppBar(
@@ -125,6 +127,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           albumCountStyle: widget.albumCountStyle,
           albumNameStyle: widget.albumNameStyle,
           customAlbum: widget.customAlbum,
+          onClose: onClose,
         );
       },
     );

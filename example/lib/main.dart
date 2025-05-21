@@ -90,6 +90,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }
                     },
+                    onClose: () {
+                      // Handle close action
+                      Navigator.of(context).pop();
+                    },
                     customAlbum: const MediaAlbum(
                       name: "Custom Album",
                       size: 0,

@@ -6,20 +6,22 @@ import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/widgets/default_widgets.dart';
 
 class MediaAppBar extends StatefulWidget {
-  const MediaAppBar(
-      {super.key,
-      required this.mediaAlbum,
-      required this.onChanged,
-      this.albumDropdownColor,
-      this.albumTile,
-      this.albumButtonBuilder,
-      this.dropdownButtonColor,
-      this.showCircularPlaceholder,
-      this.closeIcon,
-      this.closeIconColor,
-      this.albumNameStyle,
-      this.albumCountStyle,
-      this.customAlbum});
+  const MediaAppBar({
+    super.key,
+    required this.mediaAlbum,
+    required this.onChanged,
+    this.albumDropdownColor,
+    this.albumTile,
+    this.albumButtonBuilder,
+    this.dropdownButtonColor,
+    this.showCircularPlaceholder,
+    this.closeIcon,
+    this.closeIconColor,
+    this.albumNameStyle,
+    this.albumCountStyle,
+    this.customAlbum,
+    this.onClose,
+  });
 
   final List<MediaAlbum> mediaAlbum;
   final Function(MediaAlbum) onChanged;
@@ -35,6 +37,8 @@ class MediaAppBar extends StatefulWidget {
   final TextStyle? albumNameStyle;
   final TextStyle? albumCountStyle;
   final MediaAlbum? customAlbum;
+
+  final VoidCallback? onClose;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -71,9 +75,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
+                    onTap: widget.onClose,
                     child: widget.closeIcon ??
                         Icon(
                           Icons.close,

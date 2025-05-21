@@ -100,6 +100,7 @@ Future<void> showMediaPicker({
   final VideoIconBuilder? videoIconBuilder,
   final double? crossAxisSpacing,
   final double? mainAxisSpacing,
+  final VoidCallback? onClose,
 }) async {
   assert(
     (mediaGridBuilder == null && customAlbum == null) ||
@@ -145,6 +146,7 @@ Future<void> showMediaPicker({
               videoIconBuilder: videoIconBuilder,
               crossAxisSpacing: crossAxisSpacing ?? 0.0,
               mainAxisSpacing: mainAxisSpacing ?? 0.0,
+              onClose: onClose,
             ),
           ),
         ),
