@@ -10,7 +10,6 @@ class MediaPickerPage extends StatefulWidget {
     super.key,
     this.scaffoldBackgroundColor,
     this.dropdownColor,
-    this.pickedMediaBottomSheet,
     this.albumTileBuilder,
     required this.onMediaPicked,
     this.thumbnailBorderRadius,
@@ -46,7 +45,6 @@ class MediaPickerPage extends StatefulWidget {
   final Widget? thumbnailShimmer;
   final bool popWhenSingleMediaSelected;
 
-  final PickedMediaBottomSheetBuilder? pickedMediaBottomSheet;
   final AlbumTileBuilder? albumTileBuilder;
   final AlbumDropdownButtonBuilder? albumDropdownButtonBuilder;
 

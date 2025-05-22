@@ -9,11 +9,6 @@ typedef AlbumDropdownButtonBuilder = Widget Function(
   bool isExpanded,
 );
 
-typedef PickedMediaBottomSheetBuilder = Widget Function(
-  BuildContext context,
-  List<AssetEntity> albums,
-);
-
 typedef AlbumTileBuilder = Widget Function(
   BuildContext context,
   MediaAlbum album,

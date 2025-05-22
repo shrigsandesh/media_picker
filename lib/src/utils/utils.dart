@@ -82,7 +82,6 @@ Future<void> showMediaPicker({
   Widget? loading,
   Widget? thumbnailLoader,
   bool popWhenSingleMediaSelected = true,
-  PickedMediaBottomSheetBuilder? pickedMediaBottomSheetBuilder,
   AlbumTileBuilder? albumTileBuilder,
   AlbumDropdownButtonBuilder? albumDropdownButtonBuilder,
   Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
@@ -124,7 +123,6 @@ Future<void> showMediaPicker({
             child: MediaPickerPage(
               scaffoldBackgroundColor: scaffoldBackgroundColor,
               dropdownColor: albumDropdownColor,
-              pickedMediaBottomSheet: pickedMediaBottomSheetBuilder,
               albumTileBuilder: albumTileBuilder,
               onMediaPicked: onMediaPicked,
               thumbnailBorderRadius: thumbnailBorderRadius,
