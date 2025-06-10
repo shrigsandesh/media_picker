@@ -33,6 +33,7 @@ class MediaPickerPage extends StatefulWidget {
     required this.mainAxisSpacing,
     this.onClose,
     this.limitedPermissionBuilder,
+    required this.permissionState,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -66,6 +67,7 @@ class MediaPickerPage extends StatefulWidget {
   final double mainAxisSpacing;
   final VoidCallback? onClose;
   final LimitedPermissionBottomBuilder? limitedPermissionBuilder;
+  final PermissionState permissionState;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -73,22 +75,6 @@ class MediaPickerPage extends StatefulWidget {
 
 class _MediaPickerPageState extends State<MediaPickerPage>
     with SingleTickerProviderStateMixin {
-  PermissionState? permissionState;
-  bool _isPermissionLoaded = false;
-  @override
-  void initState() {
-    super.initState();
-    _initPermissionState();
-  }
-
-  void _initPermissionState() async {
-    permissionState = await PhotoManager.getPermissionState(
-      requestOption: const PermissionRequestOption(),
-    );
-    _isPermissionLoaded = true;
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,12 +86,10 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               padding: const EdgeInsets.only(top: kToolbarHeight - 8),
               child: Column(
                 children: [
-                  _isPermissionLoaded
-                      ? (permissionState == PermissionState.limited &&
-                              widget.limitedPermissionBuilder != null
-                          ? widget.limitedPermissionBuilder!(context)
-                          : const SizedBox.shrink())
-                      : const SizedBox.shrink(),
+                  (widget.permissionState == PermissionState.limited &&
+                          widget.limitedPermissionBuilder != null
+                      ? widget.limitedPermissionBuilder!(context)
+                      : const SizedBox.shrink()),
                   Expanded(
                     child: MediaContent(
                       thumbnailBorderRadius: widget.thumbnailBorderRadius,

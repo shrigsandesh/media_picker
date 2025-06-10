@@ -78,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 showMediaPicker(
                     context: context,
+                    permissionState: PermissionState.authorized,
                     transitionBuilder: slideFromBottomTransitionBuilder,
                     onMediaPicked: (assetEntity) async {
                       if (assetEntity.isNotEmpty) {
