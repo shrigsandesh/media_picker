@@ -98,37 +98,43 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           children: [
             Padding(
               padding: const EdgeInsets.only(top: kToolbarHeight - 8),
-              child: MediaContent(
-                thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                mediaGridMargin: widget.mediaGridMargin,
-                onSingleFileSelection: (media) {
-                  widget.onMediaPicked([media]);
-                  if (widget.popWhenSingleMediaSelected) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                loading: widget.loading,
-                thumbnailShimmer: widget.thumbnailShimmer,
-                contentPadding: widget.contentPadding,
-                pageSize: widget.pageSize,
-                crossAxisCount: widget.crossAxisCount,
-                mediaGridBuilder: widget.mediaGridBuilder,
-                customAlbum: widget.customAlbum,
-                videoIconBuilder: widget.videoIconBuilder,
-                crossAxisSpacing: widget.crossAxisSpacing,
-                mainAxisSpacing: widget.mainAxisSpacing,
+              child: Column(
+                children: [
+                  _isPermissionLoaded
+                      ? (permissionState == PermissionState.limited &&
+                              widget.limitedPermissionBuilder != null
+                          ? widget.limitedPermissionBuilder!(context)
+                          : const SizedBox.shrink())
+                      : const SizedBox.shrink(),
+                  Expanded(
+                    child: MediaContent(
+                      thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                      mediaGridMargin: widget.mediaGridMargin,
+                      onSingleFileSelection: (media) {
+                        widget.onMediaPicked([media]);
+                        if (widget.popWhenSingleMediaSelected) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      loading: widget.loading,
+                      thumbnailShimmer: widget.thumbnailShimmer,
+                      contentPadding: widget.contentPadding,
+                      pageSize: widget.pageSize,
+                      crossAxisCount: widget.crossAxisCount,
+                      mediaGridBuilder: widget.mediaGridBuilder,
+                      customAlbum: widget.customAlbum,
+                      videoIconBuilder: widget.videoIconBuilder,
+                      crossAxisSpacing: widget.crossAxisSpacing,
+                      mainAxisSpacing: widget.mainAxisSpacing,
+                    ),
+                  ),
+                ],
               ),
             ),
             _buildMediaAppBar(context, widget.onClose),
           ],
         ),
       ),
-      bottomNavigationBar: _isPermissionLoaded
-          ? (permissionState == PermissionState.limited &&
-                  widget.limitedPermissionBuilder != null
-              ? widget.limitedPermissionBuilder!(context)
-              : null)
-          : null,
     );
   }
 
