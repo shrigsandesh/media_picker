@@ -100,6 +100,7 @@ Future<void> showMediaPicker({
   final double? crossAxisSpacing,
   final double? mainAxisSpacing,
   final VoidCallback? onClose,
+  final LimitedPermissionBottomBuilder? limitedPermissionBuilder,
 }) async {
   assert(
     (mediaGridBuilder == null && customAlbum == null) ||
@@ -107,7 +108,7 @@ Future<void> showMediaPicker({
     'Both mediaGridBuilder and customAlbum must be provided together, or both must be null.',
   );
   await Permission.requestPermission().then((granted) {
-    if (granted.isAuth) {
+    if (granted.hasAccess) {
       if (!context.mounted) return;
       Navigator.of(context).push(
         createRoute(
@@ -145,6 +146,7 @@ Future<void> showMediaPicker({
               crossAxisSpacing: crossAxisSpacing ?? 0.0,
               mainAxisSpacing: mainAxisSpacing ?? 0.0,
               onClose: onClose,
+              limitedPermissionBuilder: limitedPermissionBuilder,
             ),
           ),
         ),

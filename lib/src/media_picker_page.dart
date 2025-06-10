@@ -32,6 +32,7 @@ class MediaPickerPage extends StatefulWidget {
     required this.crossAxisSpacing,
     required this.mainAxisSpacing,
     this.onClose,
+    this.limitedPermissionBuilder,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -64,6 +65,7 @@ class MediaPickerPage extends StatefulWidget {
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final VoidCallback? onClose;
+  final LimitedPermissionBottomBuilder? limitedPermissionBuilder;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -71,6 +73,22 @@ class MediaPickerPage extends StatefulWidget {
 
 class _MediaPickerPageState extends State<MediaPickerPage>
     with SingleTickerProviderStateMixin {
+  PermissionState? permissionState;
+  bool _isPermissionLoaded = false;
+  @override
+  void initState() {
+    super.initState();
+    _initPermissionState();
+  }
+
+  void _initPermissionState() async {
+    permissionState = await PhotoManager.getPermissionState(
+      requestOption: const PermissionRequestOption(),
+    );
+    _isPermissionLoaded = true;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +123,12 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           ],
         ),
       ),
+      bottomNavigationBar: _isPermissionLoaded
+          ? (permissionState == PermissionState.limited &&
+                  widget.limitedPermissionBuilder != null
+              ? widget.limitedPermissionBuilder!(context)
+              : null)
+          : null,
     );
   }
 

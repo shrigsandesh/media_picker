@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     customAlbum: const MediaAlbum(
                       name: "Custom Album",
-                      size: 0,
+                      size: 1,
                       id: "custom_album_id",
                     ),
                     mediaGridBuilder: (context) => GridView.count(
@@ -126,9 +126,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     //     child: Text("data: ${alubms.name}"),
                     //   );
                     // },
+
                     sortAlbumFunction: sortScreenshotAlbumsFirst,
                     crossAxisCount: 4,
-                    pageSize: 50);
+                    pageSize: 50,
+                    limitedPermissionBuilder: (context) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 40,
+                        decoration: const BoxDecoration(color: Colors.blue),
+                      );
+                    });
               },
               child: const Text("Pick Media"),
             ),
