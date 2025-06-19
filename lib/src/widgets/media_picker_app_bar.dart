@@ -119,7 +119,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
                 child: Offstage(
-                  offstage: _isExpanded,
+                  offstage: !_isExpanded,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: ListView.separated(

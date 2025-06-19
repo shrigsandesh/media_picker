@@ -32,6 +32,8 @@ class MediaPickerPage extends StatefulWidget {
     required this.crossAxisSpacing,
     required this.mainAxisSpacing,
     this.onClose,
+    this.limitedPermissionBuilder,
+    required this.permissionState,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -64,6 +66,8 @@ class MediaPickerPage extends StatefulWidget {
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final VoidCallback? onClose;
+  final LimitedPermissionBottomBuilder? limitedPermissionBuilder;
+  final PermissionState permissionState;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -80,25 +84,35 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           children: [
             Padding(
               padding: const EdgeInsets.only(top: kToolbarHeight - 8),
-              child: MediaContent(
-                thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                mediaGridMargin: widget.mediaGridMargin,
-                onSingleFileSelection: (media) {
-                  widget.onMediaPicked([media]);
-                  if (widget.popWhenSingleMediaSelected) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                loading: widget.loading,
-                thumbnailShimmer: widget.thumbnailShimmer,
-                contentPadding: widget.contentPadding,
-                pageSize: widget.pageSize,
-                crossAxisCount: widget.crossAxisCount,
-                mediaGridBuilder: widget.mediaGridBuilder,
-                customAlbum: widget.customAlbum,
-                videoIconBuilder: widget.videoIconBuilder,
-                crossAxisSpacing: widget.crossAxisSpacing,
-                mainAxisSpacing: widget.mainAxisSpacing,
+              child: Column(
+                children: [
+                  (widget.permissionState == PermissionState.limited &&
+                          widget.limitedPermissionBuilder != null
+                      ? widget.limitedPermissionBuilder!(context)
+                      : const SizedBox.shrink()),
+                  Expanded(
+                    child: MediaContent(
+                      thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                      mediaGridMargin: widget.mediaGridMargin,
+                      onSingleFileSelection: (media) {
+                        widget.onMediaPicked([media]);
+                        if (widget.popWhenSingleMediaSelected) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      loading: widget.loading,
+                      thumbnailShimmer: widget.thumbnailShimmer,
+                      contentPadding: widget.contentPadding,
+                      pageSize: widget.pageSize,
+                      crossAxisCount: widget.crossAxisCount,
+                      mediaGridBuilder: widget.mediaGridBuilder,
+                      customAlbum: widget.customAlbum,
+                      videoIconBuilder: widget.videoIconBuilder,
+                      crossAxisSpacing: widget.crossAxisSpacing,
+                      mainAxisSpacing: widget.mainAxisSpacing,
+                    ),
+                  ),
+                ],
               ),
             ),
             _buildMediaAppBar(context, widget.onClose),
