@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.6
   photo_manager: ^3.6.3
-  skeletonizer: ^1.4.2
+  skeletonizer: ^2.0.1
 
 dev_dependencies:
   flutter_test:
