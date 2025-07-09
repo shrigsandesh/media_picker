@@ -20,38 +20,34 @@ class MediaData extends Equatable {
 }
 
 class MediaContent extends Equatable {
+  final String id;
   final String name;
   final List<AssetEntity> common;
 
   const MediaContent({
+    required this.id,
     required this.name,
     required this.common,
   });
 
   int get commonSize => common.length;
 
-  factory MediaContent.fromAssetEntity(List<AssetEntity> list, name) {
-    return MediaContent(
-      name: name,
-      common: list
-          .where((e) => e.type == AssetType.video || e.type == AssetType.image)
-          .toList(),
-    );
-  }
-
   MediaContent copyWith({
+    String? id,
     String? name,
     List<AssetEntity>? common,
     List<AssetEntity>? videos,
     List<AssetEntity>? photos,
   }) {
     return MediaContent(
+      id: id ?? this.id,
       name: name ?? this.name,
       common: common ?? this.common,
     );
   }
 
   static const initial = MediaContent(
+    id: "",
     name: " ",
     common: [],
   );
