@@ -120,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                           ),
                         ),
+                    trailingIcon: Icon(Icons.track_changes),
                     closeIconColor: Colors.red,
                     // albumTileBuilder: (context, alubms) {
                     //   return Container(

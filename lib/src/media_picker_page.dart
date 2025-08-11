@@ -34,6 +34,7 @@ class MediaPickerPage extends StatefulWidget {
     this.onClose,
     this.limitedPermissionBuilder,
     required this.permissionState,
+    this.trailingIcon,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -68,6 +69,7 @@ class MediaPickerPage extends StatefulWidget {
   final VoidCallback? onClose;
   final LimitedPermissionBottomBuilder? limitedPermissionBuilder;
   final PermissionState permissionState;
+  final Widget? trailingIcon;
 
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
@@ -140,6 +142,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           albumNameStyle: widget.albumNameStyle,
           customAlbum: widget.customAlbum,
           onClose: onClose,
+          trailingIcon: widget.trailingIcon,
         );
       },
     );
