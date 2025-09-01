@@ -102,7 +102,7 @@ Future<void> showMediaPicker({
   double? mainAxisSpacing,
   VoidCallback? onClose,
   LimitedPermissionBottomBuilder? limitedPermissionBuilder,
-  final Widget? trailingIcon,
+  Widget? trailingIcon,
   required PermissionState permissionState,
   AssetGrouperCallback? assetGrouper,
   AssetsGroupDateBuilder? groupDateBuilder,
