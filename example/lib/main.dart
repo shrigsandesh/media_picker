@@ -77,67 +77,99 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: () async {
                 showMediaPicker(
-                    context: context,
-                    permissionState: PermissionState.authorized,
-                    transitionBuilder: slideFromBottomTransitionBuilder,
-                    onMediaPicked: (assetEntity) async {
-                      if (assetEntity.isNotEmpty) {
-                        final file = await assetEntity.first.file;
-                        if (mounted) {
-                          // ignore: use_build_context_synchronously
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => NextPage(file: file!),
-                          ));
-                        }
+                  context: context,
+                  permissionState: PermissionState.authorized,
+                  transitionBuilder: slideFromBottomTransitionBuilder,
+                  onMediaPicked: (assetEntity) async {
+                    if (assetEntity.isNotEmpty) {
+                      final file = await assetEntity.first.file;
+                      if (mounted) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => NextPage(file: file!),
+                        ));
                       }
-                    },
-                    onClose: () {
-                      // Handle close action
-                    },
-                    customAlbum: const MediaAlbum(
-                      name: "Custom Album",
-                      size: 1,
-                      id: "custom_album_id",
-                    ),
-                    mediaGridBuilder: (context) => GridView.count(
-                          crossAxisCount: 2,
-                          children: List.generate(
-                            10,
-                            (index) {
-                              return Container(
-                                color: Colors.blue,
-                                margin: const EdgeInsets.all(10),
-                                child: Center(
-                                  child: Text(
-                                    'Item $index',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                    }
+                  },
+                  onClose: () {
+                    // Handle close action
+                  },
+                  customAlbum: const MediaAlbum(
+                    name: "Custom Album",
+                    size: 1,
+                    id: "custom_album_id",
+                  ),
+                  mediaGridBuilder: (context) => GridView.count(
+                    crossAxisCount: 2,
+                    children: List.generate(
+                      10,
+                      (index) {
+                        return Container(
+                          color: Colors.blue,
+                          margin: const EdgeInsets.all(10),
+                          child: Center(
+                            child: Text(
+                              'Item $index',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
-                        ),
-                    closeIconColor: Colors.red,
-                    // albumTileBuilder: (context, alubms) {
-                    //   return Container(
-                    //     color: Colors.green,
-                    //     child: Text("data: ${alubms.name}"),
-                    //   );
-                    // },
+                        );
+                      },
+                    ),
+                  ),
+                  closeIconColor: Colors.red,
+                  // albumTileBuilder: (context, alubms) {
+                  //   return Container(
+                  //     color: Colors.green,
+                  //     child: Text("data: ${alubms.name}"),
+                  //   );
+                  // },
 
-                    sortAlbumFunction: sortScreenshotAlbumsFirst,
-                    crossAxisCount: 4,
-                    pageSize: 50,
-                    limitedPermissionBuilder: (context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 40,
-                        decoration: const BoxDecoration(color: Colors.blue),
+                  sortAlbumFunction: sortScreenshotAlbumsFirst,
+                  crossAxisCount: 4,
+                  pageSize: 50,
+                  limitedPermissionBuilder: (context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 40,
+                      decoration: const BoxDecoration(color: Colors.blue),
+                    );
+                  },
+                  assetGrouper: (assets) {
+                    final grouped = <DateTime, List<AssetEntity>>{};
+
+                    for (final media in assets) {
+                      final created = media.createDateTime;
+                      final dateKey = DateTime(
+                        created.year,
+                        created.month,
+                        created.day,
+                        created.hour,
                       );
-                    });
+
+                      grouped.putIfAbsent(dateKey, () => []).add(media);
+                    }
+
+                    return {for (final e in grouped.entries) e.key: e.value};
+                  },
+
+                  groupDateBuilder: (context, date) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      margin: const EdgeInsets.only(bottom: 20),
+                      color: Colors.red,
+                      child: Text(
+                        date.toString(),
+                      ),
+                    );
+                  },
+                );
               },
               child: const Text("Pick Media"),
             ),

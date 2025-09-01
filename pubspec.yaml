@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
+  flutter_sticky_header: ^0.8.0
   photo_manager: ^3.6.3
   skeletonizer: ^2.0.1
 

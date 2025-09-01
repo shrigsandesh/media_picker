@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/enums.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
@@ -24,6 +25,8 @@ class MediaGrid extends StatefulWidget {
     this.videoIconBuilder,
     required this.crossAxisSpacing,
     required this.mainAxisSpacing,
+    this.assetGrouper,
+    this.groupDateBuilder,
   });
 
   final List<AssetEntity> medias;
@@ -40,7 +43,8 @@ class MediaGrid extends StatefulWidget {
   final VideoIconBuilder? videoIconBuilder;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
-
+  final AssetGrouperCallback? assetGrouper;
+  final AssetsGroupDateBuilder? groupDateBuilder;
   @override
   State<MediaGrid> createState() => _MediaGridState();
 }
@@ -102,87 +106,123 @@ class _MediaGridState extends State<MediaGrid> {
         },
         builder: (context, state) {
           if (state.isLoading && widget.medias.isEmpty) {
-            return Center(
-              child: widget.thumbnailShimmer ??
-                  ThumbnailSkeleton(
-                    borderRadius:
-                        widget.thumbnailBorderRadius ?? kThumbnailBorderRadius,
-                  ),
-            );
+            return _loadingBuilder();
           }
 
           if (widget.medias.isEmpty) {
             return Center(
                 child: Text("No ${widget.name} found for this album."));
           }
-
-          return GridView.builder(
+          final grouped = widget.assetGrouper?.call(widget.medias);
+          if (grouped == null) {
+            return GridView.builder(
+              controller: _scrollController,
+              padding: widget.contentPadding ??
+                  const EdgeInsets.fromLTRB(0, 0, 0, 100),
+              gridDelegate: _gridDelegate(),
+              itemCount: widget.medias.length +
+                  (state.isLoading && widget.medias.isNotEmpty ? 1 : 0),
+              cacheExtent: 1000,
+              itemBuilder: (context, index) {
+                return _mediaItemBuilder(widget.medias, index, context);
+              },
+            );
+          }
+          return CustomScrollView(
             controller: _scrollController,
-            padding: widget.contentPadding ??
-                const EdgeInsets.fromLTRB(0, 0, 0, 100),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: widget.crossAxisCount ?? kCrossAxisCount,
-              childAspectRatio: 1.0,
-              crossAxisSpacing: widget.crossAxisSpacing,
-              mainAxisSpacing: widget.mainAxisSpacing,
-            ),
-            itemCount: widget.medias.length +
-                (state.isLoading && widget.medias.isNotEmpty ? 1 : 0),
-            cacheExtent: 1000,
-            itemBuilder: (context, index) {
-              if (index == widget.medias.length) {
-                return Center(
-                  child: widget.thumbnailShimmer ??
-                      ThumbnailSkeleton(
-                        borderRadius: widget.thumbnailBorderRadius ??
-                            kThumbnailBorderRadius,
+            slivers: [
+              for (final entry in grouped.entries) ...[
+                SliverStickyHeader(
+                  header: widget.groupDateBuilder?.call(context, entry.key),
+                  sliver: SliverPadding(
+                    padding: widget.contentPadding ??
+                        const EdgeInsets.symmetric(horizontal: 8),
+                    sliver: SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return _mediaItemBuilder(entry.value, index, context);
+                        },
+                        childCount: entry.value.length +
+                            (state.isLoading && entry.value.isNotEmpty ? 1 : 0),
                       ),
-                );
-              }
-
-              final media = widget.medias[index];
-              return GestureDetector(
-                onTap: () =>
-                    widget.onSingleFileSelection?.call(widget.medias[index]),
-                child: Padding(
-                  padding: widget.mediaGridMargin ?? EdgeInsets.zero,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      AssetThumbnail(
-                        borderRadius: widget.thumbnailBorderRadius,
-                        asset: widget.medias[index],
-                      ),
-                      if (media.duration > 0)
-                        widget.videoIconBuilder != null
-                            ? widget.videoIconBuilder!(context, media.duration)
-                            : Positioned(
-                                bottom: 2,
-                                right: 2,
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.videocam,
-                                        size: 18, color: Colors.white),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      media.duration.formattedDuration,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                              )
-                    ],
+                      gridDelegate: _gridDelegate(),
+                    ),
                   ),
                 ),
-              );
-            },
+              ],
+            ],
           );
         },
       );
     }
+  }
+
+  Center _loadingBuilder() {
+    return Center(
+      child: widget.thumbnailShimmer ??
+          ThumbnailSkeleton(
+            borderRadius:
+                widget.thumbnailBorderRadius ?? kThumbnailBorderRadius,
+          ),
+    );
+  }
+
+  SliverGridDelegateWithFixedCrossAxisCount _gridDelegate() {
+    return SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: widget.crossAxisCount ?? kCrossAxisCount,
+      childAspectRatio: 1.0,
+      crossAxisSpacing: widget.crossAxisSpacing,
+      mainAxisSpacing: widget.mainAxisSpacing,
+    );
+  }
+
+  Widget _mediaItemBuilder(
+      List<AssetEntity> assets, int index, BuildContext context) {
+    if (index >= assets.length) {
+      return _loadingBuilder();
+    }
+
+    final media = assets[index];
+    return _mediaItem(media, context);
+  }
+
+  Widget _mediaItem(AssetEntity media, BuildContext context) {
+    return GestureDetector(
+      onTap: () => widget.onSingleFileSelection?.call(media),
+      child: Padding(
+        padding: widget.mediaGridMargin ?? EdgeInsets.zero,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            AssetThumbnail(
+              borderRadius: widget.thumbnailBorderRadius,
+              asset: media,
+            ),
+            if (media.duration > 0)
+              widget.videoIconBuilder != null
+                  ? widget.videoIconBuilder!(context, media.duration)
+                  : Positioned(
+                      bottom: 2,
+                      right: 2,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.videocam,
+                              size: 18, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text(
+                            media.duration.formattedDuration,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    )
+          ],
+        ),
+      ),
+    );
   }
 }
 

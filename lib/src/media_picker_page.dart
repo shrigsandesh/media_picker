@@ -34,6 +34,8 @@ class MediaPickerPage extends StatefulWidget {
     this.onClose,
     this.limitedPermissionBuilder,
     required this.permissionState,
+    this.assetGrouper,
+    this.groupDateBuilder,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -68,7 +70,8 @@ class MediaPickerPage extends StatefulWidget {
   final VoidCallback? onClose;
   final LimitedPermissionBottomBuilder? limitedPermissionBuilder;
   final PermissionState permissionState;
-
+  final AssetGrouperCallback? assetGrouper;
+  final AssetsGroupDateBuilder? groupDateBuilder;
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
@@ -110,6 +113,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                       videoIconBuilder: widget.videoIconBuilder,
                       crossAxisSpacing: widget.crossAxisSpacing,
                       mainAxisSpacing: widget.mainAxisSpacing,
+                      assetGrouper: widget.assetGrouper,
+                      groupDateBuilder: widget.groupDateBuilder,
                     ),
                   ),
                 ],
@@ -163,6 +168,8 @@ class MediaContent extends StatelessWidget {
     this.videoIconBuilder,
     required this.crossAxisSpacing,
     required this.mainAxisSpacing,
+    this.assetGrouper,
+    this.groupDateBuilder,
   });
 
   final double? thumbnailBorderRadius;
@@ -179,7 +186,8 @@ class MediaContent extends StatelessWidget {
   final VideoIconBuilder? videoIconBuilder;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
-
+  final AssetGrouperCallback? assetGrouper;
+  final AssetsGroupDateBuilder? groupDateBuilder;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
@@ -214,6 +222,8 @@ class MediaContent extends StatelessWidget {
         videoIconBuilder: videoIconBuilder,
         mainAxisSpacing: mainAxisSpacing,
         crossAxisSpacing: crossAxisSpacing,
+        assetGrouper: assetGrouper,
+        groupDateBuilder: groupDateBuilder,
       );
     });
   }
