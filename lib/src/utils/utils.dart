@@ -58,6 +58,7 @@ import 'package:photo_manager/photo_manager.dart';
 /// [albumNameStyle] custom text style for album name (ignored if [albumTileBuilder] provided).
 ///
 /// [albumCountStyle] custom text style for album count (ignored if [albumTileBuilder] provided).
+/// [trailingIcon] is a  option custom trailing icon at top right section
 ///
 /// Throws an exception if permissions are not granted.
 ///
@@ -101,6 +102,7 @@ Future<void> showMediaPicker({
   double? mainAxisSpacing,
   VoidCallback? onClose,
   LimitedPermissionBottomBuilder? limitedPermissionBuilder,
+  final Widget? trailingIcon,
   required PermissionState permissionState,
   AssetGrouperCallback? assetGrouper,
   AssetsGroupDateBuilder? groupDateBuilder,
@@ -159,6 +161,7 @@ Future<void> showMediaPicker({
               permissionState: permissionState,
               assetGrouper: assetGrouper,
               groupDateBuilder: groupDateBuilder,
+              trailingIcon: trailingIcon,
             ),
           ),
         ),

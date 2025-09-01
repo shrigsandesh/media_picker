@@ -36,6 +36,7 @@ class MediaPickerPage extends StatefulWidget {
     required this.permissionState,
     this.assetGrouper,
     this.groupDateBuilder,
+    this.trailingIcon,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -72,6 +73,8 @@ class MediaPickerPage extends StatefulWidget {
   final PermissionState permissionState;
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
+  final Widget? trailingIcon;
+
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
@@ -145,6 +148,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           albumNameStyle: widget.albumNameStyle,
           customAlbum: widget.customAlbum,
           onClose: onClose,
+          trailingIcon: widget.trailingIcon,
         );
       },
     );

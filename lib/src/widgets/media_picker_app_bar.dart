@@ -21,6 +21,7 @@ class MediaAppBar extends StatefulWidget {
     this.albumCountStyle,
     this.customAlbum,
     this.onClose,
+    this.trailingIcon,
   });
 
   final List<MediaAlbum> mediaAlbum;
@@ -39,6 +40,7 @@ class MediaAppBar extends StatefulWidget {
   final MediaAlbum? customAlbum;
 
   final VoidCallback? onClose;
+  final Widget? trailingIcon;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -109,7 +111,7 @@ class _MediaAppBarState extends State<MediaAppBar> {
                     },
                   ),
                 )),
-                const SizedBox.shrink(),
+                widget.trailingIcon ?? const SizedBox.shrink(),
               ],
             ),
 

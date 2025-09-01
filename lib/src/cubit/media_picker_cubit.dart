@@ -74,6 +74,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     final mediaContent = MediaContent(
+      id: album?.id ?? "",
       name: album?.name ?? (tempAlbum.isNotEmpty ? tempAlbum[0].name : ''),
       common: common,
     );
@@ -105,7 +106,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     AssetPathEntity? currentAlbum = albums.firstWhereOrNull(
-      (album) => album.name == state.media.name,
+      (album) => album.name == state.media.name && album.id == state.media.id,
     );
 
     if (currentAlbum == null) {
@@ -122,7 +123,8 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       size: pageSize,
     );
 
-    var mediaContent = MediaContent.fromAssetEntity(allMedia, state.media.name);
+    var mediaContent = MediaContent(
+        id: state.media.id, common: allMedia, name: state.media.name);
 
     if (isClosed) return;
 
