@@ -29,3 +29,6 @@ typedef AssetsGroupDateBuilder = Widget Function(
   BuildContext context,
   DateTime date,
 );
+
+typedef CustomTabBuilder = Widget Function(
+    BuildContext context, MediaAlbum album, bool isSelected);

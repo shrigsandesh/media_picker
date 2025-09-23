@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/src/constants/typedefs.dart';
 
 class MediaAppBar extends StatefulWidget {
   const MediaAppBar({
@@ -14,6 +15,8 @@ class MediaAppBar extends StatefulWidget {
     this.customAlbum,
     this.onClose,
     this.trailingIcon,
+    this.tabDecoration,
+    this.tabBuilder,
   });
 
   final List<MediaAlbum> mediaAlbum;
@@ -27,6 +30,11 @@ class MediaAppBar extends StatefulWidget {
   final List<MediaAlbum>? customAlbum;
   final VoidCallback? onClose;
   final Widget? trailingIcon;
+
+  final TabDecoration? tabDecoration;
+
+  /// Allows custom rendering of tabs
+  final CustomTabBuilder? tabBuilder;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -83,25 +91,38 @@ class _MediaAppBarState extends State<MediaAppBar>
 
   @override
   Widget build(BuildContext context) {
+    final deco = widget.tabDecoration;
+
     return Container(
       color: widget.albumDropdownColor ?? Colors.white,
       child: TabBar(
         controller: _tabController,
-        isScrollable: true,
-        labelStyle: const TextStyle(color: Color(0xffff8800)),
-        unselectedLabelColor: Colors.white,
-        tabAlignment: TabAlignment.start,
-        indicatorColor: const Color(0xffff8800),
-        indicatorPadding: EdgeInsets.zero,
-        padding: EdgeInsets.zero,
-        dividerColor: Colors.transparent,
-        tabs: _albums
-            .map(
-              (album) => Tab(
-                text: "${album.name} (${album.size})",
-              ),
-            )
-            .toList(),
+        isScrollable: deco?.isScrollable ?? true,
+        labelStyle: deco?.selectedTextStyle ??
+            const TextStyle(color: Color(0xffff8800)),
+        unselectedLabelStyle: deco?.unselectedTextStyle,
+        indicatorColor: deco?.indicatorColor ?? const Color(0xffff8800),
+        indicatorPadding: deco?.indicatorPadding ?? EdgeInsets.zero,
+        labelPadding: deco?.labelPadding,
+        dividerColor: deco?.dividerColor ?? Colors.transparent,
+        tabAlignment: deco?.tabAlignment ?? TabAlignment.start,
+        tabs: _albums.asMap().entries.map((entry) {
+          final index = entry.key;
+          final album = entry.value;
+          final isSelected = _tabController.index == index;
+
+          // Use custom builder if provided
+          if (widget.tabBuilder != null) {
+            return Tab(
+              child: widget.tabBuilder!(context, album, isSelected),
+            );
+          }
+
+          // Default tab
+          return Tab(
+            text: "${album.name} (${album.size})",
+          );
+        }).toList(),
       ),
     );
   }

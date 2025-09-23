@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 showMediaPicker(
                   context: context,
                   permissionState: PermissionState.authorized,
+                  appBar: AppBar(),
                   transitionBuilder: slideFromBottomTransitionBuilder,
                   onMediaPicked: (assetEntity) async {
                     if (assetEntity.isNotEmpty) {
@@ -121,14 +122,26 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   closeIconColor: Colors.red,
-                  // albumTileBuilder: (context, alubms) {
-                  //   return Container(
-                  //     color: Colors.green,
-                  //     child: Text("data: ${alubms.name}"),
-                  //   );
-                  // },
-                  scaffoldBackgroundColor: Colors.black,
-
+                  tabBuilder: (context, album, isSelected) => Text(
+                    "${album.name}(${album.size})",
+                    style: TextStyle(
+                        color: isSelected ? Colors.red : Colors.amber),
+                  ),
+                  tabDecoration: const TabDecoration(),
+                  customAlbumConfigs: [
+                    CustomAlbumConfig(
+                        album: const MediaAlbum(
+                            id: 'id_1', name: "Album 1", size: 0),
+                        builder: (context) => const CustomMediaGrid(
+                              count: 2,
+                            )),
+                    CustomAlbumConfig(
+                        album: const MediaAlbum(
+                            id: 'id_2', name: "Album 2", size: 10),
+                        builder: (context) => const CustomMediaGrid(
+                              count: 3,
+                            )),
+                  ],
                   sortAlbumFunction: sortScreenshotAlbumsFirst,
                   crossAxisCount: 4,
                   pageSize: 50,
@@ -155,7 +168,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     return {for (final e in grouped.entries) e.key: e.value};
                   },
-
                   groupDateBuilder: (context, date) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
@@ -183,12 +195,13 @@ class _MyHomePageState extends State<MyHomePage> {
 class CustomMediaGrid extends StatelessWidget {
   const CustomMediaGrid({
     super.key,
+    required this.count,
   });
-
+  final int count;
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      crossAxisCount: 2,
+      crossAxisCount: count,
       children: List.generate(
         10,
         (index) {

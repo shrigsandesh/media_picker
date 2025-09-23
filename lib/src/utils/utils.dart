@@ -108,6 +108,9 @@ Future<void> showMediaPicker({
   AssetGrouperCallback? assetGrouper,
   AssetsGroupDateBuilder? groupDateBuilder,
   List<CustomAlbumConfig>? customAlbumConfigs,
+  TabDecoration? tabDecoration,
+  CustomTabBuilder? tabBuilder,
+  AppBar? appBar,
 }) async {
   assert(
     (mediaGridBuilder == null && customAlbum == null) ||
@@ -131,8 +134,10 @@ Future<void> showMediaPicker({
               ..loadMedia(
                 pageSize: pageSize,
                 sortFunction: sortAlbumFunction,
-                hasCustomAlbum: customAlbum != null && !customAlbum.isEmpty(),
-                customAlbum: customAlbum,
+                hasCustomAlbum: customAlbumConfigs?.isNotEmpty ?? false,
+                customAlbum: (customAlbumConfigs?.isNotEmpty ?? false)
+                    ? customAlbumConfigs!.first.album
+                    : null,
               ),
             child: MediaPickerPage(
               scaffoldBackgroundColor: scaffoldBackgroundColor,
@@ -165,6 +170,9 @@ Future<void> showMediaPicker({
               groupDateBuilder: groupDateBuilder,
               trailingIcon: trailingIcon,
               customAlbumConfigs: customAlbumConfigs,
+              tabBuilder: tabBuilder,
+              tabDecoration: tabDecoration,
+              appBar: appBar,
             ),
           ),
         ),

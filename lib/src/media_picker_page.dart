@@ -38,6 +38,9 @@ class MediaPickerPage extends StatefulWidget {
     this.groupDateBuilder,
     this.trailingIcon,
     this.customAlbumConfigs,
+    this.tabBuilder,
+    this.tabDecoration,
+    this.appBar,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -76,6 +79,9 @@ class MediaPickerPage extends StatefulWidget {
   final AssetsGroupDateBuilder? groupDateBuilder;
   final Widget? trailingIcon;
   final List<CustomAlbumConfig>? customAlbumConfigs;
+  final CustomTabBuilder? tabBuilder;
+  final TabDecoration? tabDecoration;
+  final AppBar? appBar;
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
@@ -85,52 +91,50 @@ class _MediaPickerPageState extends State<MediaPickerPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: const Text("Gallery"),
-        actions: const [CircularProgressIndicator.adaptive()],
-      ),
+      appBar: widget.appBar,
       backgroundColor: widget.scaffoldBackgroundColor,
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: kToolbarHeight - 8),
-            child: Column(
-              children: [
-                (widget.permissionState == PermissionState.limited &&
-                        widget.limitedPermissionBuilder != null
-                    ? widget.limitedPermissionBuilder!(context)
-                    : const SizedBox.shrink()),
-                Expanded(
-                  child: MediaContent(
-                    customAlbumConfigs: widget.customAlbumConfigs,
-                    thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                    mediaGridMargin: widget.mediaGridMargin,
-                    onSingleFileSelection: (media) {
-                      widget.onMediaPicked([media]);
-                      if (widget.popWhenSingleMediaSelected) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    loading: widget.loading,
-                    thumbnailShimmer: widget.thumbnailShimmer,
-                    contentPadding: widget.contentPadding,
-                    pageSize: widget.pageSize,
-                    crossAxisCount: widget.crossAxisCount,
-                    mediaGridBuilder: widget.mediaGridBuilder,
-                    customAlbum: widget.customAlbum,
-                    videoIconBuilder: widget.videoIconBuilder,
-                    crossAxisSpacing: widget.crossAxisSpacing,
-                    mainAxisSpacing: widget.mainAxisSpacing,
-                    assetGrouper: widget.assetGrouper,
-                    groupDateBuilder: widget.groupDateBuilder,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: kToolbarHeight - 8),
+              child: Column(
+                children: [
+                  (widget.permissionState == PermissionState.limited &&
+                          widget.limitedPermissionBuilder != null
+                      ? widget.limitedPermissionBuilder!(context)
+                      : const SizedBox.shrink()),
+                  Expanded(
+                    child: MediaContent(
+                      customAlbumConfigs: widget.customAlbumConfigs,
+                      thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                      mediaGridMargin: widget.mediaGridMargin,
+                      onSingleFileSelection: (media) {
+                        widget.onMediaPicked([media]);
+                        if (widget.popWhenSingleMediaSelected) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      loading: widget.loading,
+                      thumbnailShimmer: widget.thumbnailShimmer,
+                      contentPadding: widget.contentPadding,
+                      pageSize: widget.pageSize,
+                      crossAxisCount: widget.crossAxisCount,
+                      mediaGridBuilder: widget.mediaGridBuilder,
+                      customAlbum: widget.customAlbum,
+                      videoIconBuilder: widget.videoIconBuilder,
+                      crossAxisSpacing: widget.crossAxisSpacing,
+                      mainAxisSpacing: widget.mainAxisSpacing,
+                      assetGrouper: widget.assetGrouper,
+                      groupDateBuilder: widget.groupDateBuilder,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          _buildMediaAppBar(context, widget.onClose),
-        ],
+            _buildMediaAppBar(context, widget.onClose),
+          ],
+        ),
       ),
     );
   }
@@ -154,6 +158,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           customAlbum: widget.customAlbumConfigs?.map((e) => e.album).toList(),
           onClose: onClose,
           trailingIcon: widget.trailingIcon,
+          tabBuilder: widget.tabBuilder,
+          tabDecoration: widget.tabDecoration,
         );
       },
     );
