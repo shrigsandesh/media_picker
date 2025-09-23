@@ -1,9 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
-import 'package:media_picker/src/widgets/default_widgets.dart';
 
 class MediaPickerPage extends StatefulWidget {
   const MediaPickerPage({
@@ -37,6 +37,7 @@ class MediaPickerPage extends StatefulWidget {
     this.assetGrouper,
     this.groupDateBuilder,
     this.trailingIcon,
+    this.customAlbumConfigs,
   });
 
   final Color? scaffoldBackgroundColor;
@@ -74,7 +75,7 @@ class MediaPickerPage extends StatefulWidget {
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
   final Widget? trailingIcon;
-
+  final List<CustomAlbumConfig>? customAlbumConfigs;
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
@@ -84,48 +85,50 @@ class _MediaPickerPageState extends State<MediaPickerPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text("Gallery"),
+        actions: const [CircularProgressIndicator.adaptive()],
+      ),
       backgroundColor: widget.scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: kToolbarHeight - 8),
-              child: Column(
-                children: [
-                  (widget.permissionState == PermissionState.limited &&
-                          widget.limitedPermissionBuilder != null
-                      ? widget.limitedPermissionBuilder!(context)
-                      : const SizedBox.shrink()),
-                  Expanded(
-                    child: MediaContent(
-                      thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                      mediaGridMargin: widget.mediaGridMargin,
-                      onSingleFileSelection: (media) {
-                        widget.onMediaPicked([media]);
-                        if (widget.popWhenSingleMediaSelected) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      loading: widget.loading,
-                      thumbnailShimmer: widget.thumbnailShimmer,
-                      contentPadding: widget.contentPadding,
-                      pageSize: widget.pageSize,
-                      crossAxisCount: widget.crossAxisCount,
-                      mediaGridBuilder: widget.mediaGridBuilder,
-                      customAlbum: widget.customAlbum,
-                      videoIconBuilder: widget.videoIconBuilder,
-                      crossAxisSpacing: widget.crossAxisSpacing,
-                      mainAxisSpacing: widget.mainAxisSpacing,
-                      assetGrouper: widget.assetGrouper,
-                      groupDateBuilder: widget.groupDateBuilder,
-                    ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: kToolbarHeight - 8),
+            child: Column(
+              children: [
+                (widget.permissionState == PermissionState.limited &&
+                        widget.limitedPermissionBuilder != null
+                    ? widget.limitedPermissionBuilder!(context)
+                    : const SizedBox.shrink()),
+                Expanded(
+                  child: MediaContent(
+                    customAlbumConfigs: widget.customAlbumConfigs,
+                    thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                    mediaGridMargin: widget.mediaGridMargin,
+                    onSingleFileSelection: (media) {
+                      widget.onMediaPicked([media]);
+                      if (widget.popWhenSingleMediaSelected) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    loading: widget.loading,
+                    thumbnailShimmer: widget.thumbnailShimmer,
+                    contentPadding: widget.contentPadding,
+                    pageSize: widget.pageSize,
+                    crossAxisCount: widget.crossAxisCount,
+                    mediaGridBuilder: widget.mediaGridBuilder,
+                    customAlbum: widget.customAlbum,
+                    videoIconBuilder: widget.videoIconBuilder,
+                    crossAxisSpacing: widget.crossAxisSpacing,
+                    mainAxisSpacing: widget.mainAxisSpacing,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            _buildMediaAppBar(context, widget.onClose),
-          ],
-        ),
+          ),
+          _buildMediaAppBar(context, widget.onClose),
+        ],
       ),
     );
   }
@@ -139,14 +142,14 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               .changeAlbum(album, widget.pageSize),
           mediaAlbum: state.albums,
           albumDropdownColor: widget.dropdownColor,
-          albumTile: widget.albumTileBuilder,
-          albumButtonBuilder: widget.albumDropdownButtonBuilder,
-          dropdownButtonColor: widget.dropdownButtonColor,
+          // albumTile: widget.albumTileBuilder,
+          // albumButtonBuilder: widget.albumDropdownButtonBuilder,
+          // dropdownButtonColor: widget.dropdownButtonColor,
           closeIcon: widget.closeIcon,
           closeIconColor: widget.closeIconColor,
           albumCountStyle: widget.albumCountStyle,
           albumNameStyle: widget.albumNameStyle,
-          customAlbum: widget.customAlbum,
+          customAlbum: widget.customAlbumConfigs?.map((e) => e.album).toList(),
           onClose: onClose,
           trailingIcon: widget.trailingIcon,
         );
@@ -174,6 +177,7 @@ class MediaContent extends StatelessWidget {
     required this.mainAxisSpacing,
     this.assetGrouper,
     this.groupDateBuilder,
+    required this.customAlbumConfigs,
   });
 
   final double? thumbnailBorderRadius;
@@ -185,6 +189,8 @@ class MediaContent extends StatelessWidget {
   final Color? checkedIconColor;
   final int pageSize;
   final int? crossAxisCount;
+  final List<CustomAlbumConfig>? customAlbumConfigs;
+
   final MediaGridBuilder? mediaGridBuilder;
   final MediaAlbum? customAlbum;
   final VideoIconBuilder? videoIconBuilder;
@@ -196,13 +202,16 @@ class MediaContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
         builder: (context, state) {
-      if (state.hasCustomAlbum &&
-          state.currentAlubm.name == customAlbum?.name &&
-          !customAlbum.isEmpty()) {
-        return mediaGridBuilder != null
-            ? mediaGridBuilder!(context)
-            : const CustomAlbumPlaceHolder();
+      if (state.hasCustomAlbum && customAlbumConfigs != null) {
+        // Find matching custom album config
+        final config = customAlbumConfigs!.firstWhereOrNull(
+          (config) => config.album.name == state.currentAlubm.name,
+        );
+        if (config != null) {
+          return config.builder(context);
+        }
       }
+
       if (state.isLoading && !state.isPaginating) {
         return loading ??
             LoadingGridShimmer(
@@ -213,22 +222,21 @@ class MediaContent extends StatelessWidget {
       }
 
       return MediaGrid(
-        type: MediaType.common,
-        medias: state.media.common,
-        name: "media",
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        mediaGridMargin: mediaGridMargin,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        contentPadding: contentPadding,
-        pageSize: pageSize,
-        crossAxisCount: crossAxisCount,
-        videoIconBuilder: videoIconBuilder,
-        mainAxisSpacing: mainAxisSpacing,
-        crossAxisSpacing: crossAxisSpacing,
-        assetGrouper: assetGrouper,
-        groupDateBuilder: groupDateBuilder,
-      );
+          type: MediaType.common,
+          medias: state.media.common,
+          name: "media",
+          thumbnailBorderRadius: thumbnailBorderRadius,
+          mediaGridMargin: mediaGridMargin,
+          onSingleFileSelection: onSingleFileSelection,
+          thumbnailShimmer: thumbnailShimmer,
+          contentPadding: contentPadding,
+          pageSize: pageSize,
+          crossAxisCount: crossAxisCount,
+          videoIconBuilder: videoIconBuilder,
+          mainAxisSpacing: mainAxisSpacing,
+          crossAxisSpacing: crossAxisSpacing,
+          assetGrouper: assetGrouper,
+          groupDateBuilder: groupDateBuilder);
     });
   }
 }

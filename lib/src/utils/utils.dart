@@ -4,6 +4,7 @@ import 'package:media_picker/src/constants/constants.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/media_picker_page.dart';
+import 'package:media_picker/src/model/config.dart';
 import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -106,6 +107,7 @@ Future<void> showMediaPicker({
   required PermissionState permissionState,
   AssetGrouperCallback? assetGrouper,
   AssetsGroupDateBuilder? groupDateBuilder,
+  List<CustomAlbumConfig>? customAlbumConfigs,
 }) async {
   assert(
     (mediaGridBuilder == null && customAlbum == null) ||
@@ -162,6 +164,7 @@ Future<void> showMediaPicker({
               assetGrouper: assetGrouper,
               groupDateBuilder: groupDateBuilder,
               trailingIcon: trailingIcon,
+              customAlbumConfigs: customAlbumConfigs,
             ),
           ),
         ),

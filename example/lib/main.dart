@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           builder: (context) => NextPage(file: file!),
                         ));
                       }
+<<<<<<< Updated upstream
                     }
                   },
                   onClose: () {
@@ -127,6 +128,48 @@ class _MyHomePageState extends State<MyHomePage> {
                   //     child: Text("data: ${alubms.name}"),
                   //   );
                   // },
+=======
+                    },
+                    onClose: () {
+                      // Handle close action
+                    },
+                    customAlbumConfigs: [
+                      CustomAlbumConfig(
+                        album: const MediaAlbum(
+                          name: "Custom Album",
+                          size: 0,
+                          id: "custom_album_id",
+                        ),
+                        builder: (BuildContext context) =>
+                            const CustomMediaGrid(),
+                      ),
+                      CustomAlbumConfig(
+                        album: const MediaAlbum(
+                          name: "Album 2",
+                          size: 10,
+                          id: "custom_album_id",
+                        ),
+                        builder: (BuildContext context) =>
+                            const CustomMediaGrid(),
+                      ),
+                    ],
+                    customAlbum: const MediaAlbum(
+                      name: "Custom Album",
+                      size: 1,
+                      id: "custom_album_id",
+                    ),
+                    scaffoldBackgroundColor: Colors.black,
+                    albumDropdownColor: Colors.black,
+                    mediaGridBuilder: (context) => const CustomMediaGrid(),
+                    trailingIcon: const Icon(Icons.track_changes),
+                    closeIconColor: Colors.red,
+                    // albumTileBuilder: (context, alubms) {
+                    //   return Container(
+                    //     color: Colors.green,
+                    //     child: Text("data: ${alubms.name}"),
+                    //   );
+                    // },
+>>>>>>> Stashed changes
 
                   sortAlbumFunction: sortScreenshotAlbumsFirst,
                   crossAxisCount: 4,
@@ -175,6 +218,37 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CustomMediaGrid extends StatelessWidget {
+  const CustomMediaGrid({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      children: List.generate(
+        10,
+        (index) {
+          return Container(
+            color: Colors.blue,
+            margin: const EdgeInsets.all(10),
+            child: Center(
+              child: Text(
+                'Item $index',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
