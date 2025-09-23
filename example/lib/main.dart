@@ -89,7 +89,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           builder: (context) => NextPage(file: file!),
                         ));
                       }
-<<<<<<< Updated upstream
                     }
                   },
                   onClose: () {
@@ -128,48 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   //     child: Text("data: ${alubms.name}"),
                   //   );
                   // },
-=======
-                    },
-                    onClose: () {
-                      // Handle close action
-                    },
-                    customAlbumConfigs: [
-                      CustomAlbumConfig(
-                        album: const MediaAlbum(
-                          name: "Custom Album",
-                          size: 0,
-                          id: "custom_album_id",
-                        ),
-                        builder: (BuildContext context) =>
-                            const CustomMediaGrid(),
-                      ),
-                      CustomAlbumConfig(
-                        album: const MediaAlbum(
-                          name: "Album 2",
-                          size: 10,
-                          id: "custom_album_id",
-                        ),
-                        builder: (BuildContext context) =>
-                            const CustomMediaGrid(),
-                      ),
-                    ],
-                    customAlbum: const MediaAlbum(
-                      name: "Custom Album",
-                      size: 1,
-                      id: "custom_album_id",
-                    ),
-                    scaffoldBackgroundColor: Colors.black,
-                    albumDropdownColor: Colors.black,
-                    mediaGridBuilder: (context) => const CustomMediaGrid(),
-                    trailingIcon: const Icon(Icons.track_changes),
-                    closeIconColor: Colors.red,
-                    // albumTileBuilder: (context, alubms) {
-                    //   return Container(
-                    //     color: Colors.green,
-                    //     child: Text("data: ${alubms.name}"),
-                    //   );
-                    // },
->>>>>>> Stashed changes
+                  scaffoldBackgroundColor: Colors.black,
 
                   sortAlbumFunction: sortScreenshotAlbumsFirst,
                   crossAxisCount: 4,
@@ -190,7 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         created.year,
                         created.month,
                         created.day,
-                        created.hour,
                       );
 
                       grouped.putIfAbsent(dateKey, () => []).add(media);

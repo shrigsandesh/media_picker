@@ -122,6 +122,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                     videoIconBuilder: widget.videoIconBuilder,
                     crossAxisSpacing: widget.crossAxisSpacing,
                     mainAxisSpacing: widget.mainAxisSpacing,
+                    assetGrouper: widget.assetGrouper,
+                    groupDateBuilder: widget.groupDateBuilder,
                   ),
                 ),
               ],
