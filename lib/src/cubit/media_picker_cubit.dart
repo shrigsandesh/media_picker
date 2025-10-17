@@ -20,12 +20,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     bool hasCustomAlbum = false,
     MediaAlbum? customAlbum,
   }) async {
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       isLoading: true,
       currentPage: 0,
     ));
-    if (hasCustomAlbum) {
-      emit(state.copyWith(currentAlubm: customAlbum, hasCustomAlbum: true));
+    if (hasCustomAlbum && !customAlbum.isEmpty()) {
+      safeEmit(state.copyWith(currentAlubm: customAlbum, hasCustomAlbum: true));
     }
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
       type: RequestType.common,
@@ -48,7 +48,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     final filteredAlbumsFinal = await filterAlbum(albums, merge: false);
 
     if (albums.isEmpty) {
-      emit(state.copyWith(isLoading: false));
+      safeEmit(state.copyWith(isLoading: false));
       return;
     }
 
@@ -62,7 +62,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
           .toList();
     }
     if (tempAlbum.isEmpty) {
-      emit(state.copyWith(isLoading: false));
+      safeEmit(state.copyWith(isLoading: false));
       return;
     }
 
@@ -80,11 +80,12 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     if (mediaContent.common.isEmpty) {
-      emit(state.copyWith(isLoading: false));
+      safeEmit(state.copyWith(isLoading: false));
       return;
     }
+    if (isClosed) return;
 
-    emit(
+    safeEmit(
       state.copyWith(
         albums: album != null ? state.albums : filteredAlbumsFinal,
         media: mediaContent,
@@ -99,7 +100,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
 
   Future<void> loadMoreMedia({int pageSize = 40}) async {
     if (state.hasReachedEndCommon) return;
-    emit(state.copyWith(isLoading: true, isPaginating: true));
+    safeEmit(state.copyWith(isLoading: true, isPaginating: true));
 
     List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
       type: RequestType.common,
@@ -110,7 +111,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     if (currentAlbum == null) {
-      emit(state.copyWith(
+      safeEmit(state.copyWith(
         isLoading: false,
         isPaginating: false,
         hasReachedEndCommon: true,
@@ -126,9 +127,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     var mediaContent = MediaContent(
         id: state.media.id, common: allMedia, name: state.media.name);
 
-    if (isClosed) return;
-
-    emit(
+    safeEmit(
       state.copyWith(
         media: mediaContent.copyWith(
           common: [...state.media.common, ...mediaContent.common],
@@ -151,7 +150,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
       return;
     }
 
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       media: MediaContent.initial,
       currentPage: 0,
       hasReachedEndCommon: false,
@@ -159,5 +158,14 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     ));
 
     loadMedia(pageSize: state.pageSize, album: singleAlbum);
+  }
+}
+
+extension CubitExt<T> on Cubit<T> {
+  void safeEmit(T state) {
+    if (!isClosed) {
+      // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+      emit(state);
+    }
   }
 }
