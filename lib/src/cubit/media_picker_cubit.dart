@@ -74,7 +74,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     );
 
     final mediaContent = MediaContent(
-      id: album?.id ?? "",
+      id: album?.id ?? (tempAlbum.isNotEmpty ? tempAlbum[0].id : ''),
       name: album?.name ?? (tempAlbum.isNotEmpty ? tempAlbum[0].name : ''),
       common: common,
     );
