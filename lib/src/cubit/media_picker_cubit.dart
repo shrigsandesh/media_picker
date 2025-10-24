@@ -24,7 +24,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     safeEmit(state.copyWith(isLoading: true, currentPage: 0));
 
     // Handle custom album if provided
-    if (hasCustomAlbum && !customAlbum.isEmpty()) {
+    if (hasCustomAlbum) {
       safeEmit(state.copyWith(currentAlubm: customAlbum, hasCustomAlbum: true));
     }
 
