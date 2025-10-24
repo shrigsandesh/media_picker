@@ -196,29 +196,130 @@ class CustomMediaGrid extends StatelessWidget {
   const CustomMediaGrid({
     super.key,
     required this.count,
+    this.title,
   });
+
   final int count;
+  final String? title;
+
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: count,
-      children: List.generate(
-        10,
-        (index) {
-          return Container(
-            color: Colors.blue,
-            margin: const EdgeInsets.all(10),
-            child: Center(
+    return Container(
+      color: Colors.grey[100],
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title != null) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0, left: 4),
               child: Text(
-                'Item $index',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
+                title!,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
               ),
             ),
-          );
-        },
+          ],
+          Expanded(
+            child: GridView.builder(
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: count,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Clicked on Item $index")),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      // Media Thumbnail
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/sample_${(index % 3) + 1}.jpg',
+                            ), // Replace with real thumbnails
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Subtle gradient overlay
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.4),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Item label
+                      Positioned(
+                        bottom: 8,
+                        left: 8,
+                        child: Text(
+                          'Item $index',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            shadows: [
+                              Shadow(
+                                offset: Offset(1, 1),
+                                blurRadius: 4,
+                                color: Colors.black45,
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Example video icon overlay (optional)
+                      if (index % 4 == 0)
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.play_arrow,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
