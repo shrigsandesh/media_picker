@@ -20,74 +20,44 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
     bool hasCustomAlbum = false,
     MediaAlbum? customAlbum,
   }) async {
-    safeEmit(state.copyWith(
-      isLoading: true,
-      currentPage: 0,
-    ));
+    // Initialize loading state
+    safeEmit(state.copyWith(isLoading: true, currentPage: 0));
+
+    // Handle custom album if provided
     if (hasCustomAlbum && !customAlbum.isEmpty()) {
       safeEmit(state.copyWith(currentAlubm: customAlbum, hasCustomAlbum: true));
     }
-    List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(
-      type: RequestType.common,
-    );
 
-    // Filter out empty albums
-    List<AssetPathEntity> filteredAlbums = [];
-    for (final album in albums) {
-      int count = await album.assetCountAsync;
-      if (count > 0) {
-        filteredAlbums.add(album);
-      }
-    }
-    albums = filteredAlbums;
-
-    if (sortFunction != null) {
-      albums.sort(sortFunction);
-    }
-
-    final filteredAlbumsFinal = await filterAlbum(albums, merge: false);
-
+    // Fetch and filter albums
+    final albums = await _fetchAndFilterAlbums(sortFunction);
     if (albums.isEmpty) {
       safeEmit(state.copyWith(isLoading: false));
       return;
     }
 
-    List<AssetEntity> common = [];
-    List<AssetPathEntity> tempAlbum = [];
-
-    tempAlbum = albums;
-    if (album != null) {
-      tempAlbum = tempAlbum
-          .where((e) => e.name == album.name && e.id == album.id)
-          .toList();
-    }
-    if (tempAlbum.isEmpty) {
+    // Get the target album
+    final targetAlbum = _getTargetAlbum(albums, album);
+    if (targetAlbum == null) {
       safeEmit(state.copyWith(isLoading: false));
       return;
     }
 
+    // Fetch media content
     debugPrint("Fetching page ${state.currentPage + 1} for ${album?.name}");
-
-    common = await tempAlbum[0].getAssetListPaged(
-      page: 0,
-      size: pageSize,
-    );
-
-    final mediaContent = MediaContent(
-      id: album?.id ?? (tempAlbum.isNotEmpty ? tempAlbum[0].id : ''),
-      name: album?.name ?? (tempAlbum.isNotEmpty ? tempAlbum[0].name : ''),
-      common: common,
-    );
+    final mediaContent = await _fetchMediaContent(targetAlbum, album, pageSize);
 
     if (mediaContent.common.isEmpty) {
       safeEmit(state.copyWith(isLoading: false));
       return;
     }
+
     if (isClosed) return;
 
+    // Update state with fetched data
+    final filteredAlbums = await filterAlbum(albums, merge: false);
     safeEmit(
       state.copyWith(
-        albums: album != null ? state.albums : filteredAlbumsFinal,
+        albums: album != null ? state.albums : filteredAlbums,
         media: mediaContent,
         currentPage: state.currentPage + 1,
         isLoading: false,
@@ -95,6 +65,57 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         hasReachedEndCommon:
             mediaContent.isCommonEnd(pageSize, MediaType.common),
       ),
+    );
+  }
+
+// Helper method: Fetch albums and filter out empty ones
+  Future<List<AssetPathEntity>> _fetchAndFilterAlbums(
+    int Function(AssetPathEntity, AssetPathEntity)? sortFunction,
+  ) async {
+    final allAlbums =
+        await PhotoManager.getAssetPathList(type: RequestType.common);
+
+    final nonEmptyAlbums = <AssetPathEntity>[];
+    for (final album in allAlbums) {
+      final count = await album.assetCountAsync;
+      if (count > 0) {
+        nonEmptyAlbums.add(album);
+      }
+    }
+
+    if (sortFunction != null) {
+      nonEmptyAlbums.sort(sortFunction);
+    }
+
+    return nonEmptyAlbums;
+  }
+
+// Helper method: Get the target album to load media from
+  AssetPathEntity? _getTargetAlbum(
+    List<AssetPathEntity> albums,
+    MediaAlbum? requestedAlbum,
+  ) {
+    if (requestedAlbum == null) {
+      return albums.isNotEmpty ? albums[0] : null;
+    }
+
+    return albums.firstWhereOrNull(
+      (e) => e.name == requestedAlbum.name && e.id == requestedAlbum.id,
+    );
+  }
+
+// Helper method: Fetch media content from the target album
+  Future<MediaContent> _fetchMediaContent(
+    AssetPathEntity targetAlbum,
+    MediaAlbum? album,
+    int pageSize,
+  ) async {
+    final assets = await targetAlbum.getAssetListPaged(page: 0, size: pageSize);
+
+    return MediaContent(
+      id: album?.id ?? targetAlbum.id,
+      name: album?.name ?? targetAlbum.name,
+      common: assets,
     );
   }
 
