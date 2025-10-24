@@ -60,7 +60,7 @@ class MediaContent extends Equatable {
 }
 
 extension MediaContentExtensions on MediaContent {
-  bool isCommonEnd(int pageSize, MediaType type) {
+  bool hasReachedEnd(int pageSize, MediaType type) {
     return type == MediaType.common &&
         (commonSize < pageSize || common.isEmpty);
   }

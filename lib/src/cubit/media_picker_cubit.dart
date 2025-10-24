@@ -63,7 +63,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
         isLoading: false,
         pageSize: pageSize,
         hasReachedEndCommon:
-            mediaContent.isCommonEnd(pageSize, MediaType.common),
+            mediaContent.hasReachedEnd(pageSize, MediaType.common),
       ),
     );
   }
@@ -154,7 +154,7 @@ class MediaPickerCubit extends Cubit<MediaPickerState> {
           common: [...state.media.common, ...mediaContent.common],
         ),
         hasReachedEndCommon:
-            mediaContent.isCommonEnd(pageSize, MediaType.common)
+            mediaContent.hasReachedEnd(pageSize, MediaType.common)
                 ? true
                 : state.hasReachedEndCommon,
         currentPage: state.currentPage + 1,
