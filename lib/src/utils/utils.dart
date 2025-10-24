@@ -9,68 +9,82 @@ import 'package:media_picker/src/model/media_model.dart';
 import 'package:media_picker/src/utils/page_transition.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-// Displays a media picker modal that allows users to select images or videos.
+/// Displays a customizable media picker that allows users to select images or videos.
 ///
-/// This function requests the necessary permissions before opening the media picker.
-/// If permission is granted, it navigates to the `MediaPickerPageWrapper` where users can
-/// browse and select media files.
+/// This function handles permission requests, opens a media picker modal, and provides
+/// callbacks for customization of UI components and behavior.
 ///
-/// [context] is required to access the current build context.
+/// It automatically requests storage/gallery permissions before displaying the picker.
+/// If permission is granted, it navigates to [MediaPickerPage] where users can browse and select media.
 ///
-/// [onMediaPicked] is a required callback function that returns the selected media.
+/// Throws an [Exception] if permissions are not granted.
 ///
-/// [albumDropdownColor] sets the background color of the album dropdown menu.
+/// ---
 ///
-/// [scaffoldBackgroundColor] defines the background color of the media picker screen.
+/// ### Parameters
 ///
-/// [thumbnailBorderRadius] controls the border radius of media thumbnails.
+/// **Required**
 ///
-/// [mediaGridMargin] adds margin around the media grid.
+/// - [context]: The current [BuildContext].
+/// - [onMediaPicked]: Callback function returning the selected media items.
+/// - [permissionState]: The [PermissionState] indicating current permission status.
 ///
-/// [contentPadding] applies padding to the main content area.
+/// **Optional**
 ///
-/// [loading] allows providing a custom widget to be displayed while media is loading.
+/// - [albumDropdownColor]: Background color of the album dropdown menu.
+/// - [scaffoldBackgroundColor]: Background color of the main picker screen.
+/// - [thumbnailBorderRadius]: Border radius applied to media thumbnails.
+/// - [mediaGridMargin]: Margin applied around the media grid.
+/// - [contentPadding]: Padding inside the picker’s main content area.
+/// - [loading]: Custom widget displayed while loading media.
+/// - [thumbnailLoader]: Custom widget for displaying thumbnail loading effects (e.g. shimmer).
+/// - [popWhenSingleMediaSelected]: Whether to automatically close the picker when a single item is selected. Defaults to `true`.
+/// - [albumTileBuilder]: Custom builder for rendering album list items.
+/// - [albumDropdownButtonBuilder]: Custom builder for the album dropdown button.
+/// - [transitionBuilder]: Custom navigation transition animation when opening the picker.
+/// - [pageSize]: Number of media items to load per page. Defaults to [kPageSize].
+/// - [crossAxisCount]: Number of columns in the media grid.
+/// - [sortAlbumFunction]: Custom sorting function for albums.
+/// - [dropdownButtonColor]: Background color for the album dropdown button.
+/// - [closeIcon]: Custom close button widget.
+/// - [closeIconColor]: Color for the close icon (ignored if [closeIcon] is provided).
+/// - [albumNameStyle]: Custom text style for album names (ignored if [albumTileBuilder] is provided).
+/// - [albumCountStyle]: Custom text style for album counts (ignored if [albumTileBuilder] is provided).
+/// - [customAlbum]: A specific [MediaAlbum] to display initially instead of all albums.
+/// - [mediaGridBuilder]: Custom builder for the media grid layout.
+/// - [videoIconBuilder]: Custom builder for video overlay icons displayed on thumbnails.
+/// - [crossAxisSpacing]: Horizontal spacing between grid items.
+/// - [mainAxisSpacing]: Vertical spacing between grid items.
+/// - [onClose]: Callback triggered when the picker is closed manually.
+/// - [limitedPermissionBuilder]: Builder for displaying UI when limited gallery access is granted.
+/// - [trailingIcon]: Optional custom widget displayed at the top-right corner (e.g. settings or info icon).
+/// - [assetGrouper]: Function that groups assets (images/videos) by a custom criterion (e.g., by date).
+/// - [groupDateBuilder]: Widget builder to display date or grouping headers for assets.
+/// - [customAlbumConfigs]: List of [CustomAlbumConfig] objects defining custom album behaviors or sources.
+/// - [tabDecoration]: Customizes the appearance and style of the album/media tabs.
+/// - [tabBuilder]: Custom builder for tabs shown in the picker (e.g. “Photos”, “Videos”, “Albums”).
+/// - [appBar]: Optional custom [AppBar] to replace the default picker header.
 ///
-/// [thumbnailLoader] provides a custom widget for thumbnail loading effects.
+/// ---
 ///
-/// [popWhenSingleMediaSelected] determines whether the picker should close automatically
-/// after selecting a single media file. Defaults to `true`.
-///
-/// [pickedMediaBottomSheetBuilder] allows customization of the bottom sheet shown after media selection.
-///
-/// [albumTileBuilder] provides a custom builder for album list items.
-///
-/// [albumDropdownButtonBuilder] allows customization of the album dropdown button.
-///
-/// [transitionBuilder] is a custom transition effect when navigating to the media picker.
-///
-/// [pageSize] defines the number of media items loaded per page.
-///
-/// [crossAxisCount] determines the number of media columns in the grid.
-///
-/// [sortAlbumFunction] provides a sorting function for albums.
-///
-/// [dropdownButtonColor] sets the color of the dropdown button.
-///
-/// [closeIcon] is a custom widget for closing media picker page.
-///
-/// [closeIconColor] is a custom color for close icon (ignored if [closeIcon] provided).
-///
-/// [albumNameStyle] custom text style for album name (ignored if [albumTileBuilder] provided).
-///
-/// [albumCountStyle] custom text style for album count (ignored if [albumTileBuilder] provided).
-/// [trailingIcon] is a  option custom trailing icon at top right section
-///
-/// Throws an exception if permissions are not granted.
-///
-/// Example:
+/// ### Example
 /// ```dart
 /// showMediaPicker(
 ///   context: context,
-///   onMediaPicked: (media) {
-///     print("Selected media: $media");
+///   onMediaPicked: (mediaList) {
+///     print('Selected media: $mediaList');
 ///   },
+///   crossAxisCount: 3,
+///   albumDropdownColor: Colors.grey[900],
+///   trailingIcon: Icon(Icons.check),
 /// );
+/// ```
+///
+/// ---
+///
+/// ### Assertions
+/// - Both [mediaGridBuilder] and [customAlbum] must be provided together or both must be `null`.
+/// - Both [assetGrouper] and [groupDateBuilder] must be provided together or both must be `null`.
 ///
 
 Future<void> showMediaPicker({
