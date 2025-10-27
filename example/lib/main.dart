@@ -244,9 +244,9 @@ class CustomMediaGrid extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage(
-                              'assets/sample_${(index % 3) + 1}.jpg',
+                              'assets/sample1.jpg',
                             ), // Replace with real thumbnails
                             fit: BoxFit.cover,
                           ),
