@@ -19,7 +19,6 @@ import 'package:photo_manager/photo_manager.dart';
 ///
 /// [onMediaPicked] is a required callback function that returns the selected media.
 ///
-/// [albumDropdownColor] sets the background color of the album dropdown menu.
 ///
 /// [scaffoldBackgroundColor] defines the background color of the media picker screen.
 ///
@@ -34,12 +33,7 @@ import 'package:photo_manager/photo_manager.dart';
 ///
 /// [popWhenSingleMediaSelected] determines whether the picker should close automatically
 /// after selecting a single media file. Defaults to `true`.
-///
-/// [pickedMediaBottomSheetBuilder] allows customization of the bottom sheet shown after media selection.
-///
-/// [albumTileBuilder] provides a custom builder for album list items.
-///
-/// [albumDropdownButtonBuilder] allows customization of the album dropdown button.
+
 ///
 /// [transitionBuilder] is a custom transition effect when navigating to the media picker.
 ///
@@ -49,15 +43,7 @@ import 'package:photo_manager/photo_manager.dart';
 ///
 /// [sortAlbumFunction] provides a sorting function for albums.
 ///
-/// [dropdownButtonColor] sets the color of the dropdown button.
-///
-/// [closeIcon] is a custom widget for closing media picker page.
-///
-/// [closeIconColor] is a custom color for close icon (ignored if [closeIcon] provided).
-///
-/// [albumNameStyle] custom text style for album name (ignored if [albumTileBuilder] provided).
-///
-/// [albumCountStyle] custom text style for album count (ignored if [albumTileBuilder] provided).
+
 /// [trailingIcon] is a  option custom trailing icon at top right section
 ///
 /// Throws an exception if permissions are not granted.
