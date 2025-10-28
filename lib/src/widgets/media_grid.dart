@@ -10,25 +10,24 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class MediaGrid extends StatefulWidget {
-  const MediaGrid({
-    super.key,
-    required this.medias,
-    required this.name,
-    this.onSingleFileSelection,
-    this.thumbnailBorderRadius,
-    this.thumbnailShimmer,
-    this.mediaGridPadding,
-    required this.pageSize,
-    required this.type,
-    this.crossAxisCount,
-    this.mediaGridBuilder,
-    this.videoIconBuilder,
-    required this.crossAxisSpacing,
-    required this.mainAxisSpacing,
-    this.assetGrouper,
-    this.groupDateBuilder,
-    this.hourGroupSpacing,
-  });
+  const MediaGrid(
+      {super.key,
+      required this.medias,
+      required this.name,
+      this.onSingleFileSelection,
+      this.thumbnailBorderRadius,
+      this.thumbnailShimmer,
+      this.mediaGridPadding,
+      required this.pageSize,
+      required this.type,
+      this.crossAxisCount,
+      this.mediaGridBuilder,
+      required this.crossAxisSpacing,
+      required this.mainAxisSpacing,
+      this.assetGrouper,
+      this.groupDateBuilder,
+      this.hourGroupSpacing,
+      this.mediaStackedWidgets});
 
   final List<AssetEntity> medias;
   final String name;
@@ -40,12 +39,12 @@ class MediaGrid extends StatefulWidget {
   final MediaType type;
   final int? crossAxisCount;
   final MediaGridBuilder? mediaGridBuilder;
-  final VideoIconBuilder? videoIconBuilder;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
   final double? hourGroupSpacing;
+  final MediaStackedWidgetsBuilder? mediaStackedWidgets;
   @override
   State<MediaGrid> createState() => _MediaGridState();
 }
@@ -201,31 +200,15 @@ class _MediaGridState extends State<MediaGrid> {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // Media thumbnail
           AssetThumbnail(
             borderRadius: widget.thumbnailBorderRadius,
             asset: media,
           ),
-          if (media.duration > 0)
-            widget.videoIconBuilder != null
-                ? widget.videoIconBuilder!(context, media.duration)
-                : Positioned(
-                    bottom: 2,
-                    right: 2,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.videocam,
-                            size: 18, color: Colors.white),
-                        const SizedBox(width: 4),
-                        Text(
-                          media.duration.formattedDuration,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                  )
+
+          // Custom overlays from the builder
+          if (widget.mediaStackedWidgets != null)
+            ...widget.mediaStackedWidgets!(context, media),
         ],
       ),
     );

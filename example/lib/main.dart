@@ -179,6 +179,37 @@ class _MyHomePageState extends State<MyHomePage> {
                   mediaGridPadding: EdgeInsets.zero,
                   mainAxisSpacing: 1,
                   crossAxisSpacing: 1,
+                  mediaStackedWidgetsBuilder: (context, media) {
+                    return [
+                      if (media.duration > 0)
+                        Positioned(
+                            top: 6,
+                            right: 6,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.black54,
+                                shape: BoxShape.circle,
+                              ),
+                            )),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.label_important,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ];
+                  },
                 );
               },
               child: const Text("Pick Media"),

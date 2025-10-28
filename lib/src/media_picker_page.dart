@@ -20,7 +20,6 @@ class MediaPickerPage extends StatefulWidget {
       this.crossAxisCount,
       this.customAlbum,
       this.mediaGridBuilder,
-      this.videoIconBuilder,
       required this.crossAxisSpacing,
       required this.mainAxisSpacing,
       this.onClose,
@@ -32,7 +31,8 @@ class MediaPickerPage extends StatefulWidget {
       this.tabBuilder,
       this.tabDecoration,
       this.appBar,
-      this.hourGroupSpacing});
+      this.hourGroupSpacing,
+      this.mediaStackedWidgetsBuilder});
 
   final Color? scaffoldBackgroundColor;
   final Color? tabBackgroundColor;
@@ -49,7 +49,7 @@ class MediaPickerPage extends StatefulWidget {
 
   final MediaAlbum? customAlbum;
   final MediaGridBuilder? mediaGridBuilder;
-  final VideoIconBuilder? videoIconBuilder;
+  final MediaStackedWidgetsBuilder? mediaStackedWidgetsBuilder;
 
   final double crossAxisSpacing;
   final double mainAxisSpacing;
@@ -102,12 +102,12 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                       crossAxisCount: widget.crossAxisCount,
                       mediaGridBuilder: widget.mediaGridBuilder,
                       customAlbum: widget.customAlbum,
-                      videoIconBuilder: widget.videoIconBuilder,
                       crossAxisSpacing: widget.crossAxisSpacing,
                       mainAxisSpacing: widget.mainAxisSpacing,
                       assetGrouper: widget.assetGrouper,
                       groupDateBuilder: widget.groupDateBuilder,
                       hourGroupSpacing: widget.hourGroupSpacing,
+                      mediaStackedWidgets: widget.mediaStackedWidgetsBuilder,
                     ),
                   ),
                 ],
@@ -151,13 +151,13 @@ class MediaContent extends StatelessWidget {
       this.crossAxisCount,
       this.mediaGridBuilder,
       this.customAlbum,
-      this.videoIconBuilder,
       required this.crossAxisSpacing,
       required this.mainAxisSpacing,
       this.assetGrouper,
       this.groupDateBuilder,
       required this.customAlbumConfigs,
-      this.hourGroupSpacing});
+      this.hourGroupSpacing,
+      this.mediaStackedWidgets});
 
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridPadding;
@@ -171,12 +171,12 @@ class MediaContent extends StatelessWidget {
 
   final MediaGridBuilder? mediaGridBuilder;
   final MediaAlbum? customAlbum;
-  final VideoIconBuilder? videoIconBuilder;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
   final double? hourGroupSpacing;
+  final MediaStackedWidgetsBuilder? mediaStackedWidgets;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
@@ -210,12 +210,12 @@ class MediaContent extends StatelessWidget {
         mediaGridPadding: mediaGridPadding,
         pageSize: pageSize,
         crossAxisCount: crossAxisCount,
-        videoIconBuilder: videoIconBuilder,
         mainAxisSpacing: mainAxisSpacing,
         crossAxisSpacing: crossAxisSpacing,
         assetGrouper: assetGrouper,
         groupDateBuilder: groupDateBuilder,
         hourGroupSpacing: hourGroupSpacing,
+        mediaStackedWidgets: mediaStackedWidgets,
       );
     });
   }

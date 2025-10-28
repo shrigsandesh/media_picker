@@ -20,8 +20,6 @@ typedef MediaGridBuilder = Widget Function(
 
 typedef SortFunction = int Function(AssetPathEntity, AssetPathEntity);
 
-typedef VideoIconBuilder = Widget Function(BuildContext context, int duration);
-
 typedef LimitedPermissionBottomBuilder = Widget Function(BuildContext context);
 typedef AssetGrouperCallback = Map<DateTime, Map<DateTime, List<AssetEntity>>>
     Function(List<AssetEntity>);
@@ -32,3 +30,8 @@ typedef AssetsGroupDateBuilder = Widget Function(
 
 typedef CustomTabBuilder = Widget Function(
     BuildContext context, MediaAlbum album, bool isSelected);
+
+typedef MediaStackedWidgetsBuilder = List<Widget> Function(
+  BuildContext context,
+  AssetEntity media,
+);
