@@ -80,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   context: context,
                   permissionState: PermissionState.authorized,
                   appBar: AppBar(),
+
                   transitionBuilder: slideFromBottomTransitionBuilder,
                   onMediaPicked: (assetEntity) async {
                     if (assetEntity.isNotEmpty) {
@@ -95,55 +96,29 @@ class _MyHomePageState extends State<MyHomePage> {
                   onClose: () {
                     // Handle close action
                   },
-                  customAlbum: const MediaAlbum(
-                    name: "Custom Album",
-                    size: 1,
-                    id: "custom_album_id",
-                  ),
-                  mediaGridBuilder: (context) => GridView.count(
-                    crossAxisCount: 2,
-                    children: List.generate(
-                      10,
-                      (index) {
-                        return Container(
-                          color: Colors.blue,
-                          margin: const EdgeInsets.all(10),
-                          child: Center(
-                            child: Text(
-                              'Item $index',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  closeIconColor: Colors.red,
                   tabBuilder: (context, album, isSelected) => Text(
                     "${album.name}(${album.size})",
                     style: TextStyle(
                         color: isSelected ? Colors.red : Colors.amber),
                   ),
                   tabDecoration: const TabDecoration(),
-                  customAlbumConfigs: [
-                    CustomAlbumConfig(
-                        album: const MediaAlbum(
-                            id: 'id_1', name: "Album 1", size: 0),
-                        builder: (context) => const CustomMediaGrid(
-                              count: 2,
-                            )),
-                    CustomAlbumConfig(
-                        album: const MediaAlbum(
-                            id: 'id_2', name: "Album 2", size: 10),
-                        builder: (context) => const CustomMediaGrid(
-                              count: 3,
-                            )),
-                  ],
-                  sortAlbumFunction: sortScreenshotAlbumsFirst,
-                  crossAxisCount: 4,
+                  // customAlbumConfigs: [
+                  //   CustomAlbumConfig(
+                  //       album: const MediaAlbum(
+                  //           id: 'id_1', name: "Album 1", size: 0),
+                  //       builder: (context) => const CustomMediaGrid(
+                  //             count: 2,
+                  //           )),
+                  //   CustomAlbumConfig(
+                  //       album: const MediaAlbum(
+                  //           id: 'id_2', name: "Album 2", size: 10),
+                  //       builder: (context) => const CustomMediaGrid(
+                  //             count: 3,
+                  //           )),
+                  // ],
+                  // sortAlbumFunction: sortScreenshotAlbumsFirst,
+                  crossAxisCount: 3,
+                  mediaGridMargin: const EdgeInsets.symmetric(horizontal: 2),
                   pageSize: 50,
                   limitedPermissionBuilder: (context) {
                     return Container(
@@ -152,35 +127,42 @@ class _MyHomePageState extends State<MyHomePage> {
                       decoration: const BoxDecoration(color: Colors.blue),
                     );
                   },
-                  assetGrouper: (assets) {
-                    final grouped = <DateTime, List<AssetEntity>>{};
+                  assetGrouper: (List<AssetEntity> assets) {
+                    final groupedByDay =
+                        <DateTime, Map<DateTime, List<AssetEntity>>>{};
 
                     for (final media in assets) {
                       final created = media.createDateTime;
-                      final dateKey = DateTime(
+
+                      // Key for the day
+                      final dayKey =
+                          DateTime(created.year, created.month, created.day);
+
+                      // Key for the hour (within that day)
+                      final hourKey = DateTime(
                         created.year,
                         created.month,
                         created.day,
+                        created.hour,
                       );
 
-                      grouped.putIfAbsent(dateKey, () => []).add(media);
+                      groupedByDay.putIfAbsent(
+                          dayKey, () => <DateTime, List<AssetEntity>>{});
+                      groupedByDay[dayKey]!
+                          .putIfAbsent(hourKey, () => [])
+                          .add(media);
                     }
 
-                    return {for (final e in grouped.entries) e.key: e.value};
+                    return groupedByDay;
                   },
                   groupDateBuilder: (context, date) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 20,
-                      ),
-                      margin: const EdgeInsets.only(bottom: 20),
-                      color: Colors.red,
-                      child: Text(
-                        date.toString(),
-                      ),
+                    return Text(
+                      date.toString(),
                     );
                   },
+                  contentPadding: EdgeInsets.zero,
+                  mainAxisSpacing: 1,
+                  crossAxisSpacing: 1,
                 );
               },
               child: const Text("Pick Media"),

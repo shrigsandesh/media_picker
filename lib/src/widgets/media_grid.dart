@@ -7,6 +7,7 @@ import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 import 'package:media_picker/src/widgets/widgets_.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class MediaGrid extends StatefulWidget {
   const MediaGrid({
@@ -131,22 +132,30 @@ class _MediaGridState extends State<MediaGrid> {
           return CustomScrollView(
             controller: _scrollController,
             slivers: [
-              for (final entry in grouped.entries) ...[
+              for (final dayEntry in grouped.entries) ...[
+                // Sticky header for each day
                 SliverStickyHeader(
-                  header: widget.groupDateBuilder?.call(context, entry.key),
-                  sliver: SliverPadding(
-                    padding: widget.contentPadding ??
-                        const EdgeInsets.symmetric(horizontal: 8),
-                    sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return _mediaItemBuilder(entry.value, index, context);
-                        },
-                        childCount: entry.value.length +
-                            (state.isLoading && entry.value.isNotEmpty ? 1 : 0),
-                      ),
-                      gridDelegate: _gridDelegate(),
-                    ),
+                  header: widget.groupDateBuilder?.call(context, dayEntry.key),
+                  sliver: MultiSliver(
+                    children: [
+                      for (final hourEntry in dayEntry.value.entries) ...[
+                        const SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 6, // TODO: @Sandesh
+                          ),
+                        ),
+                        SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return _mediaItemBuilder(
+                                  hourEntry.value, index, context);
+                            },
+                            childCount: hourEntry.value.length,
+                          ),
+                          gridDelegate: _gridDelegate(),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ],
@@ -189,38 +198,35 @@ class _MediaGridState extends State<MediaGrid> {
   Widget _mediaItem(AssetEntity media, BuildContext context) {
     return GestureDetector(
       onTap: () => widget.onSingleFileSelection?.call(media),
-      child: Padding(
-        padding: widget.mediaGridMargin ?? EdgeInsets.zero,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            AssetThumbnail(
-              borderRadius: widget.thumbnailBorderRadius,
-              asset: media,
-            ),
-            if (media.duration > 0)
-              widget.videoIconBuilder != null
-                  ? widget.videoIconBuilder!(context, media.duration)
-                  : Positioned(
-                      bottom: 2,
-                      right: 2,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.videocam,
-                              size: 18, color: Colors.white),
-                          const SizedBox(width: 4),
-                          Text(
-                            media.duration.formattedDuration,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                    )
-          ],
-        ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          AssetThumbnail(
+            borderRadius: widget.thumbnailBorderRadius,
+            asset: media,
+          ),
+          if (media.duration > 0)
+            widget.videoIconBuilder != null
+                ? widget.videoIconBuilder!(context, media.duration)
+                : Positioned(
+                    bottom: 2,
+                    right: 2,
+                    child: Row(
+                      children: [
+                        const Icon(Icons.videocam,
+                            size: 18, color: Colors.white),
+                        const SizedBox(width: 4),
+                        Text(
+                          media.duration.formattedDuration,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  )
+        ],
       ),
     );
   }

@@ -15,6 +15,7 @@ dependencies:
   flutter_sticky_header: ^0.8.0
   photo_manager: ^3.6.3
   skeletonizer: ^2.0.1
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:

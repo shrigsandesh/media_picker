@@ -23,8 +23,8 @@ typedef SortFunction = int Function(AssetPathEntity, AssetPathEntity);
 typedef VideoIconBuilder = Widget Function(BuildContext context, int duration);
 
 typedef LimitedPermissionBottomBuilder = Widget Function(BuildContext context);
-typedef AssetGrouperCallback = Map<DateTime, List<AssetEntity>> Function(
-    List<AssetEntity>);
+typedef AssetGrouperCallback = Map<DateTime, Map<DateTime, List<AssetEntity>>>
+    Function(List<AssetEntity>);
 typedef AssetsGroupDateBuilder = Widget Function(
   BuildContext context,
   DateTime date,
