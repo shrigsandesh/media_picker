@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
@@ -7,7 +8,7 @@ class MediaAppBar extends StatefulWidget {
     super.key,
     required this.mediaAlbum,
     required this.onChanged,
-    this.albumDropdownColor,
+    this.tabBarBackgroundColor,
     this.closeIcon,
     this.closeIconColor,
     this.albumNameStyle,
@@ -21,7 +22,7 @@ class MediaAppBar extends StatefulWidget {
 
   final List<MediaAlbum> mediaAlbum;
   final Function(MediaAlbum) onChanged;
-  final Color? albumDropdownColor;
+  final Color? tabBarBackgroundColor;
 
   final Widget? closeIcon;
   final Color? closeIconColor;
@@ -94,18 +95,65 @@ class _MediaAppBarState extends State<MediaAppBar>
     final deco = widget.tabDecoration;
 
     return Container(
-      color: widget.albumDropdownColor ?? Colors.white,
+      color: widget.tabBarBackgroundColor ?? Colors.transparent,
       child: TabBar(
         controller: _tabController,
+        // Basic layout
         isScrollable: deco?.isScrollable ?? true,
+        tabAlignment: deco?.tabAlignment ?? TabAlignment.start,
+        dividerHeight: deco?.dividerHeight,
+
+        padding: deco?.padding ??
+            const EdgeInsets.only(
+              left: 10,
+              right: 10,
+              bottom: 2,
+            ),
+
+        labelPadding: deco?.labelPadding,
+
+        // Label styles
+        labelColor: deco?.labelColor,
+        unselectedLabelColor: deco?.unselectedLabelColor,
+
         labelStyle: deco?.selectedTextStyle ??
+            deco?.labelStyle ??
             const TextStyle(color: Color(0xffff8800)),
         unselectedLabelStyle: deco?.unselectedTextStyle,
+
+        // Indicator
         indicatorColor: deco?.indicatorColor ?? const Color(0xffff8800),
+        indicator: deco?.indicator,
+        indicatorSize: deco?.indicatorSize ?? TabBarIndicatorSize.label,
         indicatorPadding: deco?.indicatorPadding ?? EdgeInsets.zero,
-        labelPadding: deco?.labelPadding,
+
+        // Divider
         dividerColor: deco?.dividerColor ?? Colors.transparent,
-        tabAlignment: deco?.tabAlignment ?? TabAlignment.start,
+
+        // Overlay & splash
+
+        overlayColor: deco?.overlayColorProperty ??
+            WidgetStateProperty.resolveWith<Color?>(
+              (Set<WidgetState> states) {
+                return states.contains(WidgetState.focused)
+                    ? null
+                    : Colors.transparent;
+              },
+            ),
+        splashFactory: deco?.splashFactory ?? NoSplash.splashFactory,
+        splashBorderRadius:
+            deco?.splashBorderRadius ?? BorderRadius.circular(50),
+
+        // Interaction
+        mouseCursor: deco?.mouseCursor,
+        enableFeedback: deco?.enableFeedback,
+        dragStartBehavior: deco?.dragStartBehavior ?? DragStartBehavior.start,
+        physics: deco?.physics,
+
+        // Misc
+        automaticIndicatorColorAdjustment:
+            deco?.automaticIndicatorColorAdjustment ?? true,
+
         tabs: _albums.asMap().entries.map((entry) {
           final index = entry.key;
           final album = entry.value;
@@ -113,13 +161,12 @@ class _MediaAppBarState extends State<MediaAppBar>
 
           // Use custom builder if provided
           if (widget.tabBuilder != null) {
-            return Tab(
-              child: widget.tabBuilder!(context, album, isSelected),
-            );
+            widget.tabBuilder!(context, album, isSelected);
           }
 
           // Default tab
           return Tab(
+            height: deco?.tabHeight,
             text: "${album.name} (${album.size})",
           );
         }).toList(),

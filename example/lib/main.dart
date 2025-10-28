@@ -101,24 +101,41 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: TextStyle(
                         color: isSelected ? Colors.red : Colors.amber),
                   ),
-                  tabDecoration: const TabDecoration(),
-                  // customAlbumConfigs: [
-                  //   CustomAlbumConfig(
-                  //       album: const MediaAlbum(
-                  //           id: 'id_1', name: "Album 1", size: 0),
-                  //       builder: (context) => const CustomMediaGrid(
-                  //             count: 2,
-                  //           )),
-                  //   CustomAlbumConfig(
-                  //       album: const MediaAlbum(
-                  //           id: 'id_2', name: "Album 2", size: 10),
-                  //       builder: (context) => const CustomMediaGrid(
-                  //             count: 3,
-                  //           )),
-                  // ],
+
+                  customAlbumConfigs: [
+                    CustomAlbumConfig(
+                        album: const MediaAlbum(
+                            id: 'id_1', name: "Album 1", size: 0),
+                        builder: (context) => const CustomMediaGrid(
+                              count: 2,
+                            )),
+                    CustomAlbumConfig(
+                        album: const MediaAlbum(
+                            id: 'id_2', name: "Album 2", size: 10),
+                        builder: (context) => const CustomMediaGrid(
+                              count: 3,
+                            )),
+                  ],
                   // sortAlbumFunction: sortScreenshotAlbumsFirst,
                   crossAxisCount: 3,
                   mediaGridMargin: const EdgeInsets.symmetric(horizontal: 2),
+                  tabDecoration: TabDecoration(
+                    tabHeight: 24,
+                    padding:
+                        const EdgeInsets.only(left: 10, right: 10, bottom: 2),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: const UnderlineTabIndicator(
+                      borderSide: BorderSide(
+                        color: Colors.green,
+                      ),
+                      insets: EdgeInsets.fromLTRB(-4, 0.0, -4, .0),
+                    ),
+                    splashFactory: NoSplash.splashFactory,
+                    splashBorderRadius: BorderRadius.circular(50),
+                  ),
+
+                  sortAlbumFunction: sortScreenshotAlbumsFirst,
+
                   pageSize: 50,
                   limitedPermissionBuilder: (context) {
                     return Container(

@@ -147,7 +147,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               .read<MediaPickerCubit>()
               .changeAlbum(album, widget.pageSize),
           mediaAlbum: state.albums,
-          albumDropdownColor: widget.dropdownColor,
+          tabBarBackgroundColor: widget.dropdownColor,
           // albumTile: widget.albumTileBuilder,
           // albumButtonBuilder: widget.albumDropdownButtonBuilder,
           // dropdownButtonColor: widget.dropdownButtonColor,
