@@ -25,9 +25,8 @@ import 'package:photo_manager/photo_manager.dart';
 ///
 /// [thumbnailBorderRadius] controls the border radius of media thumbnails.
 ///
-/// [mediaGridMargin] adds margin around the media grid.
-///
-/// [contentPadding] applies padding to the main content area.
+
+/// [mediaGridPadding] applies padding to the main content area.
 ///
 /// [loading] allows providing a custom widget to be displayed while media is loading.
 ///
@@ -78,8 +77,7 @@ Future<void> showMediaPicker({
   required PickedMediaCallback onMediaPicked,
   Color? scaffoldBackgroundColor,
   double? thumbnailBorderRadius,
-  EdgeInsetsGeometry? mediaGridMargin,
-  EdgeInsetsGeometry? contentPadding,
+  EdgeInsetsGeometry? mediaGridPadding,
   Widget? loading,
   Widget? thumbnailLoader,
   bool popWhenSingleMediaSelected = true,
@@ -104,6 +102,7 @@ Future<void> showMediaPicker({
   TabDecoration? tabDecoration,
   CustomTabBuilder? tabBuilder,
   AppBar? appBar,
+  double? hourGroupSpacing,
 }) async {
   assert(
     (mediaGridBuilder == null && customAlbum == null) ||
@@ -137,11 +136,10 @@ Future<void> showMediaPicker({
               tabBackgroundColor: tabBackgroundColor,
               onMediaPicked: onMediaPicked,
               thumbnailBorderRadius: thumbnailBorderRadius,
-              mediaGridMargin: mediaGridMargin,
               loading: loading,
               thumbnailShimmer: thumbnailLoader,
               popWhenSingleMediaSelected: popWhenSingleMediaSelected,
-              contentPadding: contentPadding,
+              mediaGridPadding: mediaGridPadding,
               pageSize: pageSize,
               crossAxisCount: crossAxisCount,
               customAlbum: customAlbum,
@@ -158,6 +156,7 @@ Future<void> showMediaPicker({
               tabBuilder: tabBuilder,
               tabDecoration: tabDecoration,
               appBar: appBar,
+              hourGroupSpacing: hourGroupSpacing,
             ),
           ),
         ),

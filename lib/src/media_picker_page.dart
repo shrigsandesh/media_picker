@@ -6,41 +6,39 @@ import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 
 class MediaPickerPage extends StatefulWidget {
-  const MediaPickerPage({
-    super.key,
-    this.scaffoldBackgroundColor,
-    this.tabBackgroundColor,
-    required this.onMediaPicked,
-    this.thumbnailBorderRadius,
-    this.mediaGridMargin,
-    this.loading,
-    this.thumbnailShimmer,
-    required this.popWhenSingleMediaSelected,
-    this.contentPadding,
-    required this.pageSize,
-    this.crossAxisCount,
-    this.customAlbum,
-    this.mediaGridBuilder,
-    this.videoIconBuilder,
-    required this.crossAxisSpacing,
-    required this.mainAxisSpacing,
-    this.onClose,
-    this.limitedPermissionBuilder,
-    required this.permissionState,
-    this.assetGrouper,
-    this.groupDateBuilder,
-    this.customAlbumConfigs,
-    this.tabBuilder,
-    this.tabDecoration,
-    this.appBar,
-  });
+  const MediaPickerPage(
+      {super.key,
+      this.scaffoldBackgroundColor,
+      this.tabBackgroundColor,
+      required this.onMediaPicked,
+      this.thumbnailBorderRadius,
+      this.loading,
+      this.thumbnailShimmer,
+      required this.popWhenSingleMediaSelected,
+      this.mediaGridPadding,
+      required this.pageSize,
+      this.crossAxisCount,
+      this.customAlbum,
+      this.mediaGridBuilder,
+      this.videoIconBuilder,
+      required this.crossAxisSpacing,
+      required this.mainAxisSpacing,
+      this.onClose,
+      this.limitedPermissionBuilder,
+      required this.permissionState,
+      this.assetGrouper,
+      this.groupDateBuilder,
+      this.customAlbumConfigs,
+      this.tabBuilder,
+      this.tabDecoration,
+      this.appBar,
+      this.hourGroupSpacing});
 
   final Color? scaffoldBackgroundColor;
   final Color? tabBackgroundColor;
   final PickedMediaCallback onMediaPicked;
   final double? thumbnailBorderRadius;
-  final EdgeInsetsGeometry? mediaGridMargin;
-  final EdgeInsetsGeometry? contentPadding;
+  final EdgeInsetsGeometry? mediaGridPadding;
 
   final Widget? loading;
   final Widget? thumbnailShimmer;
@@ -64,6 +62,7 @@ class MediaPickerPage extends StatefulWidget {
   final CustomTabBuilder? tabBuilder;
   final TabDecoration? tabDecoration;
   final AppBar? appBar;
+  final double? hourGroupSpacing;
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
@@ -90,7 +89,6 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                     child: MediaContent(
                       customAlbumConfigs: widget.customAlbumConfigs,
                       thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                      mediaGridMargin: widget.mediaGridMargin,
                       onSingleFileSelection: (media) {
                         widget.onMediaPicked([media]);
                         if (widget.popWhenSingleMediaSelected) {
@@ -99,7 +97,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                       },
                       loading: widget.loading,
                       thumbnailShimmer: widget.thumbnailShimmer,
-                      contentPadding: widget.contentPadding,
+                      mediaGridPadding: widget.mediaGridPadding,
                       pageSize: widget.pageSize,
                       crossAxisCount: widget.crossAxisCount,
                       mediaGridBuilder: widget.mediaGridBuilder,
@@ -109,6 +107,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
                       mainAxisSpacing: widget.mainAxisSpacing,
                       assetGrouper: widget.assetGrouper,
                       groupDateBuilder: widget.groupDateBuilder,
+                      hourGroupSpacing: widget.hourGroupSpacing,
                     ),
                   ),
                 ],
@@ -140,30 +139,28 @@ class _MediaPickerPageState extends State<MediaPickerPage>
 }
 
 class MediaContent extends StatelessWidget {
-  const MediaContent({
-    super.key,
-    this.thumbnailBorderRadius,
-    this.mediaGridMargin,
-    this.onSingleFileSelection,
-    this.loading,
-    this.thumbnailShimmer,
-    this.checkedIconColor,
-    this.contentPadding,
-    required this.pageSize,
-    this.crossAxisCount,
-    this.mediaGridBuilder,
-    this.customAlbum,
-    this.videoIconBuilder,
-    required this.crossAxisSpacing,
-    required this.mainAxisSpacing,
-    this.assetGrouper,
-    this.groupDateBuilder,
-    required this.customAlbumConfigs,
-  });
+  const MediaContent(
+      {super.key,
+      this.thumbnailBorderRadius,
+      this.onSingleFileSelection,
+      this.loading,
+      this.thumbnailShimmer,
+      this.checkedIconColor,
+      this.mediaGridPadding,
+      required this.pageSize,
+      this.crossAxisCount,
+      this.mediaGridBuilder,
+      this.customAlbum,
+      this.videoIconBuilder,
+      required this.crossAxisSpacing,
+      required this.mainAxisSpacing,
+      this.assetGrouper,
+      this.groupDateBuilder,
+      required this.customAlbumConfigs,
+      this.hourGroupSpacing});
 
   final double? thumbnailBorderRadius;
-  final EdgeInsetsGeometry? mediaGridMargin;
-  final EdgeInsetsGeometry? contentPadding;
+  final EdgeInsetsGeometry? mediaGridPadding;
   final Function(AssetEntity)? onSingleFileSelection;
   final Widget? loading;
   final Widget? thumbnailShimmer;
@@ -179,6 +176,7 @@ class MediaContent extends StatelessWidget {
   final double mainAxisSpacing;
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
+  final double? hourGroupSpacing;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MediaPickerCubit, MediaPickerState>(
@@ -203,21 +201,22 @@ class MediaContent extends StatelessWidget {
       }
 
       return MediaGrid(
-          type: MediaType.common,
-          medias: state.media.common,
-          name: "media",
-          thumbnailBorderRadius: thumbnailBorderRadius,
-          mediaGridMargin: mediaGridMargin,
-          onSingleFileSelection: onSingleFileSelection,
-          thumbnailShimmer: thumbnailShimmer,
-          contentPadding: contentPadding,
-          pageSize: pageSize,
-          crossAxisCount: crossAxisCount,
-          videoIconBuilder: videoIconBuilder,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          assetGrouper: assetGrouper,
-          groupDateBuilder: groupDateBuilder);
+        type: MediaType.common,
+        medias: state.media.common,
+        name: "media",
+        thumbnailBorderRadius: thumbnailBorderRadius,
+        onSingleFileSelection: onSingleFileSelection,
+        thumbnailShimmer: thumbnailShimmer,
+        mediaGridPadding: mediaGridPadding,
+        pageSize: pageSize,
+        crossAxisCount: crossAxisCount,
+        videoIconBuilder: videoIconBuilder,
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
+        assetGrouper: assetGrouper,
+        groupDateBuilder: groupDateBuilder,
+        hourGroupSpacing: hourGroupSpacing,
+      );
     });
   }
 }

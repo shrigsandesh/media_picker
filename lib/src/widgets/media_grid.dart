@@ -16,9 +16,8 @@ class MediaGrid extends StatefulWidget {
     required this.name,
     this.onSingleFileSelection,
     this.thumbnailBorderRadius,
-    this.mediaGridMargin,
     this.thumbnailShimmer,
-    this.contentPadding,
+    this.mediaGridPadding,
     required this.pageSize,
     required this.type,
     this.crossAxisCount,
@@ -28,14 +27,14 @@ class MediaGrid extends StatefulWidget {
     required this.mainAxisSpacing,
     this.assetGrouper,
     this.groupDateBuilder,
+    this.hourGroupSpacing,
   });
 
   final List<AssetEntity> medias;
   final String name;
   final Function(AssetEntity)? onSingleFileSelection;
   final double? thumbnailBorderRadius;
-  final EdgeInsetsGeometry? mediaGridMargin;
-  final EdgeInsetsGeometry? contentPadding;
+  final EdgeInsetsGeometry? mediaGridPadding;
   final Widget? thumbnailShimmer;
   final int pageSize;
   final MediaType type;
@@ -46,6 +45,7 @@ class MediaGrid extends StatefulWidget {
   final double mainAxisSpacing;
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
+  final double? hourGroupSpacing;
   @override
   State<MediaGrid> createState() => _MediaGridState();
 }
@@ -118,7 +118,7 @@ class _MediaGridState extends State<MediaGrid> {
           if (grouped == null) {
             return GridView.builder(
               controller: _scrollController,
-              padding: widget.contentPadding ??
+              padding: widget.mediaGridPadding ??
                   const EdgeInsets.fromLTRB(0, 0, 0, 100),
               gridDelegate: _gridDelegate(),
               itemCount: widget.medias.length +
@@ -139,9 +139,9 @@ class _MediaGridState extends State<MediaGrid> {
                   sliver: MultiSliver(
                     children: [
                       for (final hourEntry in dayEntry.value.entries) ...[
-                        const SliverToBoxAdapter(
+                        SliverToBoxAdapter(
                           child: SizedBox(
-                            height: 6, // TODO: @Sandesh
+                            height: widget.hourGroupSpacing ?? 6,
                           ),
                         ),
                         SliverGrid(

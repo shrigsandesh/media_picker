@@ -73,7 +73,6 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `scaffoldBackgroundColor`| `Color?`                                                                                      | Background color of the picker scaffold.                                                                                                     |
 | `checkedIconColor`       | `Color?`                                                                                      | Color of the checked icon for selected items.                                                                                                |
 | `thumbnailBorderRadius`  | `double?`                                                                                     | Border radius for the media thumbnails.                                                                                                      |
-| `mediaGridMargin`        | `EdgeInsetsGeometry?`                                                                         | Margin in between the media grid layout.                                                                                                            |
 | `loading`                | `Widget?`                                                                                     | Widget displayed during loading states.                                                                                                     |
 | `thumbnailShimmer`       | `Widget?`                                                                                     | Widget displayed as a shimmer effect while loading thumbnails.                                                                              |
 | `pickedMediaBottomSheetBuilder` | `Widget Function(BuildContext context, List<AssetEntity> albums)?`                            | Custom widget for displaying picked media in a bottom sheet.                                                                                |
@@ -81,7 +80,7 @@ for more see [example](https://github.com/shrigsandesh/media_picker/tree/main/ex
 | `albumDropdownButtonBuilder`              | `Widget Function(BuildContext context, List<AssetEntity> albums)?`| Custom widget for displaying album dropdown button.
 | `transitionBuilder`      | `Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?`               | Custom transition builder for the navigation.                                                                                               |
 | `popWhenSingleMediaSelected`              | `bool` (default: `true`) |                                   Whether to pop media picker page after single media file is picked (Ignored if  `allowMultiple`is set to `true`.)  |
-| `contentPadding`              | `EdgeInsetsGeometry?` | Padding around the media grid  |
+| `mediaGridPadding`              | `EdgeInsetsGeometry?` | Padding around the media grid  |
 | `pageSize`               | `int` (default: `40`)  | Number of media items to load per page.  |
 | `crossAxisCount`         | `int` (default: `3`)  | Number of columns in the media grid layout.  |
 | `sortAlbumFunction`           | `int Function(AssetPathEntity, AssetPathEntity)?`  | Custom sorting function for sorting albums.  |

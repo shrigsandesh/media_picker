@@ -118,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                   // sortAlbumFunction: sortScreenshotAlbumsFirst,
                   crossAxisCount: 3,
-                  mediaGridMargin: const EdgeInsets.symmetric(horizontal: 2),
                   tabDecoration: TabDecoration(
                     tabHeight: 24,
                     padding:
@@ -177,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       date.toString(),
                     );
                   },
-                  contentPadding: EdgeInsets.zero,
+                  mediaGridPadding: EdgeInsets.zero,
                   mainAxisSpacing: 1,
                   crossAxisSpacing: 1,
                 );
