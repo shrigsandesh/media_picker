@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     indicatorSize: TabBarIndicatorSize.label,
                     indicator: const UnderlineTabIndicator(
                       borderSide: BorderSide(
-                        color: Colors.green,
+                        color: Colors.red,
                       ),
                       insets: EdgeInsets.fromLTRB(-4, 0.0, -4, .0),
                     ),

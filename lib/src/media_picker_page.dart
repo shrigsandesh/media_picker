@@ -9,8 +9,7 @@ class MediaPickerPage extends StatefulWidget {
   const MediaPickerPage({
     super.key,
     this.scaffoldBackgroundColor,
-    this.dropdownColor,
-    this.albumTileBuilder,
+    this.tabBackgroundColor,
     required this.onMediaPicked,
     this.thumbnailBorderRadius,
     this.mediaGridMargin,
@@ -18,14 +17,8 @@ class MediaPickerPage extends StatefulWidget {
     this.thumbnailShimmer,
     required this.popWhenSingleMediaSelected,
     this.contentPadding,
-    this.albumDropdownButtonBuilder,
     required this.pageSize,
     this.crossAxisCount,
-    this.dropdownButtonColor,
-    this.closeIcon,
-    this.closeIconColor,
-    this.albumNameStyle,
-    this.albumCountStyle,
     this.customAlbum,
     this.mediaGridBuilder,
     this.videoIconBuilder,
@@ -36,7 +29,6 @@ class MediaPickerPage extends StatefulWidget {
     required this.permissionState,
     this.assetGrouper,
     this.groupDateBuilder,
-    this.trailingIcon,
     this.customAlbumConfigs,
     this.tabBuilder,
     this.tabDecoration,
@@ -44,7 +36,7 @@ class MediaPickerPage extends StatefulWidget {
   });
 
   final Color? scaffoldBackgroundColor;
-  final Color? dropdownColor;
+  final Color? tabBackgroundColor;
   final PickedMediaCallback onMediaPicked;
   final double? thumbnailBorderRadius;
   final EdgeInsetsGeometry? mediaGridMargin;
@@ -54,17 +46,8 @@ class MediaPickerPage extends StatefulWidget {
   final Widget? thumbnailShimmer;
   final bool popWhenSingleMediaSelected;
 
-  final AlbumTileBuilder? albumTileBuilder;
-  final AlbumDropdownButtonBuilder? albumDropdownButtonBuilder;
-
   final int pageSize;
   final int? crossAxisCount;
-  final Color? dropdownButtonColor;
-
-  final Widget? closeIcon;
-  final Color? closeIconColor;
-  final TextStyle? albumNameStyle;
-  final TextStyle? albumCountStyle;
 
   final MediaAlbum? customAlbum;
   final MediaGridBuilder? mediaGridBuilder;
@@ -77,7 +60,6 @@ class MediaPickerPage extends StatefulWidget {
   final PermissionState permissionState;
   final AssetGrouperCallback? assetGrouper;
   final AssetsGroupDateBuilder? groupDateBuilder;
-  final Widget? trailingIcon;
   final List<CustomAlbumConfig>? customAlbumConfigs;
   final CustomTabBuilder? tabBuilder;
   final TabDecoration? tabDecoration;
@@ -147,17 +129,8 @@ class _MediaPickerPageState extends State<MediaPickerPage>
               .read<MediaPickerCubit>()
               .changeAlbum(album, widget.pageSize),
           mediaAlbum: state.albums,
-          tabBarBackgroundColor: widget.dropdownColor,
-          // albumTile: widget.albumTileBuilder,
-          // albumButtonBuilder: widget.albumDropdownButtonBuilder,
-          // dropdownButtonColor: widget.dropdownButtonColor,
-          closeIcon: widget.closeIcon,
-          closeIconColor: widget.closeIconColor,
-          albumCountStyle: widget.albumCountStyle,
-          albumNameStyle: widget.albumNameStyle,
+          tabBarBackgroundColor: widget.tabBackgroundColor,
           customAlbum: widget.customAlbumConfigs?.map((e) => e.album).toList(),
-          onClose: onClose,
-          trailingIcon: widget.trailingIcon,
           tabBuilder: widget.tabBuilder,
           tabDecoration: widget.tabDecoration,
         );

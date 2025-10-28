@@ -9,13 +9,7 @@ class MediaAppBar extends StatefulWidget {
     required this.mediaAlbum,
     required this.onChanged,
     this.tabBarBackgroundColor,
-    this.closeIcon,
-    this.closeIconColor,
-    this.albumNameStyle,
-    this.albumCountStyle,
     this.customAlbum,
-    this.onClose,
-    this.trailingIcon,
     this.tabDecoration,
     this.tabBuilder,
   });
@@ -24,13 +18,7 @@ class MediaAppBar extends StatefulWidget {
   final Function(MediaAlbum) onChanged;
   final Color? tabBarBackgroundColor;
 
-  final Widget? closeIcon;
-  final Color? closeIconColor;
-  final TextStyle? albumNameStyle;
-  final TextStyle? albumCountStyle;
   final List<MediaAlbum>? customAlbum;
-  final VoidCallback? onClose;
-  final Widget? trailingIcon;
 
   final TabDecoration? tabDecoration;
 
