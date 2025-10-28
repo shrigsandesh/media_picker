@@ -1,4 +1,3 @@
-export './animated_expand_icon.dart';
 export './asset_thumbnail.dart';
 export './loading_grid_shimmer.dart';
 export './media_grid.dart';
