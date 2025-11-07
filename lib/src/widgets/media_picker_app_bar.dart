@@ -1,112 +1,41 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
 
-class MediaAppBar extends StatefulWidget {
+class MediaAppBar extends StatelessWidget {
   const MediaAppBar({
     super.key,
-    required this.mediaAlbum,
-    required this.onChanged,
+    required this.allAlbums,
     this.tabBarBackgroundColor,
-    this.customAlbum,
     this.tabDecoration,
     this.tabBuilder,
     this.initialTabIndex,
+    required this.tabController,
   });
 
-  final List<MediaAlbum> mediaAlbum;
-  final Function(MediaAlbum) onChanged;
+  final List<MediaAlbum> allAlbums;
   final Color? tabBarBackgroundColor;
-
-  final List<MediaAlbum>? customAlbum;
 
   final TabDecoration? tabDecoration;
 
   /// Allows custom rendering of tabs
   final CustomTabBuilder? tabBuilder;
   final int? initialTabIndex;
-
-  @override
-  State<MediaAppBar> createState() => _MediaAppBarState();
-}
-
-class _MediaAppBarState extends State<MediaAppBar>
-    with TickerProviderStateMixin {
-  late TabController _tabController;
-
-  List<MediaAlbum> get _albums {
-    // Fixed the logic: check if customAlbum is not null AND not empty
-    if (widget.customAlbum != null && widget.customAlbum!.isNotEmpty) {
-      return [...widget.customAlbum!, ...widget.mediaAlbum];
-    }
-    return widget.mediaAlbum;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final validIndex = _getSafeInitialIndex(widget.initialTabIndex);
-
-    _tabController = TabController(
-        initialIndex: validIndex, length: _albums.length, vsync: this);
-    _tabController.addListener(_onTabChanged);
-  }
-
-  void _onTabChanged() {
-    if (_tabController.indexIsChanging) {
-      widget.onChanged(_albums[_tabController.index]);
-    }
-  }
-
-  int _getSafeInitialIndex(int? index) {
-    final albumsCount = _albums.length;
-
-    if (albumsCount == 0) return 0; // fallback for empty list
-    if (index == null) return 0; // no initial index provided
-    if (index < 0) return 0; // negative value
-    if (index >= albumsCount) return albumsCount - 1; // out of range
-
-    return index; // valid
-  }
-
-  @override
-  void didUpdateWidget(covariant MediaAppBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Use the same logic as the getter for consistency
-    final newAlbums = _albums;
-
-    // Only recreate TabController if the length actually changed
-    if (newAlbums.length != _tabController.length) {
-      _tabController.removeListener(_onTabChanged);
-      _tabController.dispose();
-      final validIndex = _getSafeInitialIndex(widget.initialTabIndex);
-
-      _tabController = TabController(
-          initialIndex: validIndex, length: newAlbums.length, vsync: this);
-      _tabController.addListener(_onTabChanged);
-    }
-  }
-
-  @override
-  void dispose() {
-    _tabController.removeListener(_onTabChanged);
-    _tabController.dispose();
-    super.dispose();
-  }
+  final TabController tabController;
 
   @override
   Widget build(BuildContext context) {
-    if (_albums.isEmpty) {
+    if (allAlbums.isEmpty) {
       return const SizedBox.shrink();
     }
-    final deco = widget.tabDecoration;
+    final deco = tabDecoration;
 
     return Container(
-      color: widget.tabBarBackgroundColor ?? Colors.transparent,
+      color: tabBarBackgroundColor ?? Colors.transparent,
       child: TabBar(
-        controller: _tabController,
+        controller: tabController,
         // Basic layout
         isScrollable: deco?.isScrollable ?? true,
         tabAlignment: deco?.tabAlignment ?? TabAlignment.start,
@@ -163,14 +92,12 @@ class _MediaAppBarState extends State<MediaAppBar>
         automaticIndicatorColorAdjustment:
             deco?.automaticIndicatorColorAdjustment ?? true,
 
-        tabs: _albums.asMap().entries.map((entry) {
-          final index = entry.key;
-          final album = entry.value;
-          final isSelected = _tabController.index == index;
+        tabs: allAlbums.mapIndexed((index, album) {
+          final isSelected = tabController.index == index;
 
           // Use custom builder if provided
-          if (widget.tabBuilder != null) {
-            return widget.tabBuilder!(context, album, isSelected);
+          if (tabBuilder != null) {
+            return tabBuilder!(context, album, isSelected);
           }
 
           // Default tab

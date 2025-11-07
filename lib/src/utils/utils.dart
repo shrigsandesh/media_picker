@@ -129,8 +129,6 @@ Future<void> showMediaPicker(
               mediaGridPadding: mediaGridPadding,
               pageSize: pageSize,
               crossAxisCount: crossAxisCount,
-              customAlbum: customAlbum,
-              mediaGridBuilder: mediaGridBuilder,
               mediaStackedWidgetsBuilder: mediaStackedWidgetsBuilder,
               crossAxisSpacing: crossAxisSpacing ?? 0.0,
               mainAxisSpacing: mainAxisSpacing ?? 0.0,

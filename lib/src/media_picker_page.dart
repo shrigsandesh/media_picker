@@ -1,9 +1,10 @@
-import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:media_picker/media_picker.dart';
+import 'package:media_picker/media_picker.dart' hide MediaContent;
 import 'package:media_picker/src/constants/typedefs.dart';
 import 'package:media_picker/src/cubit/media_picker_cubit.dart';
+import 'package:media_picker/src/widgets/media_content.dart';
 
 class MediaPickerPage extends StatefulWidget {
   const MediaPickerPage(
@@ -18,8 +19,6 @@ class MediaPickerPage extends StatefulWidget {
       this.mediaGridPadding,
       required this.pageSize,
       this.crossAxisCount,
-      this.customAlbum,
-      this.mediaGridBuilder,
       required this.crossAxisSpacing,
       required this.mainAxisSpacing,
       this.onClose,
@@ -48,8 +47,6 @@ class MediaPickerPage extends StatefulWidget {
   final int pageSize;
   final int? crossAxisCount;
 
-  final MediaAlbum? customAlbum;
-  final MediaGridBuilder? mediaGridBuilder;
   final MediaStackedWidgetsBuilder? mediaStackedWidgetsBuilder;
 
   final double crossAxisSpacing;
@@ -70,156 +67,176 @@ class MediaPickerPage extends StatefulWidget {
 }
 
 class _MediaPickerPageState extends State<MediaPickerPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+  List<MediaAlbum> _currentAlbums = [];
+  bool _initialIndexApplied = false;
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.appBar,
-      backgroundColor: widget.scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: kToolbarHeight - 8),
-              child: Column(
-                children: [
-                  (widget.permissionState == PermissionState.limited &&
-                          widget.limitedPermissionBuilder != null
-                      ? widget.limitedPermissionBuilder!(context)
-                      : const SizedBox.shrink()),
-                  Expanded(
-                    child: MediaContent(
-                      customAlbumConfigs: widget.customAlbumConfigs,
-                      thumbnailBorderRadius: widget.thumbnailBorderRadius,
-                      onSingleFileSelection: (media) {
-                        widget.onMediaPicked([media]);
-                        if (widget.popWhenSingleMediaSelected) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      loading: widget.loading,
-                      thumbnailShimmer: widget.thumbnailShimmer,
-                      mediaGridPadding: widget.mediaGridPadding,
-                      pageSize: widget.pageSize,
-                      crossAxisCount: widget.crossAxisCount,
-                      mediaGridBuilder: widget.mediaGridBuilder,
-                      customAlbum: widget.customAlbum,
-                      crossAxisSpacing: widget.crossAxisSpacing,
-                      mainAxisSpacing: widget.mainAxisSpacing,
-                      assetGrouper: widget.assetGrouper,
-                      groupDateBuilder: widget.groupDateBuilder,
-                      hourGroupSpacing: widget.hourGroupSpacing,
-                      mediaStackedWidgets: widget.mediaStackedWidgetsBuilder,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            _buildMediaAppBar(context, widget.onClose),
-          ],
-        ),
-      ),
-    );
+  void initState() {
+    super.initState();
+
+    // Start with custom albums if available, else an empty list
+    _currentAlbums = _initialAlbums;
+    _initTabController();
   }
 
-  _buildMediaAppBar(BuildContext context, VoidCallback? onClose) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
+  /// Returns custom albums first (for early display)
+  List<MediaAlbum> get _initialAlbums {
+    final custom =
+        widget.customAlbumConfigs?.map((e) => e.album).toList() ?? [];
+    return custom;
+  }
+
+  /// Returns merged list when full albums become available (from Cubit)
+  List<MediaAlbum> _mergedAlbums(BuildContext context, MediaPickerState state) {
+    final custom =
+        widget.customAlbumConfigs?.map((e) => e.album).toList() ?? [];
+    final fetched = state.albums;
+    return [...custom, ...fetched];
+  }
+
+  void _initTabController({int? initialIndex}) {
+    final validIndex =
+        _getSafeInitialIndex(initialIndex ?? widget.initialTabIndex);
+    _tabController = TabController(
+      initialIndex: validIndex,
+      length: _currentAlbums.isEmpty ? 1 : _currentAlbums.length,
+      vsync: this,
+    )..addListener(_onTabChanged);
+
+    // Manually trigger onChanged once a valid tab exists
+    if (_currentAlbums.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onTabChanged();
+      });
+    }
+  }
+
+  void _updateTabController(List<MediaAlbum> newAlbums) {
+    if (listEquals(newAlbums, _currentAlbums)) return;
+
+    final previousIndex = _tabController.index;
+    _currentAlbums = newAlbums;
+
+    // Calculate the proper index to use
+    int nextIndex = previousIndex;
+
+    // If we haven't yet applied the desired initial index and it's now valid, use it
+    if (!_initialIndexApplied &&
+        widget.initialTabIndex != null &&
+        widget.initialTabIndex! < _currentAlbums.length) {
+      nextIndex = widget.initialTabIndex!;
+      _initialIndexApplied = true; // prevent re-applying
+    }
+
+    // Clamp just in case
+    nextIndex = nextIndex.clamp(0, _currentAlbums.length - 1);
+
+    // Rebuild controller
+    _tabController
+      ..removeListener(_onTabChanged)
+      ..dispose();
+
+    _initTabController(initialIndex: nextIndex);
+
+    setState(() {});
+
+    // ✅ If we auto-moved to a different tab (like newly available index),
+    // trigger the album change manually
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onTabChanged();
+    });
+  }
+
+  void _onTabChanged() {
+    if (_currentAlbums.isEmpty) return;
+    if (_tabController.indexIsChanging) return;
+    final index = _tabController.index;
+    if (index < _currentAlbums.length) {
+      context
+          .read<MediaPickerCubit>()
+          .changeAlbum(_currentAlbums[index], widget.pageSize);
+    }
+  }
+
+  int _getSafeInitialIndex(int? index) {
+    final count = _currentAlbums.length;
+    if (count == 0) return 0;
+    if (index == null || index < 0) return 0;
+    if (index >= count) return count - 1;
+    return index;
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<MediaPickerCubit, MediaPickerState>(
+      listenWhen: (p, c) => !listEquals(p.albums, c.albums),
+      listener: (context, state) {
+        final newAlbums = _mergedAlbums(context, state);
+        _updateTabController(newAlbums);
+      },
       builder: (context, state) {
-        return MediaAppBar(
-          onChanged: (album) => context
-              .read<MediaPickerCubit>()
-              .changeAlbum(album, widget.pageSize),
-          mediaAlbum: state.albums,
-          tabBarBackgroundColor: widget.tabBackgroundColor,
-          customAlbum: widget.customAlbumConfigs?.map((e) => e.album).toList(),
-          tabBuilder: widget.tabBuilder,
-          tabDecoration: widget.tabDecoration,
-          initialTabIndex: widget.initialTabIndex,
+        return Scaffold(
+          appBar: widget.appBar,
+          backgroundColor: widget.scaffoldBackgroundColor,
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: kToolbarHeight - 8),
+                  child: Column(
+                    children: [
+                      if (widget.permissionState == PermissionState.limited &&
+                          widget.limitedPermissionBuilder != null)
+                        widget.limitedPermissionBuilder!(context),
+                      Expanded(
+                        child: MediaContent(
+                          customAlbumConfigs: widget.customAlbumConfigs,
+                          thumbnailBorderRadius: widget.thumbnailBorderRadius,
+                          onSingleFileSelection: (media) {
+                            widget.onMediaPicked([media]);
+                            if (widget.popWhenSingleMediaSelected) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          loading: widget.loading,
+                          thumbnailShimmer: widget.thumbnailShimmer,
+                          mediaGridPadding: widget.mediaGridPadding,
+                          pageSize: widget.pageSize,
+                          crossAxisCount: widget.crossAxisCount,
+                          crossAxisSpacing: widget.crossAxisSpacing,
+                          mainAxisSpacing: widget.mainAxisSpacing,
+                          assetGrouper: widget.assetGrouper,
+                          groupDateBuilder: widget.groupDateBuilder,
+                          hourGroupSpacing: widget.hourGroupSpacing,
+                          mediaStackedWidgets:
+                              widget.mediaStackedWidgetsBuilder,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                MediaAppBar(
+                  allAlbums: _currentAlbums,
+                  tabBarBackgroundColor: widget.tabBackgroundColor,
+                  tabBuilder: widget.tabBuilder,
+                  tabDecoration: widget.tabDecoration,
+                  initialTabIndex: widget.initialTabIndex,
+                  tabController: _tabController,
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
-  }
-}
-
-class MediaContent extends StatelessWidget {
-  const MediaContent(
-      {super.key,
-      this.thumbnailBorderRadius,
-      this.onSingleFileSelection,
-      this.loading,
-      this.thumbnailShimmer,
-      this.checkedIconColor,
-      this.mediaGridPadding,
-      required this.pageSize,
-      this.crossAxisCount,
-      this.mediaGridBuilder,
-      this.customAlbum,
-      required this.crossAxisSpacing,
-      required this.mainAxisSpacing,
-      this.assetGrouper,
-      this.groupDateBuilder,
-      required this.customAlbumConfigs,
-      this.hourGroupSpacing,
-      this.mediaStackedWidgets});
-
-  final double? thumbnailBorderRadius;
-  final EdgeInsetsGeometry? mediaGridPadding;
-  final Function(AssetEntity)? onSingleFileSelection;
-  final Widget? loading;
-  final Widget? thumbnailShimmer;
-  final Color? checkedIconColor;
-  final int pageSize;
-  final int? crossAxisCount;
-  final List<CustomAlbumConfig>? customAlbumConfigs;
-
-  final MediaGridBuilder? mediaGridBuilder;
-  final MediaAlbum? customAlbum;
-  final double crossAxisSpacing;
-  final double mainAxisSpacing;
-  final AssetGrouperCallback? assetGrouper;
-  final AssetsGroupDateBuilder? groupDateBuilder;
-  final double? hourGroupSpacing;
-  final MediaStackedWidgetsBuilder? mediaStackedWidgets;
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<MediaPickerCubit, MediaPickerState>(
-        builder: (context, state) {
-      if (state.hasCustomAlbum && customAlbumConfigs != null) {
-        // Find matching custom album config
-        final config = customAlbumConfigs!.firstWhereOrNull(
-          (config) => config.album.name == state.currentAlubm.name,
-        );
-        if (config != null) {
-          return config.builder(context);
-        }
-      }
-
-      if (state.isLoading && !state.isPaginating) {
-        return loading ??
-            LoadingGridShimmer(
-              crossAxisCount: crossAxisCount,
-              borderRadius: thumbnailBorderRadius,
-              pageSize: pageSize,
-            );
-      }
-
-      return MediaGrid(
-        type: MediaType.common,
-        medias: state.media.common,
-        name: "media",
-        thumbnailBorderRadius: thumbnailBorderRadius,
-        onSingleFileSelection: onSingleFileSelection,
-        thumbnailShimmer: thumbnailShimmer,
-        mediaGridPadding: mediaGridPadding,
-        pageSize: pageSize,
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: mainAxisSpacing,
-        crossAxisSpacing: crossAxisSpacing,
-        assetGrouper: assetGrouper,
-        groupDateBuilder: groupDateBuilder,
-        hourGroupSpacing: hourGroupSpacing,
-        mediaStackedWidgets: mediaStackedWidgets,
-      );
-    });
   }
 }
