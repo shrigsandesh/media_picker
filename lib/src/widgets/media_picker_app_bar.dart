@@ -12,6 +12,7 @@ class MediaAppBar extends StatefulWidget {
     this.customAlbum,
     this.tabDecoration,
     this.tabBuilder,
+    this.initialTabIndex,
   });
 
   final List<MediaAlbum> mediaAlbum;
@@ -24,6 +25,7 @@ class MediaAppBar extends StatefulWidget {
 
   /// Allows custom rendering of tabs
   final CustomTabBuilder? tabBuilder;
+  final int? initialTabIndex;
 
   @override
   State<MediaAppBar> createState() => _MediaAppBarState();
@@ -45,7 +47,10 @@ class _MediaAppBarState extends State<MediaAppBar>
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: _albums.length, vsync: this);
+    _tabController = TabController(
+        initialIndex: widget.initialTabIndex ?? 0,
+        length: _albums.length,
+        vsync: this);
     _tabController.addListener(_onTabChanged);
   }
 

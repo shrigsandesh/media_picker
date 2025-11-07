@@ -32,7 +32,8 @@ class MediaPickerPage extends StatefulWidget {
       this.tabDecoration,
       this.appBar,
       this.hourGroupSpacing,
-      this.mediaStackedWidgetsBuilder});
+      this.mediaStackedWidgetsBuilder,
+      this.initialTabIndex});
 
   final Color? scaffoldBackgroundColor;
   final Color? tabBackgroundColor;
@@ -63,6 +64,7 @@ class MediaPickerPage extends StatefulWidget {
   final TabDecoration? tabDecoration;
   final AppBar? appBar;
   final double? hourGroupSpacing;
+  final int? initialTabIndex;
   @override
   State<MediaPickerPage> createState() => _MediaPickerPageState();
 }
@@ -132,6 +134,7 @@ class _MediaPickerPageState extends State<MediaPickerPage>
           customAlbum: widget.customAlbumConfigs?.map((e) => e.album).toList(),
           tabBuilder: widget.tabBuilder,
           tabDecoration: widget.tabDecoration,
+          initialTabIndex: widget.initialTabIndex,
         );
       },
     );
