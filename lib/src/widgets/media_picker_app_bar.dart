@@ -46,11 +46,10 @@ class _MediaAppBarState extends State<MediaAppBar>
   @override
   void initState() {
     super.initState();
+    final validIndex = _getSafeInitialIndex(widget.initialTabIndex);
 
     _tabController = TabController(
-        initialIndex: widget.initialTabIndex ?? 0,
-        length: _albums.length,
-        vsync: this);
+        initialIndex: validIndex, length: _albums.length, vsync: this);
     _tabController.addListener(_onTabChanged);
   }
 
@@ -58,6 +57,17 @@ class _MediaAppBarState extends State<MediaAppBar>
     if (_tabController.indexIsChanging) {
       widget.onChanged(_albums[_tabController.index]);
     }
+  }
+
+  int _getSafeInitialIndex(int? index) {
+    final albumsCount = _albums.length;
+
+    if (albumsCount == 0) return 0; // fallback for empty list
+    if (index == null) return 0; // no initial index provided
+    if (index < 0) return 0; // negative value
+    if (index >= albumsCount) return albumsCount - 1; // out of range
+
+    return index; // valid
   }
 
   @override
@@ -71,7 +81,10 @@ class _MediaAppBarState extends State<MediaAppBar>
     if (newAlbums.length != _tabController.length) {
       _tabController.removeListener(_onTabChanged);
       _tabController.dispose();
-      _tabController = TabController(length: newAlbums.length, vsync: this);
+      final validIndex = _getSafeInitialIndex(widget.initialTabIndex);
+
+      _tabController = TabController(
+          initialIndex: validIndex, length: newAlbums.length, vsync: this);
       _tabController.addListener(_onTabChanged);
     }
   }
@@ -85,6 +98,9 @@ class _MediaAppBarState extends State<MediaAppBar>
 
   @override
   Widget build(BuildContext context) {
+    if (_albums.isEmpty) {
+      return const SizedBox.shrink();
+    }
     final deco = widget.tabDecoration;
 
     return Container(
