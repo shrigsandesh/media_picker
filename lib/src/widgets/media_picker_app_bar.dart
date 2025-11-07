@@ -154,7 +154,7 @@ class _MediaAppBarState extends State<MediaAppBar>
 
           // Use custom builder if provided
           if (widget.tabBuilder != null) {
-            widget.tabBuilder!(context, album, isSelected);
+            return widget.tabBuilder!(context, album, isSelected);
           }
 
           // Default tab
