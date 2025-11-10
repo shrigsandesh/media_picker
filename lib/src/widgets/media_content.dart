@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_picker/media_picker.dart';
 import 'package:media_picker/src/constants/typedefs.dart';
-import 'package:media_picker/src/cubit/media_picker_cubit.dart';
 
 class MediaContent extends StatelessWidget {
   const MediaContent(

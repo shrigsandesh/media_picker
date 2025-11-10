@@ -7,3 +7,5 @@ export 'src/model/media_model.dart';
 export 'src/model/config.dart';
 
 export 'src/widgets/widgets_.dart';
+export 'src/media_picker_page.dart';
+export 'src/cubit/media_picker_cubit.dart';
